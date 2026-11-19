@@ -114,7 +114,7 @@ export function MemberModal({
 
           <section className="min-w-0 pt-1 lg:pt-2">
             <p className="font-mono-num text-xs font-semibold uppercase tracking-[0.24em] text-[#278500] dark:text-[#6fd43a]">
-              {member.nama} <span className="px-1">·</span> KLP48
+              {member.nama} <span className="px-1">·</span> {t.m_gen} {member.gen}
             </p>
             <h2 className="font-display mt-3 break-words text-[clamp(2.25rem,5vw,5.25rem)] font-black uppercase leading-[0.88] tracking-[-0.065em] text-[#131f10] dark:text-[#ecf4e8]">
               {member.nama_penuh}
