@@ -115,13 +115,21 @@ export function MemberModal({
         </header>
 
         <div className="flex min-h-0 flex-col gap-5 overflow-y-auto px-4 pb-4 sm:gap-6 sm:px-6 sm:pb-6 lg:grid lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.85fr)] lg:gap-10 lg:px-8 lg:pb-8">
-          <MemberAvatar
-            member={member}
-            indexNumber={indexNumber}
-            className="mx-auto aspect-[4/5] w-full max-w-[420px] shrink-0 rounded-[1.25rem] bg-[#e3f2da] dark:bg-[#0d180b] lg:sticky lg:top-0 lg:aspect-[3/4] lg:max-h-[calc(100dvh-8rem)] lg:max-w-none lg:self-start"
-            initialsClassName="text-6xl"
-            priority
-          />
+          <div className="mx-auto flex w-full max-w-[420px] shrink-0 flex-col gap-3 lg:sticky lg:top-0 lg:max-w-none lg:self-start">
+            <MemberAvatar
+              member={member}
+              indexNumber={indexNumber}
+              className="aspect-[4/5] w-full rounded-[1.25rem] bg-[#e3f2da] dark:bg-[#0d180b] lg:aspect-[3/4] lg:max-h-[calc(100dvh-8rem)]"
+              initialsClassName="text-6xl"
+              priority
+            />
+
+            {member.catchphrase && (
+              <blockquote className="rounded-xl border-l-2 border-[#278500] bg-white/70 px-4 py-3 text-sm leading-relaxed italic text-[#52634c] dark:border-[#6fd43a] dark:bg-[#101c0d]/70 dark:text-[#a8bc9f]">
+                {member.catchphrase}
+              </blockquote>
+            )}
+          </div>
 
           <section className="min-w-0 pt-1 lg:pt-2">
             <p className="font-mono-num text-xs font-semibold uppercase tracking-[0.24em] text-[#278500] dark:text-[#6fd43a]">
