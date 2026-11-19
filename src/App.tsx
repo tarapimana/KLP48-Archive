@@ -109,7 +109,7 @@ export default function App() {
       <div className="relative min-h-screen text-[#131f10] transition-colors duration-150 dark:text-[#ecf4e8]">
         {/* Whole-page Video Background */}
         <video
-          src="/video/bg-loop.mp4?v=full"
+          src="/video/bg-loop.mp4?v=1080p"
           poster="/video/bg-poster.jpg"
           preload="auto"
           autoPlay
