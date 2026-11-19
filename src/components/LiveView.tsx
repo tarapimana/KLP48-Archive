@@ -1,8 +1,6 @@
 import {
   AlertCircle,
   CheckCircle2,
-  ChevronLeft,
-  ChevronRight,
   Clock,
   ExternalLink,
   History,
@@ -16,7 +14,6 @@ import {
 import { useEffect, useMemo, useState } from 'react';
 import {
   getMemberCategory,
-  LIVE_FEED_DATA,
   MemberItem,
   MEMBERS_DATA,
   VideoItem,
@@ -31,7 +28,6 @@ import {
 } from '../services/liveService';
 import { MemberAvatar } from './MemberAvatar';
 import { MemberModal } from './MemberModal';
-import { TikTokThumbnail } from './TikTokThumbnail';
 
 interface LiveViewProps {
   lang: Lang;
@@ -43,7 +39,6 @@ type GenFilter = 'all' | '1' | '2';
 type ViewTab = 'tracker' | 'history';
 
 const PINNED_STORAGE_KEY = 'klp48_live_pinned_members';
-const FEED_PAGE_SIZE = 5;
 
 function isValidHandle(handle?: string): string {
   const cleaned = (handle || '').trim().replace(/^@/, '');
@@ -80,9 +75,6 @@ export function LiveView({ lang, onPlayVideo }: LiveViewProps) {
     member: MemberItem;
     index: number;
   } | null>(null);
-
-  const [feedPlatform, setFeedPlatform] = useState<PlatformFilter>('all');
-  const [feedPage, setFeedPage] = useState(1);
 
   // Subscribe to real-time Firestore updates
   useEffect(() => {
@@ -248,30 +240,6 @@ export function LiveView({ lang, onPlayVideo }: LiveViewProps) {
         });
       });
   }, [query, trackerPlatform, genFilter, pinnedOnly, pinnedNames, memberStatusMap]);
-
-  // Exclude non-active and graduated members from the updates feed
-  const filteredPosts = useMemo(() => {
-    const excludedNames = MEMBERS_DATA.filter(
-      (m) => m.statusCategory !== 'active'
-    ).map((m) => m.nama.toLowerCase());
-
-    return LIVE_FEED_DATA.filter((item) => {
-      if (feedPlatform !== 'all' && item.platform !== feedPlatform) return false;
-      const textLower = (item.teks || '').toLowerCase();
-      const memberLower = (item.member || '').toLowerCase();
-      const mentionsExcluded = excludedNames.some(
-        (name) => textLower.includes(name) || memberLower.includes(name)
-      );
-      return !mentionsExcluded;
-    });
-  }, [feedPlatform]);
-
-  const totalFeedPages = Math.max(1, Math.ceil(filteredPosts.length / FEED_PAGE_SIZE));
-  const safeFeedPage = Math.min(feedPage, totalFeedPages);
-  const visiblePosts = filteredPosts.slice(
-    (safeFeedPage - 1) * FEED_PAGE_SIZE,
-    safeFeedPage * FEED_PAGE_SIZE
-  );
 
   return (
     <div className="space-y-10">
@@ -535,10 +503,8 @@ export function LiveView({ lang, onPlayVideo }: LiveViewProps) {
         )}
       </section>
 
-      {/* Two-Column Workspace: Member Tracker / Session History + Official Updates */}
-      <div className="grid items-start gap-8 border-t border-[#dce6d7] pt-6 lg:grid-cols-12 dark:border-[#24371f]">
-        {/* LEFT COLUMN: Segmented Views (Tracker Roster & LIVE Session History) */}
-        <section aria-label="Member LIVE Tracker and History" className="space-y-4 lg:col-span-7">
+      {/* Member Tracker and Session History */}
+      <section aria-label="Member LIVE Tracker and History" className="space-y-4 border-t border-[#dce6d7] pt-6 dark:border-[#24371f]">
           {/* View Tab Switcher */}
           <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#dce6d7] pb-3 dark:border-[#24371f]">
             <div
@@ -868,126 +834,7 @@ export function LiveView({ lang, onPlayVideo }: LiveViewProps) {
               )}
             </div>
           )}
-        </section>
-
-        {/* RIGHT COLUMN: Official TikTok & Instagram Updates Feed */}
-        <section aria-label={t.lv_updates_title} className="space-y-4 lg:col-span-5">
-          <div className="flex flex-wrap items-center justify-between gap-2">
-            <h2 className="font-display text-lg font-extrabold tracking-tight text-[#131f10] sm:text-xl dark:text-white">
-              {t.lv_updates_title}
-            </h2>
-
-            <div
-              className="inline-flex rounded-lg border border-[#dce6d7] bg-white p-0.5 dark:border-[#24371f] dark:bg-[#142111]"
-              role="group"
-              aria-label="Filter updates by platform"
-            >
-              {(['all', 'tiktok', 'instagram'] as PlatformFilter[]).map((key) => (
-                <button
-                  key={key}
-                  type="button"
-                  onClick={() => {
-                    setFeedPlatform(key);
-                    setFeedPage(1);
-                  }}
-                  className={`min-h-[30px] rounded-md px-2.5 text-xs font-semibold capitalize transition-colors ${
-                    feedPlatform === key
-                      ? 'bg-[#278500] text-white dark:bg-[#66c91a] dark:text-[#0b1608]'
-                      : 'text-[#52634c] hover:text-[#131f10] dark:text-[#b5c7ae] dark:hover:text-[#ecf4e8]'
-                  }`}
-                >
-                  {key === 'all' ? 'Semua' : key === 'tiktok' ? 'TikTok' : 'Instagram'}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <div className="space-y-3">
-            {visiblePosts.map((post, idx) => (
-              <article
-                key={`${post.pautan}-${idx}`}
-                className="overflow-hidden rounded-2xl border border-[#dce6d7] bg-white/95 p-4 shadow-xs backdrop-blur-md dark:border-[#24371f] dark:bg-[#0e190b]/94"
-              >
-                <div className="flex items-start justify-between gap-3">
-                  <span
-                    className={`inline-flex items-center gap-1 rounded-md px-2 py-0.5 text-[10px] font-black uppercase tracking-wider ${
-                      post.platform === 'tiktok'
-                        ? 'bg-black text-white dark:bg-white dark:text-black'
-                        : 'bg-gradient-to-r from-purple-500 to-pink-500 text-white'
-                    }`}
-                  >
-                    {post.platform === 'tiktok' ? (
-                      <Radio className="h-2.5 w-2.5" />
-                    ) : (
-                      <Tv className="h-2.5 w-2.5" />
-                    )}
-                    {post.platform}
-                  </span>
-
-                  <span className="font-mono-num text-[11px] text-[#52634c] dark:text-[#98ad90]">
-                    {formatRelativeTime(post.masa, lang)}
-                  </span>
-                </div>
-
-                {post.thumbnail && (
-                  <div className="mt-3 overflow-hidden rounded-xl bg-black/5 dark:bg-white/5">
-                    <TikTokThumbnail
-                      thumbnail={post.thumbnail}
-                      title={post.teks}
-                    />
-                  </div>
-                )}
-
-                <p className="mt-2.5 line-clamp-3 text-xs leading-relaxed text-[#131f10] dark:text-[#ecf4e8]">
-                  {lang === 'en' && post.teks_en ? post.teks_en : post.teks}
-                </p>
-
-                <div className="mt-3 flex items-center justify-between border-t border-[#dce6d7]/60 pt-2.5 text-xs dark:border-[#24371f]">
-                  <span className="font-semibold text-[#52634c] dark:text-[#98ad90]">
-                    {post.member}
-                  </span>
-                  <a
-                    href={post.pautan}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1 font-bold text-[#278500] hover:underline dark:text-[#7ce043]"
-                  >
-                    <span>{t.lv_open.replace('%p', post.platform === 'tiktok' ? 'TikTok' : 'Instagram')}</span>
-                    <ExternalLink className="h-3 w-3" />
-                  </a>
-                </div>
-              </article>
-            ))}
-          </div>
-
-          {/* Pagination */}
-          {totalFeedPages > 1 && (
-            <div className="flex items-center justify-between pt-2 text-xs font-semibold">
-              <button
-                type="button"
-                disabled={safeFeedPage <= 1}
-                onClick={() => setFeedPage((p) => Math.max(1, p - 1))}
-                className="inline-flex items-center gap-1 rounded-lg border border-[#dce6d7] bg-white px-3 py-1.5 disabled:opacity-40 dark:border-[#24371f] dark:bg-[#142111]"
-              >
-                <ChevronLeft className="h-3.5 w-3.5" />
-                <span>{t.prev_page}</span>
-              </button>
-              <span className="font-mono-num text-[#52634c] dark:text-[#98ad90]">
-                {safeFeedPage} / {totalFeedPages}
-              </span>
-              <button
-                type="button"
-                disabled={safeFeedPage >= totalFeedPages}
-                onClick={() => setFeedPage((p) => Math.min(totalFeedPages, p + 1))}
-                className="inline-flex items-center gap-1 rounded-lg border border-[#dce6d7] bg-white px-3 py-1.5 disabled:opacity-40 dark:border-[#24371f] dark:bg-[#142111]"
-              >
-                <span>{t.next_page}</span>
-                <ChevronRight className="h-3.5 w-3.5" />
-              </button>
-            </div>
-          )}
-        </section>
-      </div>
+      </section>
 
       {/* Member Details Modal */}
       {selectedMember && (
