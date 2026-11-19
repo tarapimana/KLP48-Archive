@@ -17,6 +17,7 @@ export interface VideoItem {
 }
 
 export interface ScheduleRawItem {
+  id?: string;
   tarikh_mula: string;
   tarikh_tamat: string;
   tajuk: string;
@@ -345,14 +346,14 @@ export function parseIsoDate(s: string): Date {
   return new Date(y, m - 1, d);
 }
 
-export function getParsedEvents(): ParsedEvent[] {
-  return SCHEDULE_DATA.map((item, idx): ParsedEvent => {
+export function parseScheduleItems(items: ScheduleRawItem[]): ParsedEvent[] {
+  return items.map((item, idx): ParsedEvent => {
     const startDate = parseIsoDate(item.tarikh_mula);
     const endDate = item.tarikh_tamat ? parseIsoDate(item.tarikh_tamat) : startDate;
     const type: 'show' | 'event' =
       item.jenis.toLowerCase() === 'show' ? 'show' : 'event';
     return {
-      id: `${item.tarikh_mula}-${idx}`,
+      id: item.id || `${item.tarikh_mula}-${idx}`,
       startDate,
       endDate,
       title: item.tajuk,
@@ -371,6 +372,10 @@ export function getParsedEvents(): ParsedEvent[] {
   })
     .filter((ev) => !Number.isNaN(ev.startDate.getTime()))
     .sort((a, b) => a.startDate.getTime() - b.startDate.getTime());
+}
+
+export function getParsedEvents(): ParsedEvent[] {
+  return parseScheduleItems(SCHEDULE_DATA);
 }
 
 const MONTH_MAP: Record<string, number> = {

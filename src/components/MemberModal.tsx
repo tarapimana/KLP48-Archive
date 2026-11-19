@@ -2,9 +2,9 @@ import { Calendar, ExternalLink, X } from 'lucide-react';
 import { useEffect } from 'react';
 import {
   getMemberCategory,
-  getParsedEvents,
   MemberItem,
 } from '../data/klp48Data';
+import { useScheduleEvents } from '../context/useScheduleEvents';
 import { Lang, MONTHS_EN, MONTHS_MS, TRANSLATIONS } from '../i18n/translations';
 import { MemberAvatar } from './MemberAvatar';
 
@@ -22,6 +22,7 @@ export function MemberModal({
   onClose,
 }: MemberModalProps) {
   const t = TRANSLATIONS[lang];
+  const { events } = useScheduleEvents();
 
   useEffect(() => {
     if (!member) return;
@@ -58,7 +59,7 @@ export function MemberModal({
 
   const now = new Date();
   const months = lang === 'en' ? MONTHS_EN : MONTHS_MS;
-  const relatedEvents = getParsedEvents().filter((ev) => {
+  const relatedEvents = events.filter((ev) => {
     const combined = `${ev.title} ${ev.titleEn || ''} ${ev.notes} ${ev.notesEn || ''}`.toLowerCase();
     const matchesMember = combined.includes(member.nama.toLowerCase());
     const evEnd = new Date(

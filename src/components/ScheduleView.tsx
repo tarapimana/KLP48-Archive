@@ -1,6 +1,7 @@
 import { ArrowRight, Check, Clock, ExternalLink, MapPin, UsersRound } from 'lucide-react';
 import { useMemo, useState } from 'react';
-import { getParsedEvents } from '../data/klp48Data';
+import { useScheduleEvents } from '../context/useScheduleEvents';
+import { ScheduleCsvImporter } from './ScheduleCsvImporter';
 import {
   Lang,
   MONTHS_EN,
@@ -20,7 +21,7 @@ type ScheduleFilter = 'all' | 'show' | 'event';
 
 export function ScheduleView({ lang }: ScheduleViewProps) {
   const t = TRANSLATIONS[lang];
-  const allEvents = useMemo(() => getParsedEvents(), []);
+  const { events: allEvents } = useScheduleEvents();
   const now = new Date();
 
   const initialPeriod = useMemo(() => {
@@ -84,6 +85,8 @@ export function ScheduleView({ lang }: ScheduleViewProps) {
           {t.j_sub}
         </p>
       </header>
+
+      <ScheduleCsvImporter lang={lang} />
 
       {/* Filter Toolbar */}
       <div className="mb-8 flex flex-wrap items-end justify-between gap-4 border-b border-[#dce6d7] pb-6 dark:border-[#24371f]">

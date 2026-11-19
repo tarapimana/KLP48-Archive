@@ -71,6 +71,34 @@ service cloud.firestore {
              (!data.keys().has('source') || (data.source is string && data.source.size() <= 100));
     }
 
+    function isValidScheduleEvent(data) {
+      return data.keys().hasAll([
+               'tarikh_mula', 'tarikh_tamat', 'tajuk', 'tajuk_en', 'lokasi',
+               'lokasi_en', 'masa', 'masa_en', 'jenis', 'eksklusif', 'nota',
+               'nota_en', 'members', 'pautan'
+             ]) &&
+             data.keys().hasOnly([
+               'tarikh_mula', 'tarikh_tamat', 'tajuk', 'tajuk_en', 'lokasi',
+               'lokasi_en', 'masa', 'masa_en', 'jenis', 'eksklusif', 'nota',
+               'nota_en', 'members', 'pautan'
+             ]) &&
+             data.tarikh_mula is string && data.tarikh_mula.matches('^[0-9]{4}-[0-9]{2}-[0-9]{2}$') &&
+             data.tarikh_tamat is string && data.tarikh_tamat.matches('^[0-9]{4}-[0-9]{2}-[0-9]{2}$') &&
+             data.tajuk is string && data.tajuk.size() <= 300 &&
+             data.tajuk_en is string && data.tajuk_en.size() <= 300 &&
+             data.lokasi is string && data.lokasi.size() <= 500 &&
+             data.lokasi_en is string && data.lokasi_en.size() <= 500 &&
+             data.masa is string && data.masa.size() <= 200 &&
+             data.masa_en is string && data.masa_en.size() <= 200 &&
+             data.jenis in ['show', 'event'] &&
+             data.eksklusif in ['yes', 'no'] &&
+             data.nota is string && data.nota.size() <= 2000 &&
+             data.nota_en is string && data.nota_en.size() <= 2000 &&
+             data.members is string && data.members.size() <= 1000 &&
+             data.pautan is string && data.pautan.size() <= 1000 &&
+             (data.pautan == '' || data.pautan.matches('^https?://.*'));
+    }
+
     match /users/{userId} {
       allow get, list: if isOwner(userId);
       allow create: if isOwner(userId) && isValidId(userId) && isValidUserProfile(request.resource.data) && request.resource.data.userId == userId;
@@ -90,6 +118,13 @@ service cloud.firestore {
       allow get, list: if true;
       allow create, update: if isAdmin() && isValidId(sessionId) && isValidLiveSession(request.resource.data);
       allow delete: if isAdmin() && isValidId(sessionId);
+    }
+
+    // The public schedule is readable by visitors and writable only by the verified archive admin.
+    match /schedule_events/{eventId} {
+      allow get, list: if true;
+      allow create, update: if isAdmin() && isValidId(eventId) && isValidScheduleEvent(request.resource.data);
+      allow delete: if isAdmin() && isValidId(eventId);
     }
   }
 }
