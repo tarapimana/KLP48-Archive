@@ -356,6 +356,7 @@ const MEMBER_CATCHPHRASES: Record<string, string> = {
   yi_shyan: "Hi everyone my name is Yi Shyan, Manis sepertimu simpan saya di dalam hatimu.",
   ann_drea: "A N Squared D R E A thats my name, hello everybody im Ann Drea!",
   yurina: "Hai semua. Nama saya Yurina Gyoten, panggil saya Yurina. Everyone say Bikkuri (Gyoten) I’m surprise, I’m make everyone smile.",
+  tiffany: "Knock, knock! (Who’s there?) It’s your one and only, Cha Cha Cha! (Tiffany.) Hello, my name is Tiffany!",
   mashiro: "Hello everyone, I'm Mashiro, the pure white angel of KLP48. Please call me, Se-no, (Mashiro!)",
   maia: "I spy with my little eye, Maia with an i!",
   sharleez: "Hi all! I'll steal your heart and your fries. I'm a myth and a legend that everyone buys. I'm Princess Sharleez!",
