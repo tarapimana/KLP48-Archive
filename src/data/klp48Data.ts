@@ -4,6 +4,7 @@ export interface ReleaseItem {
   title: string;
   date: string;
   type: 'Album' | 'Single' | 'EP';
+  artworkUrl?: string;
 }
 
 export interface VideoItem {
@@ -105,7 +106,12 @@ export const RELEASES: ReleaseItem[] = [
   { title: 'First Cry', date: '2025.06.13', type: 'EP' },
   { title: 'Flying Get', date: '2025.05.30', type: 'Single' },
   { title: 'Alasanku Maybe', date: '2024.04.18', type: 'Single' },
-  { title: 'Heavy Rotation', date: '2024.08.14', type: 'Single' },
+  {
+    title: 'Heavy Rotation',
+    date: '2024.08.14',
+    type: 'Single',
+    artworkUrl: 'https://image-cdn-ak.spotifycdn.com/image/ab67616d00001e02e20d55b107705d2d134e42e4',
+  },
 ];
 
 const RAW_VIDEOS: Array<[string, string, string?]> = [

@@ -218,9 +218,19 @@ export function HomeView({ lang, onNavigate, onPlayVideo }: HomeViewProps) {
             <div className="grid gap-3 sm:grid-cols-2">
               {RELEASES.map((rel) => (
                 <div key={rel.title} className={`${cardSurface} p-4 sm:p-5`}>
-                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#e3f2da] text-[#278500] dark:bg-[#193012] dark:text-[#6fd43a]">
-                    <Music className="h-4 w-4" aria-hidden="true" />
-                  </div>
+                  {rel.artworkUrl ? (
+                    <img
+                      src={rel.artworkUrl}
+                      alt={`${rel.title} cover art`}
+                      loading="lazy"
+                      decoding="async"
+                      className="h-10 w-10 rounded-xl object-cover"
+                    />
+                  ) : (
+                    <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#e3f2da] text-[#278500] dark:bg-[#193012] dark:text-[#6fd43a]">
+                      <Music className="h-4 w-4" aria-hidden="true" />
+                    </div>
+                  )}
                   <div className="mt-4">
                     <h3 className="font-display text-base font-bold text-[#131f10] dark:text-white">
                       {rel.title}
