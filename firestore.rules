@@ -99,6 +99,26 @@ service cloud.firestore {
              (data.pautan == '' || data.pautan.matches('^https?://.*'));
     }
 
+    function isValidTrackedMemberIds(memberIds) {
+      return memberIds is list && memberIds.size() <= 20 &&
+             memberIds.hasOnly([
+               'yi_shyan', 'devi', 'amanda', 'ann_drea', 'hillary',
+               'khalies', 'salwa', 'tiffany', 'maia', 'mashiro',
+               'sharleez', 'shu_zhen', 'tara', 'aisha', 'alice',
+               'diva', 'hana', 'isabel', 'joo', 'kei'
+             ]);
+    }
+
+    function isValidSocialTrackingConfig(data) {
+      return data.keys().hasAll(['enabled', 'trackedMemberIds', 'timezone', 'updatedAt', 'updatedBy']) &&
+             data.keys().hasOnly(['enabled', 'trackedMemberIds', 'timezone', 'updatedAt', 'updatedBy']) &&
+             data.enabled is bool &&
+             isValidTrackedMemberIds(data.trackedMemberIds) &&
+             data.timezone is string && data.timezone.size() <= 64 &&
+             data.updatedAt is timestamp &&
+             data.updatedBy is string && data.updatedBy.size() <= 128;
+    }
+
     match /users/{userId} {
       allow get, list: if isOwner(userId);
       allow create: if isOwner(userId) && isValidId(userId) && isValidUserProfile(request.resource.data) && request.resource.data.userId == userId;
@@ -125,6 +145,40 @@ service cloud.firestore {
       allow get, list: if true;
       allow create, update: if isAdmin() && isValidId(eventId) && isValidScheduleEvent(request.resource.data);
       allow delete: if isAdmin() && isValidId(eventId);
+    }
+
+    // Credential records are server-only. The Admin SDK bypasses these rules and must be
+    // protected by backend IAM; no browser client, including the admin UI, can access this path.
+    match /social_accounts/{accountId} {
+      allow read, write: if false;
+    }
+
+    // Firestore Rules cannot redact fields from a document. These dedicated public projection
+    // collections must contain only SocialObservation fields; clients cannot write to them.
+    match /social_snapshots/{snapshotId} {
+      allow get, list: if true;
+      allow create, update, delete: if false;
+    }
+
+    match /social_current/{currentId} {
+      allow get, list: if true;
+      allow create, update, delete: if false;
+    }
+
+    // Tracking controls are available only to the verified archive administrator.
+    match /social_tracking_config/{configId} {
+      allow get, list: if isAdmin();
+      allow create, update: if isAdmin() && isValidId(configId) &&
+                            isValidSocialTrackingConfig(request.resource.data) &&
+                            request.resource.data.updatedBy == request.auth.uid;
+      allow delete: if false;
+    }
+
+    // Logs are admin-readable and client writes are denied. Server writers must omit secrets
+    // and log only sanitized codes rather than provider response bodies.
+    match /social_tracking_logs/{logId} {
+      allow get, list: if isAdmin();
+      allow create, update, delete: if false;
     }
   }
 }
