@@ -6,6 +6,7 @@
 import { useEffect, useState } from 'react';
 import { AdminAuthModal } from './components/AdminAuthModal';
 import { BirthdaysView } from './components/BirthdaysView';
+import { BackgroundVideo } from './components/BackgroundVideo';
 import { Footer } from './components/Footer';
 import { Header } from './components/Header';
 import { HomeView } from './components/HomeView';
@@ -108,17 +109,7 @@ export default function App() {
     <AuthProvider>
       <div className="relative min-h-screen text-[#131f10] transition-colors duration-150 dark:text-[#ecf4e8]">
         {/* Whole-page Video Background */}
-        <video
-          src="/video/bg-loop.mp4?v=1080p"
-          poster="/video/bg-poster.jpg"
-          preload="auto"
-          autoPlay
-          muted
-          loop
-          playsInline
-          aria-hidden="true"
-          className="pointer-events-none fixed inset-0 z-0 h-full w-full object-cover motion-reduce:hidden"
-        />
+        <BackgroundVideo lang={lang} />
         <div
           aria-hidden="true"
           className="pointer-events-none fixed inset-0 z-0 bg-[#f6faf4]/82 transition-colors duration-150 dark:bg-[#0a1407]/72"
