@@ -102,20 +102,20 @@ export const OFFICIAL_SITE_URL = 'https://klp48.my';
 
 export const RELEASES: ReleaseItem[] = [
   {
-    title: 'Alasanku Maybe',
-    date: '2024.04.18',
-    type: 'Single',
-    artworkUrl: 'https://image-cdn-ak.spotifycdn.com/image/ab67616d00001e02397615ff4016ec0a9eca7a0b',
-  },
-  {
     title: 'Heavy Rotation',
     date: '2024.08.14',
     type: 'Single',
     artworkUrl: 'https://image-cdn-ak.spotifycdn.com/image/ab67616d00001e02e20d55b107705d2d134e42e4',
   },
   {
+    title: 'Alasanku Maybe',
+    date: '2025.04.18',
+    type: 'Single',
+    artworkUrl: 'https://image-cdn-ak.spotifycdn.com/image/ab67616d00001e02397615ff4016ec0a9eca7a0b',
+  },
+  {
     title: 'Flying Get',
-    date: '2025.05.30',
+    date: '2025.05.31',
     type: 'Single',
     artworkUrl: 'https://image-cdn-ak.spotifycdn.com/image/ab67616d00001e022ee35c4b03821badec202300',
   },
