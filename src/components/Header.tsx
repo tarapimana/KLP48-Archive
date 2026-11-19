@@ -89,7 +89,7 @@ export function Header({
             type="button"
             onClick={() => handleNav('live')}
             aria-label={`${t.n_live}: ${liveCount}`}
-            className="hidden shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full bg-[#e11d48] px-3 py-1.5 text-xs font-bold text-white shadow-[0_4px_12px_rgba(225,29,72,0.24)] transition-colors hover:bg-[#be123c] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#e11d48] md:inline-flex"
+            className="hidden shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full bg-[#278500] px-3 py-1.5 text-xs font-bold text-white shadow-[0_4px_12px_rgba(39,133,0,0.24)] transition-colors hover:bg-[#206e00] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#278500] dark:bg-[#6fd43a] dark:text-[#0a1407] dark:hover:bg-[#82df52] dark:focus-visible:outline-[#6fd43a] md:inline-flex"
           >
             <LiveBars />
             <span className="tabular-nums">{liveCount}</span>
@@ -176,7 +176,7 @@ export function Header({
                   {key === 'live' && (
                     <span
                       aria-hidden="true"
-                      className="inline-flex items-center gap-1.5 rounded-full bg-[#e11d48] px-2.5 py-1 text-[11px] font-bold leading-none text-white"
+                      className="inline-flex items-center gap-1.5 rounded-full bg-[#278500] px-2.5 py-1 text-[11px] font-bold leading-none text-white dark:bg-[#6fd43a] dark:text-[#0a1407]"
                     >
                       <LiveBars />
                       <span className="tabular-nums">{liveCount}</span>
