@@ -62,7 +62,7 @@ export function HomeView({ lang, onNavigate, onPlayVideo }: HomeViewProps) {
     return endOfDay >= now;
   });
 
-  const nextEvents = upcomingEvents.slice(0, 3);
+  const nextEvents = upcomingEvents.slice(0, 5);
   const featuredVideos = VIDEOS.slice(0, 4);
 
   const formatEventDateRange = (start: Date, end: Date) => {
