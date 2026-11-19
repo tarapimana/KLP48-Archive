@@ -185,15 +185,19 @@ export function LiveView({ lang, onPlayVideo }: LiveViewProps) {
                 <span>ON SIGNAL</span>
               </div>
 
-              {/* Firestore Connection Indicator */}
-              <div className="inline-flex items-center gap-2 rounded-full border border-[#dce6d7] bg-[#f6faf4] px-3 py-1.5 text-[11px] font-semibold text-[#52634c] dark:border-[#24371f] dark:bg-[#142111] dark:text-[#98ad90]">
-                <span
-                  className={`h-1.5 w-1.5 rounded-full ${
-                    firestoreConnected ? 'bg-emerald-400' : 'animate-pulse bg-amber-400'
-                  }`}
-                />
-                <span>{t.lv_firestore_connected}</span>
-              </div>
+              {isAdmin && (
+                <>
+                  {/* Firestore Connection Indicator */}
+                  <div className="inline-flex items-center gap-2 rounded-full border border-[#dce6d7] bg-[#f6faf4] px-3 py-1.5 text-[11px] font-semibold text-[#52634c] dark:border-[#24371f] dark:bg-[#142111] dark:text-[#98ad90]">
+                    <span
+                      className={`h-1.5 w-1.5 rounded-full ${
+                        firestoreConnected ? 'bg-emerald-400' : 'animate-pulse bg-amber-400'
+                      }`}
+                    />
+                    <span>{t.lv_firestore_connected}</span>
+                  </div>
+                </>
+              )}
             </div>
 
             <div className="flex flex-wrap items-end justify-between gap-5">
