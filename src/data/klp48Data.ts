@@ -470,6 +470,19 @@ export function parseIsoDate(s: string): Date {
   return new Date(y, m - 1, d);
 }
 
+export function parseEventMemberNames(members?: string): string[] {
+  const seen = new Set<string>();
+  return (members || '')
+    .split(/[,;&]|\band\b/i)
+    .map((name) => name.trim().replace(/[.]+$/, '').trim())
+    .filter((name) => {
+      const normalized = name.toLowerCase();
+      if (!normalized || seen.has(normalized)) return false;
+      seen.add(normalized);
+      return true;
+    });
+}
+
 export function parseScheduleItems(items: ScheduleRawItem[]): ParsedEvent[] {
   return items.map((item, idx): ParsedEvent => {
     const startDate = parseIsoDate(item.tarikh_mula);
