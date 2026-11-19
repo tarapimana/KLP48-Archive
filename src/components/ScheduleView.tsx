@@ -48,6 +48,8 @@ export function ScheduleView({ lang }: ScheduleViewProps) {
   const [month, setMonth] = useState<number>(initialPeriod.month);
   const [year, setYear] = useState<number>(initialPeriod.year);
   const [typeFilter, setTypeFilter] = useState<ScheduleFilter>('all');
+  const [selectedMembers, setSelectedMembers] = useState<string[]>([]);
+  const [memberSearch, setMemberSearch] = useState('');
   const [selectedMember, setSelectedMember] = useState<{
     member: MemberItem;
     index: number;
@@ -63,14 +65,39 @@ export function ScheduleView({ lang }: ScheduleViewProps) {
     return Array.from(set).sort((a, b) => a - b);
   }, [allEvents, year]);
 
+  const availableMembers = useMemo(() => {
+    const names = new Map<string, string>();
+    allEvents.forEach((ev) => {
+      parseEventMemberNames(ev.members).forEach((name) => {
+        names.set(name.toLocaleLowerCase('en'), name);
+      });
+    });
+    return Array.from(names.values()).sort((a, b) =>
+      a.localeCompare(b, 'en', { sensitivity: 'base' })
+    );
+  }, [allEvents]);
+
+  const visibleMembers = useMemo(() => {
+    const query = memberSearch.trim().toLocaleLowerCase('en');
+    return query
+      ? availableMembers.filter((name) => name.toLocaleLowerCase('en').includes(query))
+      : availableMembers;
+  }, [availableMembers, memberSearch]);
+
+  const selectedMemberNames = useMemo(() => new Set(selectedMembers), [selectedMembers]);
+
   const filteredEvents = useMemo(() => {
     return allEvents.filter(
       (ev) =>
         ev.startDate.getMonth() + 1 === month &&
         ev.startDate.getFullYear() === year &&
-        (typeFilter === 'all' || ev.type === typeFilter)
+        (typeFilter === 'all' || ev.type === typeFilter) &&
+        (selectedMemberNames.size === 0 ||
+          parseEventMemberNames(ev.members).some((name) =>
+            selectedMemberNames.has(name.toLocaleLowerCase('en'))
+          ))
     );
-  }, [allEvents, month, year, typeFilter]);
+  }, [allEvents, month, year, typeFilter, selectedMemberNames]);
 
   const firstUpcomingIndex = useMemo(() => {
     return filteredEvents.findIndex((ev) => {
@@ -144,6 +171,80 @@ export function ScheduleView({ lang }: ScheduleViewProps) {
               ))}
             </select>
           </div>
+        </div>
+
+        <div className="relative z-10">
+          <span className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-[#3f503a] dark:text-[#c7d7c0]">
+            {t.j_member_filter}
+          </span>
+          <details className="group relative">
+            <summary className="flex min-h-[42px] min-w-[190px] cursor-pointer list-none items-center justify-between gap-3 rounded-lg border border-[#dce6d7] bg-white px-3 py-2 text-sm font-medium text-[#131f10] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#278500] [&::-webkit-details-marker]:hidden dark:border-[#24371f] dark:bg-[#142111] dark:text-[#ecf4e8] dark:focus-visible:outline-[#6fd43a]">
+              <span>{t.j_member_filter}</span>
+              <span className="text-xs text-[#52634c] dark:text-[#b5c7ae]">
+                {selectedMembers.length
+                  ? t.j_member_selected.replace('%n', String(selectedMembers.length))
+                  : t.j_member_all}
+              </span>
+            </summary>
+            <div className="absolute left-0 top-full mt-2 w-72 max-w-[calc(100vw-2rem)] rounded-xl border border-[#dce6d7] bg-white p-2 shadow-xl dark:border-[#2b4523] dark:bg-[#142111]">
+              <div className="flex items-center justify-between gap-3 px-2 py-1.5">
+                <span className="text-xs font-semibold text-[#52634c] dark:text-[#b5c7ae]">
+                  {t.j_member_filter}
+                </span>
+                {selectedMembers.length > 0 && (
+                  <button
+                    type="button"
+                    onClick={() => setSelectedMembers([])}
+                    className="min-h-9 rounded px-2 text-xs font-semibold text-[#278500] hover:bg-[#edf5e9] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#278500] dark:text-[#7ce043] dark:hover:bg-[#1d3314] dark:focus-visible:outline-[#6fd43a]"
+                  >
+                    {t.j_member_clear}
+                  </button>
+                )}
+              </div>
+              <label htmlFor="schedule-member-search" className="sr-only">
+                {t.j_member_search}
+              </label>
+              <input
+                id="schedule-member-search"
+                type="search"
+                value={memberSearch}
+                onChange={(event) => setMemberSearch(event.target.value)}
+                placeholder={t.j_member_search}
+                className="min-h-10 w-full rounded-lg border border-[#dce6d7] bg-white px-3 text-sm text-[#131f10] placeholder:text-[#72816d] focus:border-[#278500] focus:outline-none dark:border-[#2b4523] dark:bg-[#101c0d] dark:text-[#ecf4e8] dark:placeholder:text-[#8ea184] dark:focus:border-[#6fd43a]"
+              />
+              <div className="mt-1 max-h-56 overflow-y-auto">
+                {visibleMembers.length > 0 ? (
+                  visibleMembers.map((name) => {
+                    const key = name.toLocaleLowerCase('en');
+                    return (
+                      <label
+                        key={key}
+                        className="flex min-h-10 cursor-pointer items-center gap-2.5 rounded-lg px-2 text-sm text-[#263421] hover:bg-[#edf5e9] dark:text-[#e2eee0] dark:hover:bg-[#1d3314]"
+                      >
+                        <input
+                          type="checkbox"
+                          checked={selectedMemberNames.has(key)}
+                          onChange={() =>
+                            setSelectedMembers((current) =>
+                              current.includes(key)
+                                ? current.filter((member) => member !== key)
+                                : [...current, key]
+                            )
+                          }
+                          className="size-4 accent-[#278500] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#278500] dark:accent-[#6fd43a]"
+                        />
+                        <span>{name}</span>
+                      </label>
+                    );
+                  })
+                ) : (
+                  <p className="px-2 py-3 text-sm text-[#52634c] dark:text-[#b5c7ae]">
+                    {t.j_member_no_results}
+                  </p>
+                )}
+              </div>
+            </div>
+          </details>
         </div>
 
         <div>
@@ -385,7 +486,7 @@ export function ScheduleView({ lang }: ScheduleViewProps) {
         </div>
       ) : (
         <div className="rounded-xl border border-[#dce6d7] bg-white p-8 text-center text-sm text-[#3f503a] dark:border-[#24371f] dark:bg-[#142111] dark:text-[#c7d7c0]">
-          {t.noevents}
+          {selectedMembers.length > 0 ? t.j_member_no_events : t.noevents}
         </div>
       )}
       <MemberModal

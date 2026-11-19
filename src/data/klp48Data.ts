@@ -313,7 +313,7 @@ export const SCHEDULE_DATA: ScheduleRawItem[] = [
   { tarikh_mula: "2026-11-23", tarikh_tamat: "", tajuk: "Discord 1-on-1 Video Call (Generasi ke-1)", tajuk_en: "Discord 1-on-1 Video Call (1st Generation)", lokasi: "Eksklusif Fan Club Premium", lokasi_en: "Fan Club Premium Exclusive", jenis: "event", eksklusif: "ya", nota: "", members: "Amanda, Ann Drea, Devi, Hillary, Khalies, Salwa, Tiffany & Yi Shyan" },
   { tarikh_mula: "2026-11-24", tarikh_tamat: "", tajuk: "Discord 1-on-1 Video Call (Generasi ke-2)", tajuk_en: "Discord 1-on-1 Video Call (2nd Generation)", lokasi: "Eksklusif Fan Club Premium", lokasi_en: "Fan Club Premium Exclusive", jenis: "event", eksklusif: "ya", nota: "", members: "Aisha, Alice, Diva, Hana, Isabel, Joo, Kei, Maia, Mashiro, Sharleez, Shu Zhen & Tara" },
   { tarikh_mula: "2026-11-28", tarikh_tamat: "", tajuk: "KLP Time: Hillary Birthday Party", lokasi: "KLP48 Theatre, Lalaport BBCC", jenis: "show", eksklusif: "", nota: "" },
-  { tarikh_mula: "2026-11-28", tarikh_tamat: "2026-11-29", tajuk: "Universal Studios Japan Talk Show", lokasi: "Lalaport Main Atrium, GF", jenis: "show", eksklusif: "", nota: "" },
+  { tarikh_mula: "2026-11-28", tarikh_tamat: "2026-11-29", tajuk: "Osaka Talk Show Featuring KLP48", tajuk_en: "Osaka Talk Show Featuring KLP48", lokasi: "Lalaport Main Atrium, GF", masa: "2:00 petang", masa_en: "2:00 PM", jenis: "show", eksklusif: "", nota: "", members: "Devi & Yi Shyan", pautan: "https://www.instagram.com/p/DfreW-ikkUz/?img_index=5&dmpr=MWI5OW12dmQ0bjhiYQ==" },
   { tarikh_mula: "2026-11-29", tarikh_tamat: "", tajuk: "Mini Live Show", lokasi: "KLP48 Theatre, Lalaport BBCC", jenis: "show", eksklusif: "", nota: "" },
 ];
 
