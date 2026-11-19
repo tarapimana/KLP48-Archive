@@ -120,6 +120,17 @@ export function HomeView({ lang, onNavigate, onPlayVideo }: HomeViewProps) {
               >
                 {t.h_b2}
               </a>
+              <a
+                href="#video"
+                onClick={(e) => {
+                  e.preventDefault();
+                  onNavigate('video');
+                }}
+                className="inline-flex min-h-[42px] items-center gap-2 rounded-full border border-[#278500] bg-white/75 px-6 py-2.5 text-sm font-bold text-[#278500] backdrop-blur-xs transition-colors hover:bg-[#edf5e9] dark:border-[#66c91a]/75 dark:bg-[#0e190b]/60 dark:text-[#6fd43a] dark:hover:border-[#66c91a] dark:hover:bg-[#162712]"
+              >
+                <Play className="h-4 w-4" aria-hidden="true" />
+                {t.n_video}
+              </a>
             </div>
           </section>
 
@@ -152,14 +163,18 @@ export function HomeView({ lang, onNavigate, onPlayVideo }: HomeViewProps) {
                 </div>
               </button>
 
-              <div className={`${cardSurface} p-4 text-center sm:p-5`}>
+              <button
+                type="button"
+                onClick={() => onNavigate('video')}
+                className={`${cardSurface} w-full cursor-pointer p-4 text-center hover:border-[#278500] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#278500] focus-visible:ring-offset-2 sm:p-5 dark:hover:border-[#66c91a] dark:focus-visible:ring-[#66c91a] dark:focus-visible:ring-offset-[#0a1407]`}
+              >
                 <div className="font-mono-num text-3xl font-bold text-[#278500] sm:text-4xl dark:text-[#66c91a]">
                   {VIDEOS.length}
                 </div>
                 <div className="mt-1 text-xs font-medium text-[#52634c] dark:text-[#a8bc9f]">
                   {t.n_video}
                 </div>
-              </div>
+              </button>
             </div>
           </section>
 
