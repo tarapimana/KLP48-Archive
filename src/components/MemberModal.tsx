@@ -174,9 +174,15 @@ export function MemberModal({
                 </h3>
                 <div className="mt-2.5 space-y-2.5">
                   {visibleEvents.map((ev) => (
-                    <div
+                    <a
                       key={ev.id}
-                      className="rounded-xl border border-[#dce6d7] bg-[#ffffff]/75 p-3.5 text-sm dark:border-[#24371f] dark:bg-[#101c0d]/75"
+                      href="#jadwal"
+                      aria-label={`${t.n_jadwal}: ${lang === 'en' && ev.titleEn ? ev.titleEn : ev.title}`}
+                      onClick={() => {
+                        onClose();
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                      }}
+                      className="block min-h-11 rounded-xl border border-[#dce6d7] bg-[#ffffff]/75 p-3.5 text-sm transition-colors hover:border-[#278500] hover:bg-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#278500] dark:border-[#24371f] dark:bg-[#101c0d]/75 dark:hover:border-[#6fd43a] dark:hover:bg-[#101c0d] dark:focus-visible:outline-[#6fd43a]"
                     >
                       <div className="font-mono-num text-xs text-[#52634c] dark:text-[#98ad90]">
                         {ev.startDate.getDate()} {months[ev.startDate.getMonth()]}{' '}
@@ -186,7 +192,7 @@ export function MemberModal({
                       <div className="mt-1 font-semibold text-[#131f10] dark:text-[#ecf4e8]">
                         {lang === 'en' && ev.titleEn ? ev.titleEn : ev.title}
                       </div>
-                    </div>
+                    </a>
                   ))}
                 </div>
                 {pageCount > 1 && (
