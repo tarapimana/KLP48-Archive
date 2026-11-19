@@ -204,8 +204,8 @@ export function LiveView({ lang, onPlayVideo }: LiveViewProps) {
                 </h1>
                 <p className="mt-3 max-w-2xl text-sm leading-relaxed text-[#52634c] sm:text-[15px] dark:text-[#98ad90]">
                   {lang === 'en'
-                    ? 'Members currently streaming on Showroom and IDN. Updated every minute.'
-                    : 'Member yang sedang siaran di Showroom dan IDN. Diperbarui setiap menit.'}
+                    ? 'Members streaming live on Instagram and TikTok.'
+                    : 'Member yang sedang bersiaran langsung di Instagram dan TikTok.'}
                 </p>
               </div>
 
