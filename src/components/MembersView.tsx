@@ -137,9 +137,11 @@ export function MembersView({ lang }: MembersViewProps) {
                 ? member.tarikh_lahir_en
                 : member.tarikh_lahir;
             const statusNote =
-              lang === 'en' && member.nota_status_en
-                ? member.nota_status_en
-                : member.nota_status;
+              member.statusCategory === 'active'
+                ? lang === 'en' && member.nota_status_en
+                  ? member.nota_status_en
+                  : member.nota_status
+                : '';
 
             const socials = [
               { label: 'Instagram', handle: member.instagram, base: 'https://www.instagram.com/' },
