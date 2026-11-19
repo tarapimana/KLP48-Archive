@@ -3,6 +3,7 @@ import { useEffect } from 'react';
 import {
   getMemberCategory,
   MemberItem,
+  parseEventMemberNames,
 } from '../data/klp48Data';
 import { useScheduleEvents } from '../context/useScheduleEvents';
 import { Lang, MONTHS_EN, MONTHS_MS, TRANSLATIONS } from '../i18n/translations';
@@ -60,8 +61,11 @@ export function MemberModal({
   const now = new Date();
   const months = lang === 'en' ? MONTHS_EN : MONTHS_MS;
   const relatedEvents = events.filter((ev) => {
+    const memberName = member.nama.toLowerCase();
     const combined = `${ev.title} ${ev.titleEn || ''} ${ev.notes} ${ev.notesEn || ''}`.toLowerCase();
-    const matchesMember = combined.includes(member.nama.toLowerCase());
+    const matchesMember =
+      combined.includes(memberName) ||
+      parseEventMemberNames(ev.members).some((name) => name.toLowerCase() === memberName);
     const evEnd = new Date(
       ev.endDate.getFullYear(),
       ev.endDate.getMonth(),

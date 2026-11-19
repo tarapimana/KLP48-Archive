@@ -1,7 +1,10 @@
 import { ArrowRight, Check, Clock, ExternalLink, MapPin, UsersRound } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { useScheduleEvents } from '../context/useScheduleEvents';
+import { MEMBERS_DATA, MemberItem, parseEventMemberNames } from '../data/klp48Data';
 import { ScheduleCsvImporter } from './ScheduleCsvImporter';
+import { MemberAvatar } from './MemberAvatar';
+import { MemberModal } from './MemberModal';
 import {
   Lang,
   MONTHS_EN,
@@ -18,6 +21,10 @@ interface ScheduleViewProps {
 }
 
 type ScheduleFilter = 'all' | 'show' | 'event';
+
+const MEMBER_LOOKUP = new Map(
+  MEMBERS_DATA.map((member, index) => [member.nama.trim().toLowerCase(), { member, index }])
+);
 
 export function ScheduleView({ lang }: ScheduleViewProps) {
   const t = TRANSLATIONS[lang];
@@ -40,6 +47,10 @@ export function ScheduleView({ lang }: ScheduleViewProps) {
   const [month, setMonth] = useState<number>(initialPeriod.month);
   const [year, setYear] = useState<number>(initialPeriod.year);
   const [typeFilter, setTypeFilter] = useState<ScheduleFilter>('all');
+  const [selectedMember, setSelectedMember] = useState<{
+    member: MemberItem;
+    index: number;
+  } | null>(null);
 
   const months = lang === 'en' ? MONTHS_EN : MONTHS_MS;
   const shortMonths = lang === 'en' ? MONTHS_SHORT_EN : MONTHS_SHORT_MS;
@@ -189,9 +200,16 @@ export function ScheduleView({ lang }: ScheduleViewProps) {
 
             const title = lang === 'en' && ev.titleEn ? ev.titleEn : ev.title;
             const venue = lang === 'en' && ev.venueEn ? ev.venueEn : ev.venue;
+            const VenueIcon = /fan\s*club/i.test(venue) ? UsersRound : MapPin;
             const time = lang === 'en' && ev.timeEn ? ev.timeEn : ev.time;
             const notes = lang === 'en' && ev.notesEn ? ev.notesEn : ev.notes;
             const members = ev.members || '';
+            const participants = parseEventMemberNames(members)
+              .sort((a, b) => a.localeCompare(b, 'en', { sensitivity: 'base' }))
+              .map((name) => ({
+                name,
+                profile: MEMBER_LOOKUP.get(name.toLowerCase()),
+              }));
             const isBirthdayEvent = /birthday/i.test(ev.title);
 
             return (
@@ -287,7 +305,7 @@ export function ScheduleView({ lang }: ScheduleViewProps) {
 
                       <div className="mt-2 space-y-1 text-xs leading-relaxed text-[#3f503a] sm:text-sm dark:text-[#c7d7c0]">
                         <div className="flex items-start gap-1.5">
-                          <MapPin
+                          <VenueIcon
                             className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#278500] dark:text-[#7ce043]"
                             aria-hidden="true"
                           />
@@ -308,7 +326,38 @@ export function ScheduleView({ lang }: ScheduleViewProps) {
                               className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#278500] dark:text-[#7ce043]"
                               aria-hidden="true"
                             />
-                            <span className="min-w-0 break-words">{members}</span>
+                            <div
+                              role="group"
+                              aria-label={t.j_members}
+                              className="flex min-w-0 flex-wrap gap-1.5"
+                            >
+                              {participants.map(({ name, profile }) =>
+                                profile ? (
+                                  <button
+                                    key={name}
+                                    type="button"
+                                    aria-label={t.j_member_profile.replace('%n', name)}
+                                    onClick={() => setSelectedMember(profile)}
+                                    className="inline-flex min-h-10 items-center gap-1.5 rounded-full border border-[#dce6d7] bg-white/80 py-1 pr-2.5 pl-1 text-xs font-semibold text-[#278500] transition-colors hover:border-[#278500] hover:bg-[#edf5e9] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#278500] dark:border-[#2b4523] dark:bg-[#142111] dark:text-[#7ce043] dark:hover:border-[#6fd43a] dark:hover:bg-[#1d3314] dark:focus-visible:outline-[#6fd43a]"
+                                  >
+                                    <MemberAvatar
+                                      member={profile.member}
+                                      indexNumber={profile.index}
+                                      className="h-7 w-7 shrink-0 rounded-full"
+                                      initialsClassName="text-[10px]"
+                                    />
+                                    <span>{name}</span>
+                                  </button>
+                                ) : (
+                                  <span
+                                    key={name}
+                                    className="inline-flex min-h-10 items-center text-xs text-[#3f503a] dark:text-[#c7d7c0]"
+                                  >
+                                    {name}
+                                  </span>
+                                )
+                              )}
+                            </div>
                           </div>
                         )}
                         {notes && <p className="leading-relaxed">{notes}</p>}
@@ -339,6 +388,12 @@ export function ScheduleView({ lang }: ScheduleViewProps) {
           {t.noevents}
         </div>
       )}
+      <MemberModal
+        member={selectedMember?.member ?? null}
+        indexNumber={selectedMember?.index ?? 0}
+        lang={lang}
+        onClose={() => setSelectedMember(null)}
+      />
     </div>
   );
 }

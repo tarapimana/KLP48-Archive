@@ -1,4 +1,4 @@
-import { ArrowRight, Clock, ExternalLink, MapPin, Music, Play, Users } from 'lucide-react';
+import { ArrowRight, Clock, ExternalLink, MapPin, Music, Play, Users, UsersRound } from 'lucide-react';
 import { useState } from 'react';
 import {
   getMemberCategory,
@@ -62,7 +62,7 @@ export function HomeView({ lang, onNavigate, onPlayVideo }: HomeViewProps) {
     return endOfDay >= now;
   });
 
-  const nextEvents = upcomingEvents.slice(0, 3);
+  const nextEvents = upcomingEvents.slice(0, 5);
   const featuredVideos = VIDEOS.slice(0, 4);
 
   const formatEventDateRange = (start: Date, end: Date) => {
@@ -101,6 +101,16 @@ export function HomeView({ lang, onNavigate, onPlayVideo }: HomeViewProps) {
 
             <div className="mt-6 flex flex-wrap items-center gap-3">
               <a
+                href="#member"
+                onClick={(e) => {
+                  e.preventDefault();
+                  onNavigate('member');
+                }}
+                className="inline-flex min-h-[42px] items-center rounded-full border border-[#278500] bg-white/75 px-6 py-2.5 text-sm font-bold text-[#278500] backdrop-blur-xs transition-colors hover:bg-[#edf5e9] dark:border-[#66c91a]/75 dark:bg-[#0e190b]/60 dark:text-[#6fd43a] dark:hover:border-[#66c91a] dark:hover:bg-[#162712]"
+              >
+                {t.h_b2}
+              </a>
+              <a
                 href="#jadwal"
                 onClick={(e) => {
                   e.preventDefault();
@@ -111,14 +121,15 @@ export function HomeView({ lang, onNavigate, onPlayVideo }: HomeViewProps) {
                 {t.h_b1}
               </a>
               <a
-                href="#member"
+                href="#video"
                 onClick={(e) => {
                   e.preventDefault();
-                  onNavigate('member');
+                  onNavigate('video');
                 }}
-                className="inline-flex min-h-[42px] items-center rounded-full border border-[#278500] bg-white/75 px-6 py-2.5 text-sm font-bold text-[#278500] backdrop-blur-xs transition-colors hover:bg-[#edf5e9] dark:border-[#66c91a]/75 dark:bg-[#0e190b]/60 dark:text-[#6fd43a] dark:hover:border-[#66c91a] dark:hover:bg-[#162712]"
+                className="inline-flex min-h-[42px] items-center gap-2 rounded-full border border-[#278500] bg-white/75 px-6 py-2.5 text-sm font-bold text-[#278500] backdrop-blur-xs transition-colors hover:bg-[#edf5e9] dark:border-[#66c91a]/75 dark:bg-[#0e190b]/60 dark:text-[#6fd43a] dark:hover:border-[#66c91a] dark:hover:bg-[#162712]"
               >
-                {t.h_b2}
+                <Play className="h-4 w-4" aria-hidden="true" />
+                {t.n_video}
               </a>
             </div>
           </section>
@@ -152,14 +163,18 @@ export function HomeView({ lang, onNavigate, onPlayVideo }: HomeViewProps) {
                 </div>
               </button>
 
-              <div className={`${cardSurface} p-4 text-center sm:p-5`}>
+              <button
+                type="button"
+                onClick={() => onNavigate('video')}
+                className={`${cardSurface} w-full cursor-pointer p-4 text-center hover:border-[#278500] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#278500] focus-visible:ring-offset-2 sm:p-5 dark:hover:border-[#66c91a] dark:focus-visible:ring-[#66c91a] dark:focus-visible:ring-offset-[#0a1407]`}
+              >
                 <div className="font-mono-num text-3xl font-bold text-[#278500] sm:text-4xl dark:text-[#66c91a]">
                   {VIDEOS.length}
                 </div>
                 <div className="mt-1 text-xs font-medium text-[#52634c] dark:text-[#a8bc9f]">
                   {t.n_video}
                 </div>
-              </div>
+              </button>
             </div>
           </section>
 
@@ -302,6 +317,7 @@ export function HomeView({ lang, onNavigate, onPlayVideo }: HomeViewProps) {
                 {nextEvents.map((ev) => {
                   const title = lang === 'en' && ev.titleEn ? ev.titleEn : ev.title;
                   const venue = lang === 'en' && ev.venueEn ? ev.venueEn : ev.venue;
+                  const VenueIcon = /fan\s*club/i.test(venue) ? UsersRound : MapPin;
                   const notes = lang === 'en' && ev.notesEn ? ev.notesEn : ev.notes;
                   const eventTime = lang === 'en' && ev.timeEn ? ev.timeEn : ev.time;
                   const dateNumber = ev.startDate.getTime() === ev.endDate.getTime()
@@ -361,7 +377,7 @@ export function HomeView({ lang, onNavigate, onPlayVideo }: HomeViewProps) {
 
                         <div className="mt-2.5 space-y-1.5 text-[13px] leading-snug text-[#52634c] dark:text-[#c7d7c0]">
                           <p className="flex items-start gap-2">
-                            <MapPin className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#278500] dark:text-[#6fd43a]" aria-hidden="true" />
+                            <VenueIcon className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#278500] dark:text-[#6fd43a]" aria-hidden="true" />
                             <span>{venue}</span>
                           </p>
                           {eventTime && (

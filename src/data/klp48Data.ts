@@ -295,19 +295,20 @@ export const SCHEDULE_DATA: ScheduleRawItem[] = [
   { tarikh_mula: "2026-11-01", tarikh_tamat: "", tajuk: "Mini Live Show", lokasi: "KLP48 Theatre, Lalaport BBCC", jenis: "show", eksklusif: "", nota: "" },
   { tarikh_mula: "2026-11-01", tarikh_tamat: "", tajuk: "Pokemon Mezastar Festival", lokasi: "Wow Plaza, GF, Lalaport BBCC", jenis: "event", eksklusif: "", nota: "" },
   { tarikh_mula: "2026-11-01", tarikh_tamat: "", tajuk: "Spook-tacle Halloween Weekend Meet & Greet", lokasi: "West Atrium Walkway, GF Lalaport BBCC", jenis: "event", eksklusif: "", nota: "" },
-  { tarikh_mula: "2026-11-05", tarikh_tamat: "", tajuk: "Discord Radio", lokasi: "Eksklusif Fan Club", lokasi_en: "Fan Club exclusive", jenis: "event", eksklusif: "ya", nota: "" },
+  { tarikh_mula: "2026-11-05", tarikh_tamat: "", tajuk: "Discord Radio", lokasi: "Eksklusif Fan Club", lokasi_en: "Fan Club Exclusive", jenis: "event", eksklusif: "ya", nota: "" },
   { tarikh_mula: "2026-11-05", tarikh_tamat: "2026-11-06", tajuk: "AEON MALL KL Midtown Grand Opening", lokasi: "AEON MALL KL Midtown", jenis: "event", eksklusif: "", nota: "" },
   { tarikh_mula: "2026-11-07", tarikh_tamat: "", tajuk: "KLP Time: Talk Show", lokasi: "KLP48 Theatre, Lalaport BBCC", jenis: "show", eksklusif: "", nota: "" },
   { tarikh_mula: "2026-11-07", tarikh_tamat: "2026-11-08", tajuk: "ACG Matsuri", lokasi: "Main Atrium, GF, LaLaport BBCC", jenis: "event", eksklusif: "", nota: "" },
   { tarikh_mula: "2026-11-08", tarikh_tamat: "", tajuk: "Oshi Battle: Meet & Taiketsu!", lokasi: "KLP48 Theatre, Lalaport BBCC", jenis: "show", eksklusif: "", nota: "" },
-  { tarikh_mula: "2026-11-11", tarikh_tamat: "", tajuk: "Discord Radio", lokasi: "Eksklusif Fan Club", lokasi_en: "Fan Club exclusive", jenis: "event", eksklusif: "ya", nota: "" },
-  { tarikh_mula: "2026-11-15", tarikh_tamat: "", tajuk: "Meet & Greet: Talk Session", lokasi: "KLP48 Theatre, Lalaport BBCC", jenis: "event", eksklusif: "", nota: "" },
+  { tarikh_mula: "2026-11-11", tarikh_tamat: "", tajuk: "Discord Radio", lokasi: "Eksklusif Fan Club", lokasi_en: "Fan Club Exclusive", jenis: "event", eksklusif: "ya", nota: "" },
+  { tarikh_mula: "2026-11-15", tarikh_tamat: "", tajuk: "Meet & Greet: Talk Session", lokasi: "KLP48 Theatre, LaLaport BBCC Level 2", lokasi_en: "KLP48 Theatre, LaLaport BBCC Level 2", masa: "12:00 tengah hari – 4:30 petang", masa_en: "12:00 PM – 4:30 PM", jenis: "event", eksklusif: "", nota: "", nota_en: "", members: "Aisha, Alice, Amanda, Ann Drea, Devi, Hana, Hillary, Isabel, Joo, Kei, Khalies, Maia, Mashiro, Salwa, Sharleez, Shu Zhen, Tara & Tiffany", pautan: "https://www.instagram.com/p/DfrsFv5ifbg/?img_index=1" },
   { tarikh_mula: "2026-11-15", tarikh_tamat: "", tajuk: "Jaguh Rakan Muda Musim Ke-2 Final Live Show", lokasi: "MYNISS, Hextar World, Empire City", jenis: "show", eksklusif: "", nota: "Boleh ditonton secara langsung di Saluran Okey atau aplikasi RTM Klik.", nota_en: "Watch live on Saluran Okey or the RTM Klik app." },
-  { tarikh_mula: "2026-11-21", tarikh_tamat: "", tajuk: "KLP Time: Devi Birthday Party", lokasi: "KLP48 Theatre, Lalaport BBCC", jenis: "show", eksklusif: "", nota: "" },
+  { tarikh_mula: "2026-11-21", tarikh_tamat: "", tajuk: "KLP Time: Devi’s Birthday Party", tajuk_en: "KLP Time: Devi’s Birthday Party", lokasi: "KLP48 Theatre, Lalaport BBCC Level 2", lokasi_en: "KLP48 Theatre, Lalaport BBCC Level 2", masa: "14:00 – 15:00", masa_en: "14:00 – 15:00", jenis: "show", eksklusif: "", nota: "", members: "Amanda, Ann Drea, Devi, Hillary, Khalies, Aisha, Diva, Hana, Isabel, Joo, Maia, Shu Zhen & Tara", pautan: "https://www.instagram.com/p/Df1qsjWiaWN/?img_index=1" },
   { tarikh_mula: "2026-11-21", tarikh_tamat: "", tajuk: "100 Hours Curry Opening Ceremony with KLP48", tajuk_en: "100 Hours Curry Opening Ceremony with KLP48", lokasi: "Lot B/0G/03, Courtyard Level, Block B, Plaza Mont Kiara", lokasi_en: "Lot B/0G/03, Courtyard Level, Block B, Plaza Mont Kiara", masa: "11:00 pagi – 1:00 petang", masa_en: "11:00 AM – 1:00 PM", jenis: "event", eksklusif: "", nota: "", members: "Yi Shyan, Salwa, Alice & Mashiro.", pautan: "https://www.instagram.com/p/DfsQDd4IpPq/?psln=dXgxeTIyaXk5ZXZl" },
-  { tarikh_mula: "2026-11-22", tarikh_tamat: "", tajuk: "KLP Time: Variety Show", lokasi: "KLP48 Theatre, Lalaport BBCC", jenis: "show", eksklusif: "", nota: "" },
-  { tarikh_mula: "2026-11-23", tarikh_tamat: "", tajuk: "Discord 1-on-1 Video Call (Generasi ke-1)", tajuk_en: "Discord 1-on-1 Video Call (1st Generation)", lokasi: "Eksklusif Fan Club Premium", lokasi_en: "Fan Club Premium exclusive", jenis: "event", eksklusif: "ya", nota: "" },
-  { tarikh_mula: "2026-11-24", tarikh_tamat: "", tajuk: "Discord 1-on-1 Video Call (Generasi ke-2)", tajuk_en: "Discord 1-on-1 Video Call (2nd Generation)", lokasi: "Eksklusif Fan Club Premium", lokasi_en: "Fan Club Premium exclusive", jenis: "event", eksklusif: "ya", nota: "" },
+  { tarikh_mula: "2026-11-21", tarikh_tamat: "", tajuk: "Fiesta Rakan Muda Kebangsaan 2026", tajuk_en: "Fiesta Rakan Muda Kebangsaan 2026", lokasi: "Level 4, Rooftop Garden, LaLaport BBCC", lokasi_en: "Level 4, Rooftop Garden, LaLaport BBCC", masa: "4:00 petang – 10:00 malam", masa_en: "4:00 PM – 10:00 PM", jenis: "show", eksklusif: "", nota: "", members: "Diva, Joo, Shu Zhen, Tara, Khalies, Hillary, Amanda & Aisha", pautan: "https://www.instagram.com/p/Df33B4YJBH8/" },
+  { tarikh_mula: "2026-11-22", tarikh_tamat: "", tajuk: "KLP Time: Variety Show", tajuk_en: "KLP Time: Variety Show", lokasi: "KLP48 Theatre, Lalaport BBCC Level 2", lokasi_en: "KLP48 Theatre, Lalaport BBCC Level 2", masa: "15:00 – 16:00", masa_en: "15:00 – 16:00", jenis: "show", eksklusif: "", nota: "", nota_en: "", members: "Khalies, Salwa, Aisha, Alice, Diva, Hana, Isabel, Joo, Maia, Mashiro, Shu Zhen", pautan: "https://www.instagram.com/p/Df60RcoCRtw/?img_index=1" },
+  { tarikh_mula: "2026-11-23", tarikh_tamat: "", tajuk: "Discord 1-on-1 Video Call (Generasi ke-1)", tajuk_en: "Discord 1-on-1 Video Call (1st Generation)", lokasi: "Eksklusif Fan Club Premium", lokasi_en: "Fan Club Premium Exclusive", jenis: "event", eksklusif: "ya", nota: "", members: "Amanda, Ann Drea, Devi, Hillary, Khalies, Salwa, Tiffany & Yi Shyan" },
+  { tarikh_mula: "2026-11-24", tarikh_tamat: "", tajuk: "Discord 1-on-1 Video Call (Generasi ke-2)", tajuk_en: "Discord 1-on-1 Video Call (2nd Generation)", lokasi: "Eksklusif Fan Club Premium", lokasi_en: "Fan Club Premium Exclusive", jenis: "event", eksklusif: "ya", nota: "", members: "Aisha, Alice, Diva, Hana, Isabel, Joo, Kei, Maia, Mashiro, Sharleez, Shu Zhen & Tara" },
   { tarikh_mula: "2026-11-28", tarikh_tamat: "", tajuk: "KLP Time: Hillary Birthday Party", lokasi: "KLP48 Theatre, Lalaport BBCC", jenis: "show", eksklusif: "", nota: "" },
   { tarikh_mula: "2026-11-28", tarikh_tamat: "2026-11-29", tajuk: "Universal Studios Japan Talk Show", lokasi: "Lalaport Main Atrium, GF", jenis: "show", eksklusif: "", nota: "" },
   { tarikh_mula: "2026-11-29", tarikh_tamat: "", tajuk: "Mini Live Show", lokasi: "KLP48 Theatre, Lalaport BBCC", jenis: "show", eksklusif: "", nota: "" },
@@ -468,6 +469,19 @@ export function parseIsoDate(s: string): Date {
   const [y, m, d] = (s || '').split('-').map(Number);
   if (!y || !m || !d) return new Date(NaN);
   return new Date(y, m - 1, d);
+}
+
+export function parseEventMemberNames(members?: string): string[] {
+  const seen = new Set<string>();
+  return (members || '')
+    .split(/[,;&]|\band\b/i)
+    .map((name) => name.trim().replace(/[.]+$/, '').trim())
+    .filter((name) => {
+      const normalized = name.toLowerCase();
+      if (!normalized || seen.has(normalized)) return false;
+      seen.add(normalized);
+      return true;
+    });
 }
 
 export function parseScheduleItems(items: ScheduleRawItem[]): ParsedEvent[] {
