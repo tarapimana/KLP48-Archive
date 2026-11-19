@@ -199,8 +199,9 @@ export function ScheduleView({ lang }: ScheduleViewProps) {
               : weekdays[ev.startDate.getDay()];
 
             const title = lang === 'en' && ev.titleEn ? ev.titleEn : ev.title;
-            const venue = lang === 'en' && ev.venueEn ? ev.venueEn : ev.venue;
-            const time = lang === 'en' && ev.timeEn ? ev.timeEn : ev.time;
+  const venue = lang === 'en' && ev.venueEn ? ev.venueEn : ev.venue;
+  const VenueIcon = /fan\s*club/i.test(venue) ? UsersRound : MapPin;
+  const time = lang === 'en' && ev.timeEn ? ev.timeEn : ev.time;
             const notes = lang === 'en' && ev.notesEn ? ev.notesEn : ev.notes;
             const members = ev.members || '';
             const participants = parseEventMemberNames(members)
@@ -304,7 +305,7 @@ export function ScheduleView({ lang }: ScheduleViewProps) {
 
                       <div className="mt-2 space-y-1 text-xs leading-relaxed text-[#3f503a] sm:text-sm dark:text-[#c7d7c0]">
                         <div className="flex items-start gap-1.5">
-                          <MapPin
+                          <VenueIcon
                             className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#278500] dark:text-[#7ce043]"
                             aria-hidden="true"
                           />

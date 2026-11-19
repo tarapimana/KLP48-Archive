@@ -1,4 +1,4 @@
-import { ArrowRight, Clock, ExternalLink, MapPin, Music, Play, Users } from 'lucide-react';
+import { ArrowRight, Clock, ExternalLink, MapPin, Music, Play, Users, UsersRound } from 'lucide-react';
 import { useState } from 'react';
 import {
   getMemberCategory,
@@ -316,8 +316,9 @@ export function HomeView({ lang, onNavigate, onPlayVideo }: HomeViewProps) {
               <div className="space-y-3">
                 {nextEvents.map((ev) => {
                   const title = lang === 'en' && ev.titleEn ? ev.titleEn : ev.title;
-                  const venue = lang === 'en' && ev.venueEn ? ev.venueEn : ev.venue;
-                  const notes = lang === 'en' && ev.notesEn ? ev.notesEn : ev.notes;
+  const venue = lang === 'en' && ev.venueEn ? ev.venueEn : ev.venue;
+  const VenueIcon = /fan\s*club/i.test(venue) ? UsersRound : MapPin;
+  const notes = lang === 'en' && ev.notesEn ? ev.notesEn : ev.notes;
                   const eventTime = lang === 'en' && ev.timeEn ? ev.timeEn : ev.time;
                   const dateNumber = ev.startDate.getTime() === ev.endDate.getTime()
                     ? String(ev.startDate.getDate())
@@ -376,7 +377,7 @@ export function HomeView({ lang, onNavigate, onPlayVideo }: HomeViewProps) {
 
                         <div className="mt-2.5 space-y-1.5 text-[13px] leading-snug text-[#52634c] dark:text-[#c7d7c0]">
                           <p className="flex items-start gap-2">
-                            <MapPin className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#278500] dark:text-[#6fd43a]" aria-hidden="true" />
+                            <VenueIcon className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#278500] dark:text-[#6fd43a]" aria-hidden="true" />
                             <span>{venue}</span>
                           </p>
                           {eventTime && (
