@@ -111,11 +111,11 @@ export default function App() {
 
   return (
     <AuthProvider>
-      <div className="relative min-h-screen text-[#131f10] transition-colors duration-150 dark:text-[#ecf4e8]">
-        {isAdminAccessPage ? (
-          <AdminAccessView lang={lang} />
-        ) : (
-          <LiveStatusProvider>
+      <LiveStatusProvider>
+        <div className="relative min-h-screen text-[#131f10] transition-colors duration-150 dark:text-[#ecf4e8]">
+          {isAdminAccessPage ? (
+            <AdminAccessView lang={lang} />
+          ) : (
             <>
               {/* Whole-page Video Background */}
               <BackgroundVideo lang={lang} />
@@ -170,11 +170,11 @@ export default function App() {
                 onClose={() => setActiveVideo(null)}
               />
             </>
-          </LiveStatusProvider>
-        )}
+          )}
 
-        <AdminAuthModal lang={lang} />
-      </div>
+          <AdminAuthModal lang={lang} />
+        </div>
+      </LiveStatusProvider>
     </AuthProvider>
   );
 }
