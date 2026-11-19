@@ -5,6 +5,7 @@ import {
   MemberItem,
   MEMBERS_DATA,
   NEWS_DATA,
+  NewsItem,
   RELEASES,
   RouteKey,
   VideoItem,
@@ -23,6 +24,7 @@ import {
 } from '../i18n/translations';
 import { BirthdayCountdown } from './BirthdayCountdown';
 import { MemberModal } from './MemberModal';
+import { NewsModal } from './NewsModal';
 import { TikTokThumbnail } from './TikTokThumbnail';
 import { YouTubeThumbnail } from './YouTubeThumbnail';
 
@@ -40,6 +42,7 @@ export function HomeView({ lang, onNavigate, onPlayVideo }: HomeViewProps) {
   const { events } = useScheduleEvents();
   const now = new Date();
   const [selectedMember, setSelectedMember] = useState<MemberItem | null>(null);
+  const [selectedNews, setSelectedNews] = useState<NewsItem | null>(null);
   const selectedMemberIdx = selectedMember
     ? MEMBERS_DATA.findIndex((m) => m.nama === selectedMember.nama)
     : 0;
@@ -180,13 +183,13 @@ export function HomeView({ lang, onNavigate, onPlayVideo }: HomeViewProps) {
             </div>
 
             <div className="space-y-3">
-              {NEWS_DATA.slice(0, 3).map((item) => (
-                <a
+              {NEWS_DATA.slice(0, 5).map((item) => (
+                <button
                   key={item.pautan}
-                  href={item.pautan}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={`${cardSurface} group block px-5 py-4 hover:border-[#278500] dark:hover:border-[#66c91a]`}
+                  type="button"
+                  onClick={() => setSelectedNews(item)}
+                  aria-haspopup="dialog"
+                  className={`${cardSurface} group block w-full px-5 py-4 text-left transition-colors hover:border-[#278500] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#278500] dark:hover:border-[#66c91a] dark:focus-visible:ring-[#66c91a]`}
                 >
                   <div className="flex items-center gap-2.5 text-xs">
                     <span className="rounded-md bg-[#e3f2da] px-2 py-0.5 font-semibold text-[#278500] dark:bg-[#193012] dark:text-[#6fd43a]">
@@ -199,7 +202,7 @@ export function HomeView({ lang, onNavigate, onPlayVideo }: HomeViewProps) {
                   <h3 className="mt-2 text-sm font-bold leading-snug text-[#131f10] transition-colors group-hover:text-[#278500] sm:text-base dark:text-white dark:group-hover:text-[#66c91a]">
                     {item.tajuk}
                   </h3>
-                </a>
+                </button>
               ))}
             </div>
           </section>
@@ -459,6 +462,11 @@ export function HomeView({ lang, onNavigate, onPlayVideo }: HomeViewProps) {
         indexNumber={selectedMemberIdx >= 0 ? selectedMemberIdx : 0}
         lang={lang}
         onClose={() => setSelectedMember(null)}
+      />
+      <NewsModal
+        item={selectedNews}
+        lang={lang}
+        onClose={() => setSelectedNews(null)}
       />
     </div>
   );
