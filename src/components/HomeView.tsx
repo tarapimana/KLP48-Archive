@@ -22,6 +22,7 @@ import {
   WEEKDAYS_EN,
   WEEKDAYS_MS,
 } from '../i18n/translations';
+import { formatScheduleTime } from '../lib/scheduleTime';
 import { BirthdayCountdown } from './BirthdayCountdown';
 import { MemberModal } from './MemberModal';
 import { NewsModal } from './NewsModal';
@@ -383,7 +384,7 @@ export function HomeView({ lang, onNavigate, onPlayVideo }: HomeViewProps) {
                           {eventTime && (
                             <p className="flex items-start gap-2">
                               <Clock className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#278500] dark:text-[#6fd43a]" aria-hidden="true" />
-                              <span className="font-mono-num">{eventTime}</span>
+                              <span className="font-mono-num">{formatScheduleTime(eventTime)}</span>
                             </p>
                           )}
                           {ev.members && (

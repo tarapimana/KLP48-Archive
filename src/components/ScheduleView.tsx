@@ -2,6 +2,7 @@ import { ArrowRight, Check, Clock, ExternalLink, MapPin, UsersRound } from 'luci
 import { useMemo, useState } from 'react';
 import { useScheduleEvents } from '../context/useScheduleEvents';
 import { MEMBERS_DATA, MemberItem, parseEventMemberNames } from '../data/klp48Data';
+import { formatScheduleTime } from '../lib/scheduleTime';
 import { ScheduleCsvImporter } from './ScheduleCsvImporter';
 import { MemberAvatar } from './MemberAvatar';
 import { MemberModal } from './MemberModal';
@@ -317,7 +318,7 @@ export function ScheduleView({ lang }: ScheduleViewProps) {
                               className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#278500] dark:text-[#7ce043]"
                               aria-hidden="true"
                             />
-                            <span className="font-mono-num">{time}</span>
+                            <span className="font-mono-num">{formatScheduleTime(time)}</span>
                           </div>
                         )}
                         {members && (
