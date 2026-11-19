@@ -39,7 +39,6 @@ export function ScheduleView({ lang }: ScheduleViewProps) {
   const [month, setMonth] = useState<number>(initialPeriod.month);
   const [year, setYear] = useState<number>(initialPeriod.year);
   const [typeFilter, setTypeFilter] = useState<ScheduleFilter>('all');
-  const [expandedIds, setExpandedIds] = useState<Record<string, boolean>>({});
 
   const months = lang === 'en' ? MONTHS_EN : MONTHS_MS;
   const shortMonths = lang === 'en' ? MONTHS_SHORT_EN : MONTHS_SHORT_MS;
@@ -72,10 +71,6 @@ export function ScheduleView({ lang }: ScheduleViewProps) {
       return endOfDay >= now;
     });
   }, [filteredEvents]);
-
-  const toggleDetails = (id: string) => {
-    setExpandedIds((prev) => ({ ...prev, [id]: !prev[id] }));
-  };
 
   const pad2 = (n: number) => String(n).padStart(2, '0');
 
@@ -181,7 +176,6 @@ export function ScheduleView({ lang }: ScheduleViewProps) {
             const isPast = endOfDay < now;
             const isRange = ev.endDate.getTime() > ev.startDate.getTime();
             const isNext = idx === firstUpcomingIndex;
-            const isExpanded = Boolean(expandedIds[ev.id]);
 
             const dayLabel = isRange
               ? `${pad2(ev.startDate.getDate())}~${pad2(ev.endDate.getDate())}`
@@ -310,22 +304,13 @@ export function ScheduleView({ lang }: ScheduleViewProps) {
                     </div>
                   </div>
 
-                  {hasExtraDetails && (
-                    <button
-                      type="button"
-                      onClick={() => toggleDetails(ev.id)}
-                      aria-expanded={isExpanded}
-                      className="min-h-[36px] shrink-0 whitespace-nowrap rounded-lg border border-[#278500] px-3 py-1.5 text-xs font-semibold text-[#278500] transition-colors hover:bg-[#e3f2da] dark:border-[#6fd43a] dark:text-[#7ce043] dark:hover:bg-[#1d3314]"
-                    >
-                      {isExpanded ? t.close : t.detail}
-                    </button>
-                  )}
+
                 </div>
 
-                {isExpanded && hasExtraDetails && (
-                  <div className="mt-4 space-y-3 rounded-xl border border-[#dce6d7] bg-[#f3f8f0] px-4 py-3 text-sm text-[#131f10] dark:border-[#24371f] dark:bg-[#162612] dark:text-[#ecf4e8]">
+                {hasExtraDetails && (
+                  <div className="mt-4 space-y-2 border-t border-[#dce6d7] pt-3 text-sm text-[#263421] dark:border-[#24371f] dark:text-[#dce9d7]">
                     {members && (
-                      <div className="flex items-start gap-2.5 text-[#263421] dark:text-[#dce9d7]">
+                      <div className="flex items-start gap-2.5">
                         <UsersRound
                           className="mt-0.5 h-4 w-4 shrink-0 text-[#278500] dark:text-[#7ce043]"
                           aria-hidden="true"
@@ -333,23 +318,17 @@ export function ScheduleView({ lang }: ScheduleViewProps) {
                         <p className="min-w-0 break-words leading-relaxed">{members}</p>
                       </div>
                     )}
-                    {notes && (
-                      <p className="leading-relaxed text-[#263421] dark:text-[#dce9d7]">
-                        {notes}
-                      </p>
-                    )}
+                    {notes && <p className="leading-relaxed">{notes}</p>}
                     {ev.link && (
-                      <div className="pt-1">
-                        <a
-                          href={ev.link}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="inline-flex min-h-11 items-center gap-1.5 text-xs font-bold text-[#278500] hover:underline dark:text-[#7ce043]"
-                        >
-                          <span>{t.j_link}</span>
-                          <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
-                        </a>
-                      </div>
+                      <a
+                        href={ev.link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex min-h-11 items-center gap-1.5 text-xs font-bold text-[#278500] hover:underline dark:text-[#7ce043]"
+                      >
+                        <span>{t.j_link}</span>
+                        <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
+                      </a>
                     )}
                   </div>
                 )}
