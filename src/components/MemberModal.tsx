@@ -1,5 +1,5 @@
-import { ArrowLeft, Calendar, X } from 'lucide-react';
-import { useEffect } from 'react';
+import { ArrowLeft, Calendar, ChevronLeft, ChevronRight, X } from 'lucide-react';
+import { useEffect, useState } from 'react';
 import {
   getMemberCategory,
   MemberItem,
@@ -24,6 +24,11 @@ export function MemberModal({
 }: MemberModalProps) {
   const t = TRANSLATIONS[lang];
   const { events } = useScheduleEvents();
+  const [eventPageIndex, setEventPageIndex] = useState(0);
+
+  useEffect(() => {
+    setEventPageIndex(0);
+  }, [member]);
 
   useEffect(() => {
     if (!member) return;
@@ -69,6 +74,12 @@ export function MemberModal({
     );
     return matchesMember && evEnd >= now;
   });
+  const pageCount = Math.ceil(relatedEvents.length / 3);
+  const currentEventPage = Math.min(eventPageIndex, Math.max(0, pageCount - 1));
+  const visibleEvents = relatedEvents.slice(
+    currentEventPage * 3,
+    currentEventPage * 3 + 3
+  );
 
   return (
     <div
@@ -154,7 +165,7 @@ export function MemberModal({
                   <span>{t.s_up}</span>
                 </h3>
                 <div className="mt-2.5 space-y-2.5">
-                  {relatedEvents.map((ev) => (
+                  {visibleEvents.map((ev) => (
                     <div
                       key={ev.id}
                       className="rounded-xl border border-[#dce6d7] bg-[#ffffff]/75 p-3.5 text-sm dark:border-[#24371f] dark:bg-[#101c0d]/75"
@@ -170,6 +181,44 @@ export function MemberModal({
                     </div>
                   ))}
                 </div>
+                {pageCount > 1 && (
+                  <nav
+                    aria-label={t.s_up}
+                    className="mt-3 flex items-center justify-between"
+                  >
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setEventPageIndex((page) => Math.max(0, page - 1))
+                      }
+                      disabled={currentEventPage === 0}
+                      className="inline-flex min-h-10 items-center gap-1.5 rounded-full border border-[#dce6d7] px-3 text-xs font-semibold text-[#52634c] transition-colors hover:border-[#278500] hover:text-[#278500] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#278500] disabled:pointer-events-none disabled:opacity-40 dark:border-[#24371f] dark:text-[#a8bc9f] dark:hover:border-[#6fd43a] dark:hover:text-[#6fd43a] dark:focus-visible:outline-[#6fd43a]"
+                    >
+                      <ChevronLeft className="h-3.5 w-3.5" aria-hidden="true" />
+                      <span>{t.prev_page}</span>
+                    </button>
+                    <span
+                      aria-atomic="true"
+                      aria-live="polite"
+                      className="font-mono-num text-xs text-[#52634c] dark:text-[#98ad90]"
+                    >
+                      {currentEventPage + 1} / {pageCount}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setEventPageIndex((page) =>
+                          Math.min(pageCount - 1, page + 1)
+                        )
+                      }
+                      disabled={currentEventPage >= pageCount - 1}
+                      className="inline-flex min-h-10 items-center gap-1.5 rounded-full border border-[#dce6d7] px-3 text-xs font-semibold text-[#52634c] transition-colors hover:border-[#278500] hover:text-[#278500] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#278500] disabled:pointer-events-none disabled:opacity-40 dark:border-[#24371f] dark:text-[#a8bc9f] dark:hover:border-[#6fd43a] dark:hover:text-[#6fd43a] dark:focus-visible:outline-[#6fd43a]"
+                    >
+                      <span>{t.next_page}</span>
+                      <ChevronRight className="h-3.5 w-3.5" aria-hidden="true" />
+                    </button>
+                  </nav>
+                )}
               </section>
             )}
           </section>
