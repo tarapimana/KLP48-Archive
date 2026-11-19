@@ -1,4 +1,4 @@
-import { ArrowRight, Check, Clock, ExternalLink, MapPin, UsersRound } from 'lucide-react';
+import { ArrowRight, Check, Clock, MapPin, UsersRound } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { useScheduleEvents } from '../context/useScheduleEvents';
 import { MEMBERS_DATA, MemberItem, parseEventMemberNames } from '../data/klp48Data';
@@ -369,7 +369,6 @@ export function ScheduleView({ lang }: ScheduleViewProps) {
                             rel="noopener noreferrer"
                             className="inline-flex min-h-11 items-center gap-1.5 font-bold text-[#278500] hover:underline dark:text-[#7ce043]"
                           >
-                            <ExternalLink className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
                             <span>{t.j_link}</span>
                           </a>
                         )}

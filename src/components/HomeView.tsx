@@ -478,8 +478,7 @@ export function HomeView({ lang, onNavigate, onPlayVideo }: HomeViewProps) {
                                 rel="noopener noreferrer"
                                 className="mt-3 inline-flex min-h-11 items-center gap-1.5 rounded-md text-sm font-bold text-[#278500] transition-colors hover:text-[#206e00] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#278500] dark:text-[#6fd43a] dark:hover:text-[#82df52] dark:focus-visible:outline-[#6fd43a]"
                               >
-                                <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
-                                <span>{lang === 'en' ? 'Event link' : 'Pautan acara'}</span>
+                                <span>{t.j_link}</span>
                               </a>
                             )}
                           </div>
