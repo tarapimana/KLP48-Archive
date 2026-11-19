@@ -13,6 +13,7 @@ export interface VideoItem {
   url: string;
   platform: 'youtube' | 'tiktok';
   youtubeId?: string;
+  youtubePlaylistId?: string;
   tiktokId?: string;
   thumbnail?: string;
   publishedAt?: string;
@@ -143,6 +144,12 @@ export const RELEASES: ReleaseItem[] = [
     date: '2025.06.13',
     type: 'EP',
     artworkUrl: 'https://image-cdn-ak.spotifycdn.com/image/ab67616d00001e02d2a06fd9f46c0589e19f55e2',
+    video: {
+      title: 'First Cry',
+      url: 'https://music.youtube.com/playlist?list=OLAK5uy_lLAigpr63fL7Vj6XuujY29MafXiwKz-UA',
+      platform: 'youtube',
+      youtubePlaylistId: 'OLAK5uy_lLAigpr63fL7Vj6XuujY29MafXiwKz-UA',
+    },
   },
   {
     title: 'Oh my pumpkin!',
