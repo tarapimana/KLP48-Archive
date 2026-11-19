@@ -109,9 +109,9 @@ export const RELEASES: ReleaseItem[] = [
     artworkUrl: 'https://image-cdn-ak.spotifycdn.com/image/ab67616d00001e02e20d55b107705d2d134e42e4',
     video: {
       title: 'Heavy Rotation',
-      url: 'https://youtu.be/0gS2beElS1E?si=pZQE3JRWWkqZbwp2',
+      url: 'https://music.youtube.com/watch?v=LhZxvaEkLAw',
       platform: 'youtube',
-      youtubeId: '0gS2beElS1E',
+      youtubeId: 'LhZxvaEkLAw',
     },
   },
   {
@@ -119,12 +119,24 @@ export const RELEASES: ReleaseItem[] = [
     date: '2025.04.18',
     type: 'Single',
     artworkUrl: 'https://image-cdn-ak.spotifycdn.com/image/ab67616d00001e02397615ff4016ec0a9eca7a0b',
+    video: {
+      title: 'Alasanku Maybe',
+      url: 'https://music.youtube.com/watch?v=5UUrLmMuWoE',
+      platform: 'youtube',
+      youtubeId: '5UUrLmMuWoE',
+    },
   },
   {
     title: 'Flying Get',
     date: '2025.05.31',
     type: 'Single',
     artworkUrl: 'https://image-cdn-ak.spotifycdn.com/image/ab67616d00001e022ee35c4b03821badec202300',
+    video: {
+      title: 'Flying Get',
+      url: 'https://music.youtube.com/watch?v=u3vn8JIQ0mY',
+      platform: 'youtube',
+      youtubeId: 'u3vn8JIQ0mY',
+    },
   },
   {
     title: 'First Cry',
@@ -137,18 +149,36 @@ export const RELEASES: ReleaseItem[] = [
     date: '2025.08.13',
     type: 'Single',
     artworkUrl: 'https://image-cdn-fa.spotifycdn.com/image/ab67616d00001e02610eb27873fa0a9cdf655baa',
+    video: {
+      title: 'Oh my pumpkin!',
+      url: 'https://music.youtube.com/watch?v=gbcM2A3aU34',
+      platform: 'youtube',
+      youtubeId: 'gbcM2A3aU34',
+    },
   },
   {
     title: 'Green Flash',
     date: '2025.09.12',
     type: 'Album',
     artworkUrl: 'https://image-cdn-fa.spotifycdn.com/image/ab67616d00001e02b56bb0f1fd0bba21afc5c9af',
+    video: {
+      title: 'Green Flash',
+      url: 'https://music.youtube.com/watch?v=3SqbNRLUQtA',
+      platform: 'youtube',
+      youtubeId: '3SqbNRLUQtA',
+    },
   },
   {
     title: 'Kerana Ku Suka',
     date: '2026.06.02',
     type: 'Single',
     artworkUrl: 'https://image-cdn-ak.spotifycdn.com/image/ab67616d00001e027827e60a33737fb444efaa26',
+    video: {
+      title: 'Kerana Ku Suka',
+      url: 'https://music.youtube.com/watch?v=p73lJfaNphY',
+      platform: 'youtube',
+      youtubeId: 'p73lJfaNphY',
+    },
   },
 ];
 
