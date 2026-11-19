@@ -8,6 +8,7 @@ import {
 import { useScheduleEvents } from '../context/useScheduleEvents';
 import { Lang, MONTHS_EN, MONTHS_MS, TRANSLATIONS } from '../i18n/translations';
 import { MemberAvatar } from './MemberAvatar';
+import { ScheduleEventModal } from './ScheduleEventModal';
 
 interface MemberModalProps {
   member: MemberItem | null;
@@ -25,19 +26,26 @@ export function MemberModal({
   const t = TRANSLATIONS[lang];
   const { events } = useScheduleEvents();
   const [eventPageIndex, setEventPageIndex] = useState(0);
+  const [selectedEvent, setSelectedEvent] = useState<(typeof events)[number] | null>(null);
 
   useEffect(() => {
     setEventPageIndex(0);
+    setSelectedEvent(null);
   }, [member]);
 
   useEffect(() => {
     if (!member) return;
     const onKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
+      if (e.key !== 'Escape') return;
+      if (selectedEvent) {
+        setSelectedEvent(null);
+        return;
+      }
+      onClose();
     };
     window.addEventListener('keydown', onKeyDown);
     return () => window.removeEventListener('keydown', onKeyDown);
-  }, [member, onClose]);
+  }, [member, onClose, selectedEvent]);
 
   if (!member) return null;
 
@@ -174,15 +182,12 @@ export function MemberModal({
                 </h3>
                 <div className="mt-2.5 space-y-2.5">
                   {visibleEvents.map((ev) => (
-                    <a
+                    <button
                       key={ev.id}
-                      href="#jadwal"
-                      aria-label={`${t.n_jadwal}: ${lang === 'en' && ev.titleEn ? ev.titleEn : ev.title}`}
-                      onClick={() => {
-                        onClose();
-                        window.scrollTo({ top: 0, behavior: 'smooth' });
-                      }}
-                      className="block min-h-11 rounded-xl border border-[#dce6d7] bg-[#ffffff]/75 p-3.5 text-sm transition-colors hover:border-[#278500] hover:bg-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#278500] dark:border-[#24371f] dark:bg-[#101c0d]/75 dark:hover:border-[#6fd43a] dark:hover:bg-[#101c0d] dark:focus-visible:outline-[#6fd43a]"
+                      type="button"
+                      aria-label={`${t.detail}: ${lang === 'en' && ev.titleEn ? ev.titleEn : ev.title}`}
+                      onClick={() => setSelectedEvent(ev)}
+                      className="block min-h-11 w-full rounded-xl border border-[#dce6d7] bg-[#ffffff]/75 p-3.5 text-left text-sm transition-colors hover:border-[#278500] hover:bg-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#278500] dark:border-[#24371f] dark:bg-[#101c0d]/75 dark:hover:border-[#6fd43a] dark:hover:bg-[#101c0d] dark:focus-visible:outline-[#6fd43a]"
                     >
                       <div className="font-mono-num text-xs text-[#52634c] dark:text-[#98ad90]">
                         {ev.startDate.getDate()} {months[ev.startDate.getMonth()]}{' '}
@@ -192,7 +197,7 @@ export function MemberModal({
                       <div className="mt-1 font-semibold text-[#131f10] dark:text-[#ecf4e8]">
                         {lang === 'en' && ev.titleEn ? ev.titleEn : ev.title}
                       </div>
-                    </a>
+                    </button>
                   ))}
                 </div>
                 {pageCount > 1 && (
@@ -238,6 +243,11 @@ export function MemberModal({
           </section>
         </div>
       </div>
+      <ScheduleEventModal
+        event={selectedEvent}
+        lang={lang}
+        onClose={() => setSelectedEvent(null)}
+      />
     </div>
   );
 }
