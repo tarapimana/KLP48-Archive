@@ -1,6 +1,7 @@
 import { LogOut, Menu, ShieldAlert, ShieldCheck, X } from 'lucide-react';
 import { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
+import { useLiveStatus } from '../context/LiveStatusContext';
 import { RouteKey } from '../data/klp48Data';
 import { Lang, TRANSLATIONS } from '../i18n/translations';
 
@@ -15,6 +16,17 @@ interface HeaderProps {
 
 const PRIMARY_NAV: RouteKey[] = ['jadwal', 'member', 'berita', 'bday', 'video'];
 
+function LiveBars() {
+  return (
+    <span aria-hidden="true" className="inline-flex h-3 items-end gap-[2px]">
+      <span className="h-[4px] w-[2px] rounded-full bg-current" />
+      <span className="h-[8px] w-[2px] rounded-full bg-current" />
+      <span className="h-[6px] w-[2px] rounded-full bg-current" />
+      <span className="h-[10px] w-[2px] rounded-full bg-current" />
+    </span>
+  );
+}
+
 export function Header({
   route,
   onNavigate,
@@ -26,6 +38,7 @@ export function Header({
   const [mobileOpen, setMobileOpen] = useState(false);
   const t = TRANSLATIONS[lang];
   const { user, isAdmin, openAuthModal, signOut } = useAuth();
+  const { liveCount } = useLiveStatus();
 
   const handleNav = (key: RouteKey) => {
     onNavigate(key);
@@ -75,13 +88,12 @@ export function Header({
           <button
             type="button"
             onClick={() => handleNav('live')}
-            className={`hidden shrink-0 whitespace-nowrap rounded-lg px-4 py-2 text-sm font-semibold transition-colors duration-150 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#278500] md:inline-flex dark:focus-visible:outline-[#6fd43a] ${
-              route === 'live'
-                ? 'bg-[#1e6800] text-white dark:bg-[#8be05a] dark:text-[#0a1407]'
-                : 'bg-[#278500] text-white hover:bg-[#206e00] dark:bg-[#6fd43a] dark:text-[#0a1407] dark:hover:bg-[#82df52]'
-            }`}
+            aria-label={`${t.n_live}: ${liveCount}`}
+            className="hidden shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full bg-[#e11d48] px-3 py-1.5 text-xs font-bold text-white shadow-[0_4px_12px_rgba(225,29,72,0.24)] transition-colors hover:bg-[#be123c] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#e11d48] md:inline-flex"
           >
-            {t.n_live}
+            <LiveBars />
+            <span className="tabular-nums">{liveCount}</span>
+            <span>{t.n_live}</span>
           </button>
 
           {/* Desktop Administrator Status / Login Button */}
@@ -153,6 +165,7 @@ export function Header({
                     handleNav(key);
                   }}
                   aria-current={active ? 'page' : undefined}
+                  aria-label={key === 'live' ? `${t.n_live}: ${liveCount}` : undefined}
                   className={`flex min-h-[44px] items-center justify-between rounded-lg px-3 text-sm font-medium transition-colors ${
                     active
                       ? 'bg-[#e3f2da] font-semibold text-[#278500] dark:bg-[#1d3314] dark:text-[#6fd43a]'
@@ -160,6 +173,15 @@ export function Header({
                   }`}
                 >
                   <span>{t[`n_${key}`]}</span>
+                  {key === 'live' && (
+                    <span
+                      aria-hidden="true"
+                      className="inline-flex items-center gap-1.5 rounded-full bg-[#e11d48] px-2.5 py-1 text-[11px] font-bold leading-none text-white"
+                    >
+                      <LiveBars />
+                      <span className="tabular-nums">{liveCount}</span>
+                    </span>
+                  )}
                 </a>
               );
             })}

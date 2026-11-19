@@ -19,6 +19,7 @@ import { UtilityBar } from './components/UtilityBar';
 import { VideoModal } from './components/VideoModal';
 import { VideosView } from './components/VideosView';
 import { AuthProvider } from './context/AuthContext';
+import { LiveStatusProvider } from './context/LiveStatusContext';
 import { RouteKey, VideoItem } from './data/klp48Data';
 import { Lang } from './i18n/translations';
 
@@ -114,60 +115,62 @@ export default function App() {
         {isAdminAccessPage ? (
           <AdminAccessView lang={lang} />
         ) : (
-          <>
-            {/* Whole-page Video Background */}
-            <BackgroundVideo lang={lang} />
-            <div
-              aria-hidden="true"
-              className="pointer-events-none fixed inset-0 z-0 bg-[#f6faf4]/82 transition-colors duration-150 dark:bg-[#0a1407]/72"
-            />
-
-            <div className="relative z-10 flex min-h-screen flex-col">
-              <Header
-                route={route}
-                onNavigate={navigate}
-                lang={lang}
-                onToggleLang={toggleLang}
-                theme={theme}
-                onToggleTheme={toggleTheme}
+          <LiveStatusProvider>
+            <>
+              {/* Whole-page Video Background */}
+              <BackgroundVideo lang={lang} />
+              <div
+                aria-hidden="true"
+                className="pointer-events-none fixed inset-0 z-0 bg-[#f6faf4]/82 transition-colors duration-150 dark:bg-[#0a1407]/72"
               />
 
-              <main className="mx-auto w-full max-w-6xl flex-1 px-4 pb-8 sm:px-6">
-                <UtilityBar
+              <div className="relative z-10 flex min-h-screen flex-col">
+                <Header
+                  route={route}
+                  onNavigate={navigate}
                   lang={lang}
-                  onChangeLang={setLang}
+                  onToggleLang={toggleLang}
                   theme={theme}
                   onToggleTheme={toggleTheme}
                 />
 
-                {route === 'home' && (
-                  <HomeView
+                <main className="mx-auto w-full max-w-6xl flex-1 px-4 pb-8 sm:px-6">
+                  <UtilityBar
                     lang={lang}
-                    onNavigate={navigate}
-                    onPlayVideo={(vid) => setActiveVideo(vid)}
+                    onChangeLang={setLang}
+                    theme={theme}
+                    onToggleTheme={toggleTheme}
                   />
-                )}
-                {route === 'jadwal' && <ScheduleView lang={lang} />}
-                {route === 'member' && <MembersView lang={lang} />}
-                {route === 'berita' && <NewsView lang={lang} />}
-                {route === 'bday' && <BirthdaysView lang={lang} />}
-                {route === 'video' && (
-                  <VideosView lang={lang} onPlayVideo={(vid) => setActiveVideo(vid)} />
-                )}
-                {route === 'live' && (
-                  <LiveView lang={lang} onPlayVideo={(vid) => setActiveVideo(vid)} />
-                )}
-              </main>
 
-              <Footer lang={lang} onNavigate={navigate} />
-            </div>
+                  {route === 'home' && (
+                    <HomeView
+                      lang={lang}
+                      onNavigate={navigate}
+                      onPlayVideo={(vid) => setActiveVideo(vid)}
+                    />
+                  )}
+                  {route === 'jadwal' && <ScheduleView lang={lang} />}
+                  {route === 'member' && <MembersView lang={lang} />}
+                  {route === 'berita' && <NewsView lang={lang} />}
+                  {route === 'bday' && <BirthdaysView lang={lang} />}
+                  {route === 'video' && (
+                    <VideosView lang={lang} onPlayVideo={(vid) => setActiveVideo(vid)} />
+                  )}
+                  {route === 'live' && (
+                    <LiveView lang={lang} onPlayVideo={(vid) => setActiveVideo(vid)} />
+                  )}
+                </main>
 
-            <VideoModal
-              video={activeVideo}
-              lang={lang}
-              onClose={() => setActiveVideo(null)}
-            />
-          </>
+                <Footer lang={lang} onNavigate={navigate} />
+              </div>
+
+              <VideoModal
+                video={activeVideo}
+                lang={lang}
+                onClose={() => setActiveVideo(null)}
+              />
+            </>
+          </LiveStatusProvider>
         )}
 
         <AdminAuthModal lang={lang} />

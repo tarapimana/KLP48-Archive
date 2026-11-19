@@ -1,12 +1,9 @@
 import { CheckCircle2, ExternalLink, Radio, Star, Wifi } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
+import { useLiveStatus } from '../context/LiveStatusContext';
 import { MemberItem, MEMBERS_DATA, VideoItem } from '../data/klp48Data';
 import { formatRelativeTime, Lang, TRANSLATIONS } from '../i18n/translations';
-import {
-  LiveStatusRecord,
-  subscribeLiveStatuses,
-  testConnection,
-} from '../services/liveService';
+import { LiveStatusRecord } from '../services/liveService';
 import { useAuth } from '../context/AuthContext';
 import { MemberAvatar } from './MemberAvatar';
 import { MemberModal } from './MemberModal';
@@ -28,10 +25,7 @@ function isValidHandle(handle?: string): string {
 export function LiveView({ lang, onPlayVideo }: LiveViewProps) {
   const t = TRANSLATIONS[lang];
   const { isAdmin } = useAuth();
-
-  // Firestore real-time state
-  const [liveStatuses, setLiveStatuses] = useState<LiveStatusRecord[]>([]);
-  const [firestoreConnected, setFirestoreConnected] = useState<boolean>(false);
+  const { liveStatuses, firestoreConnected } = useLiveStatus();
 
   // UI state
   const [platformFilter, setPlatformFilter] = useState<PlatformFilter>('all');
@@ -47,34 +41,6 @@ export function LiveView({ lang, onPlayVideo }: LiveViewProps) {
     member: MemberItem;
     index: number;
   } | null>(null);
-
-  // Subscribe to real-time Firestore updates
-  useEffect(() => {
-    let isMounted = true;
-
-    // Verify Firestore connection
-    testConnection().then((connected) => {
-      if (isMounted) setFirestoreConnected(connected);
-    });
-
-    // Real-time live_status subscription
-    const unsubStatuses = subscribeLiveStatuses(
-      (records) => {
-        if (isMounted) {
-          setLiveStatuses(records);
-          setFirestoreConnected(true);
-        }
-      },
-      (err) => {
-        console.warn('Real-time live_status warning:', err.message);
-      }
-    );
-
-    return () => {
-      isMounted = false;
-      unsubStatuses();
-    };
-  }, []);
 
   useEffect(() => {
     try {
