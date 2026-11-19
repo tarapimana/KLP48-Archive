@@ -79,7 +79,7 @@ export function MemberModal({
       onClick={onClose}
     >
       <div
-        className="flex max-h-[min(72dvh,640px)] w-full max-w-4xl flex-col overflow-hidden rounded-2xl border border-[#dce6d7] bg-[#f6faf4] text-[#131f10] shadow-2xl dark:border-[#24371f] dark:bg-[#142111] dark:text-[#ecf4e8]"
+        className="flex max-h-[min(95dvh,900px)] w-full max-w-6xl flex-col overflow-hidden rounded-2xl border border-[#dce6d7] bg-[#f6faf4] text-[#131f10] shadow-2xl dark:border-[#24371f] dark:bg-[#142111] dark:text-[#ecf4e8]"
         onClick={(e) => e.stopPropagation()}
       >
         <header className="flex shrink-0 items-center justify-between px-4 pb-2 pt-4 sm:px-6 lg:px-8">
