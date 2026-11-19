@@ -203,10 +203,12 @@ export function ScheduleView({ lang }: ScheduleViewProps) {
             const time = lang === 'en' && ev.timeEn ? ev.timeEn : ev.time;
             const notes = lang === 'en' && ev.notesEn ? ev.notesEn : ev.notes;
             const members = ev.members || '';
-            const participants = parseEventMemberNames(members).map((name) => ({
-              name,
-              profile: MEMBER_LOOKUP.get(name.toLowerCase()),
-            }));
+            const participants = parseEventMemberNames(members)
+              .sort((a, b) => a.localeCompare(b, 'en', { sensitivity: 'base' }))
+              .map((name) => ({
+                name,
+                profile: MEMBER_LOOKUP.get(name.toLowerCase()),
+              }));
             const isBirthdayEvent = /birthday/i.test(ev.title);
 
             return (
