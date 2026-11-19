@@ -186,6 +186,12 @@ export function MembersView({ lang }: MembersViewProps) {
                     {birthDate ? ` · ${birthDate}` : ''}
                   </p>
 
+                  {member.catchphrase && (
+                    <p className="mt-2 border-l-2 border-[#278500]/50 pl-2 text-[11px] italic leading-relaxed text-[#52634c] dark:border-[#6fd43a]/50 dark:text-[#a8bc9f]">
+                      {member.catchphrase}
+                    </p>
+                  )}
+
                   {statusNote && (
                     <p className="mt-1 text-xs font-medium text-[#278500] dark:text-[#6fd43a]">
                       {statusNote}

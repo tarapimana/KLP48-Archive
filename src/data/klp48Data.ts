@@ -48,6 +48,7 @@ export interface MemberItem {
   tahun_lahir: string;
   gen: string;
   birthplace?: string;
+  catchphrase?: string;
   status: string;
   statusCategory: MemberStatusCategory;
   nota_status: string;
@@ -347,6 +348,22 @@ const MEMBER_BIRTHPLACES: Record<string, string> = {
   kei: "Selangor, Malaysia",
 };
 
+const MEMBER_CATCHPHRASES: Record<string, string> = {
+  devi: "Bersinar terang dan senantiasa menjadi cahaya bintang untuk korang semua, panggil saya Devi.",
+  amanda: "Si gadis idol yang mempunyai jiwa rocker! Hai semua saya Amanda.",
+  salwa: "Hai semua nama saya Salwa, You'll always meet me in your heart, Saya adalah happy vitamin kamu!",
+  hillary: "Hai semua nama saya Hillary, Let's capture this moment and turn them into beautiful memories.",
+  yi_shyan: "Hi everyone my name is Yi Shyan, Manis sepertimu simpan saya di dalam hatimu.",
+  ann_drea: "A N Squared D R E A thats my name, hello everybody im Ann Drea!",
+  yurina: "Hai semua. Nama saya Yurina Gyoten, panggil saya Yurina. Everyone say Bikkuri (Gyoten) I’m surprise, I’m make everyone smile.",
+  mashiro: "Hello Everyone. I'm Mashiro. Who is the pure white angel of KLP48? Please call me. Mashiro! Thank you.",
+  aisha: "Shining bright! Hi, I'm Aisha!",
+  cindy: "Cute, cheerful, full power. Hi everyone, call me Cindy!",
+  diva: "Shy like a cat, sweet like candy. I'm gonna twinkle twinkle on the stage because I'm? (Diva!)",
+  hana: "Tut tut, dancing and singing, it's my hobby, but you all, it's my lovely. Shine shine, it's me hahaha (Hana!)",
+  kei: "A playful jester whose sweetness will give you a Keeiivity. Hello everyone, Kei is here!",
+};
+
 export const MEMBERS_DATA: MemberItem[] = ([
   { id: "yi_shyan", nama: "Yi Shyan", nama_penuh: "Foo Yi Shyan", tarikh_lahir: "28 Jun", tarikh_lahir_en: "28 Jun", tahun_lahir: "2004", gen: "1", status: "aktif", statusCategory: "active", nota_status: "", gambar: "/images/members/Yi_Shyan.jpg", x: "Yishyan_klp48", instagram: "yishyan_klp48", tiktok: "https.shyan" },
   { id: "yurina", nama: "Yurina", nama_penuh: "Yurina Gyoten", tarikh_lahir: "14 Mac", tarikh_lahir_en: "14 Mar", tahun_lahir: "1999", gen: "1", status: "graduated", statusCategory: "graduated", nota_status: "Kembali ke AKB48 (28 Feb 2026)", nota_status_en: "Returned to AKB48 (28 Feb 2026)", gambar: "/images/members/Yurina.png", x: "tenten_yurina", instagram: "yurina.0314", tiktok: "yurina_gyoten0314" },
@@ -374,7 +391,11 @@ export const MEMBERS_DATA: MemberItem[] = ([
   { id: "isabel", nama: "Isabel", nama_penuh: "Wee Xi Ting", tarikh_lahir: "11 Sep", tarikh_lahir_en: "11 Sep", tahun_lahir: "2008", gen: "2", status: "aktif", statusCategory: "active", nota_status: "", gambar: "/images/members/Isabel.jpg", x: "isabel_klp48", instagram: "isabel.klp48", tiktok: "isabel.klp48" },
   { id: "joo", nama: "Joo", nama_penuh: "Jocelyna Marcelly", tarikh_lahir: "27 Nov", tarikh_lahir_en: "27 Nov", tahun_lahir: "2005", gen: "2", status: "aktif", statusCategory: "active", nota_status: "", gambar: "/images/members/Joo.jpg", x: "jocelyna_klp48", instagram: "jocelyna.klp48", tiktok: "jocelyna.klp48" },
   { id: "kei", nama: "Kei", nama_penuh: "Kei Annisa Adnan", tarikh_lahir: "16 Apr", tarikh_lahir_en: "16 Apr", tahun_lahir: "2009", gen: "2", status: "aktif", statusCategory: "active", nota_status: "", gambar: "/images/members/Kei.jpg", x: "kei_klp48", instagram: "kei.klp48", tiktok: "kei.klp48" },
-] satisfies MemberItem[]).map((member) => ({ ...member, birthplace: MEMBER_BIRTHPLACES[member.id] ?? "" }));
+] satisfies MemberItem[]).map((member) => ({
+  ...member,
+  birthplace: MEMBER_BIRTHPLACES[member.id] ?? "",
+  catchphrase: MEMBER_CATCHPHRASES[member.id],
+}));
 
 export const NEWS_DATA: NewsItem[] = [
   { tajuk: "Announcement KLP48 at Nihon Live, Nihon Matsuri", tarikh: "2026.10.24", kategori: "News", pautan: "https://klp48.my/news/detail/48" },
