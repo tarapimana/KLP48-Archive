@@ -1,4 +1,4 @@
-import { ArrowRight, ExternalLink, Music } from 'lucide-react';
+import { ArrowRight, Clock, ExternalLink, MapPin, Music, Users } from 'lucide-react';
 import { useState } from 'react';
 import {
   getMemberCategory,
@@ -11,7 +11,16 @@ import {
   VIDEOS,
 } from '../data/klp48Data';
 import { useScheduleEvents } from '../context/useScheduleEvents';
-import { Lang, MONTHS_EN, MONTHS_MS, TRANSLATIONS } from '../i18n/translations';
+import {
+  Lang,
+  MONTHS_EN,
+  MONTHS_MS,
+  MONTHS_SHORT_EN,
+  MONTHS_SHORT_MS,
+  TRANSLATIONS,
+  WEEKDAYS_EN,
+  WEEKDAYS_MS,
+} from '../i18n/translations';
 import { BirthdayCountdown } from './BirthdayCountdown';
 import { MemberModal } from './MemberModal';
 import { YouTubeThumbnail } from './YouTubeThumbnail';
@@ -25,6 +34,8 @@ interface HomeViewProps {
 export function HomeView({ lang, onNavigate, onPlayVideo }: HomeViewProps) {
   const t = TRANSLATIONS[lang];
   const months = lang === 'en' ? MONTHS_EN : MONTHS_MS;
+  const shortMonths = lang === 'en' ? MONTHS_SHORT_EN : MONTHS_SHORT_MS;
+  const weekdays = lang === 'en' ? WEEKDAYS_EN : WEEKDAYS_MS;
   const { events } = useScheduleEvents();
   const now = new Date();
   const [selectedMember, setSelectedMember] = useState<MemberItem | null>(null);
@@ -247,44 +258,95 @@ export function HomeView({ lang, onNavigate, onPlayVideo }: HomeViewProps) {
                   const title = lang === 'en' && ev.titleEn ? ev.titleEn : ev.title;
                   const venue = lang === 'en' && ev.venueEn ? ev.venueEn : ev.venue;
                   const notes = lang === 'en' && ev.notesEn ? ev.notesEn : ev.notes;
+                  const eventTime = lang === 'en' && ev.timeEn ? ev.timeEn : ev.time;
+                  const dateNumber = ev.startDate.getTime() === ev.endDate.getTime()
+                    ? String(ev.startDate.getDate())
+                    : `${ev.startDate.getDate()}–${ev.endDate.getDate()}`;
+                  const dateTime = [
+                    ev.startDate.getFullYear(),
+                    String(ev.startDate.getMonth() + 1).padStart(2, '0'),
+                    String(ev.startDate.getDate()).padStart(2, '0'),
+                  ].join('-');
+
                   return (
-                    <a
+                    <article
                       key={ev.id}
-                      href="#jadwal"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        onNavigate('jadwal');
-                      }}
-                      className={`${cardSurface} group block px-5 py-4 hover:border-[#278500] dark:hover:border-[#66c91a]`}
+                      className="grid grid-cols-[72px_minmax(0,1fr)] gap-3.5 rounded-2xl border border-[#d5e2cf] bg-white/88 p-4 backdrop-blur-md transition-colors hover:border-[#278500] sm:gap-4 sm:p-5 dark:border-[#2b4522] dark:bg-[#10200e]/90 dark:hover:border-[#6fd43a]"
                     >
-                      <div className="flex flex-wrap items-center gap-2 text-xs">
-                        <span className="rounded-md bg-[#e3f2da] px-2 py-0.5 font-semibold text-[#278500] dark:bg-[#193012] dark:text-[#6fd43a]">
-                          {ev.type === 'show' ? t.t_show : t.t_event}
+                      <time
+                        dateTime={dateTime}
+                        aria-label={formatEventDateRange(ev.startDate, ev.endDate)}
+                        className="flex flex-col items-start border-r border-[#d5e2cf] pr-4 pt-0.5 text-[10px] font-bold leading-tight text-[#52634c] dark:border-[#2b4522] dark:text-[#a8bc9f]"
+                      >
+                        <span className="font-mono-num text-3xl leading-none text-[#278500] dark:text-[#6fd43a]">
+                          {dateNumber}
                         </span>
-                        {ev.exclusive && (
-                          <span className="font-semibold text-[#52634c] dark:text-[#98ad90]">
-                            · {t.exclusive}
+                        <span className="mt-1">
+                          {shortMonths[ev.startDate.getMonth()]} {ev.startDate.getFullYear()}
+                        </span>
+                        <span className="mt-0.5 text-[#278500] dark:text-[#6fd43a]">
+                          {weekdays[ev.startDate.getDay()]}
+                        </span>
+                      </time>
+
+                      <div className="min-w-0">
+                        <div className="flex flex-wrap items-center gap-2 text-xs">
+                          <span className="font-bold text-[#278500] dark:text-[#6fd43a]">
+                            {ev.type === 'show' ? t.t_show : t.t_event}
                           </span>
+                          {ev.exclusive && (
+                            <span className="font-semibold text-[#52634c] dark:text-[#98ad90]">
+                              · {t.exclusive}
+                            </span>
+                          )}
+                        </div>
+
+                        <h3 className="font-display mt-1.5 text-base font-bold leading-snug text-[#131f10] dark:text-white">
+                          <a
+                            href="#jadwal"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              onNavigate('jadwal');
+                            }}
+                            className="transition-colors hover:text-[#278500] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#278500] dark:hover:text-[#6fd43a] dark:focus-visible:outline-[#6fd43a]"
+                          >
+                            {title}
+                          </a>
+                        </h3>
+
+                        <div className="mt-2.5 space-y-1.5 text-[13px] leading-snug text-[#52634c] dark:text-[#c7d7c0]">
+                          <p className="flex items-start gap-2">
+                            <MapPin className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#278500] dark:text-[#6fd43a]" aria-hidden="true" />
+                            <span>{venue}</span>
+                          </p>
+                          {eventTime && (
+                            <p className="flex items-start gap-2">
+                              <Clock className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#278500] dark:text-[#6fd43a]" aria-hidden="true" />
+                              <span className="font-mono-num">{eventTime}</span>
+                            </p>
+                          )}
+                          {ev.members && (
+                            <p className="flex items-start gap-2">
+                              <Users className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#278500] dark:text-[#6fd43a]" aria-hidden="true" />
+                              <span>{ev.members}</span>
+                            </p>
+                          )}
+                          {notes && <p className="pl-[1.375rem]">{notes}</p>}
+                        </div>
+
+                        {ev.link && (
+                          <a
+                            href={ev.link}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="mt-3 inline-flex min-h-8 items-center gap-1.5 rounded-md text-sm font-bold text-[#278500] transition-colors hover:text-[#206e00] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#278500] dark:text-[#6fd43a] dark:hover:text-[#82df52] dark:focus-visible:outline-[#6fd43a]"
+                          >
+                            <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
+                            <span>{lang === 'en' ? 'Event link' : 'Pautan acara'}</span>
+                          </a>
                         )}
                       </div>
-
-                      <h3 className="font-display mt-2 text-base font-bold leading-snug text-[#131f10] transition-colors group-hover:text-[#278500] dark:text-white dark:group-hover:text-[#66c91a]">
-                        {title}
-                      </h3>
-
-                      <p className="mt-1 text-xs leading-relaxed text-[#52634c] dark:text-[#a8bc9f]">
-                        <span className="font-mono-num">
-                          {formatEventDateRange(ev.startDate, ev.endDate)}
-                        </span>{' '}
-                        · {venue}
-                      </p>
-
-                      {notes && (
-                        <p className="mt-1 text-xs text-[#3b4e34] dark:text-[#c7d7c0]">
-                          {notes}
-                        </p>
-                      )}
-                    </a>
+                    </article>
                   );
                 })}
               </div>
