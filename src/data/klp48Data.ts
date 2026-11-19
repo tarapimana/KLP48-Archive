@@ -292,7 +292,7 @@ export const VIDEOS: VideoItem[] = RAW_VIDEOS.map(([title, url, thumbnail]) => {
 });
 
 export const SCHEDULE_DATA: ScheduleRawItem[] = [
-  { tarikh_mula: "2026-11-01", tarikh_tamat: "", tajuk: "Mini Live Show", lokasi: "KLP48 Theatre, Lalaport BBCC", jenis: "show", eksklusif: "", nota: "" },
+  { tarikh_mula: "2026-11-01", tarikh_tamat: "", tajuk: "Mini Live Show", lokasi: "KLP48 Theatre, LaLaport BBCC Level 2", masa: "1:00 petang – 2:00 petang", masa_en: "1:00 PM – 2:00 PM", jenis: "show", eksklusif: "", nota: "", members: "Amanda, Devi, Hillary, Khalies, Salwa, Yi Shyan, Aisha, Diva, Maia, Mashiro, Sharleez & Shu Zhen", pautan: "https://www.instagram.com/p/DfEvkSviQhr/?bqrl=cHB6MTVtcHM1bGlt" },
   { tarikh_mula: "2026-11-01", tarikh_tamat: "", tajuk: "Pokemon Mezastar Festival", lokasi: "Wow Plaza, GF, Lalaport BBCC", masa: "4:00 petang – 8:00 malam", masa_en: "4:00 PM – 8:00 PM", jenis: "event", eksklusif: "", nota: "", members: "Hana, Alice, Isabel, Joo & Tara", pautan: "https://www.instagram.com/p/De_iJ3PEu2J/?img_index=3&gwpx=MTBmdnNwbXQwanExcw==" },
   { tarikh_mula: "2026-11-01", tarikh_tamat: "", tajuk: "Spook-tacle Halloween Weekend Meet & Greet", lokasi: "West Atrium Walkway, GF Lalaport BBCC", jenis: "event", eksklusif: "", nota: "" },
   { tarikh_mula: "2026-11-05", tarikh_tamat: "", tajuk: "Discord Radio", lokasi: "Eksklusif Fan Club", lokasi_en: "Fan Club Exclusive", jenis: "event", eksklusif: "ya", nota: "" },
