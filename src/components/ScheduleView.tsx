@@ -1,4 +1,4 @@
-import { ArrowRight, Check, Clock, ExternalLink, MapPin } from 'lucide-react';
+import { ArrowRight, Check, Clock, ExternalLink, MapPin, UsersRound } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { getParsedEvents } from '../data/klp48Data';
 import {
@@ -194,8 +194,9 @@ export function ScheduleView({ lang }: ScheduleViewProps) {
             const venue = lang === 'en' && ev.venueEn ? ev.venueEn : ev.venue;
             const time = lang === 'en' && ev.timeEn ? ev.timeEn : ev.time;
             const notes = lang === 'en' && ev.notesEn ? ev.notesEn : ev.notes;
+            const members = ev.members || '';
             const isBirthdayEvent = /birthday/i.test(ev.title);
-            const hasExtraDetails = Boolean(notes || ev.link);
+            const hasExtraDetails = Boolean(notes || members || ev.link);
 
             return (
               <article
@@ -322,19 +323,28 @@ export function ScheduleView({ lang }: ScheduleViewProps) {
                 </div>
 
                 {isExpanded && hasExtraDetails && (
-                  <div className="mt-4 space-y-2 rounded-xl border border-[#dce6d7] bg-[#f3f8f0] px-4 py-3 text-sm text-[#131f10] dark:border-[#24371f] dark:bg-[#162612] dark:text-[#ecf4e8]">
+                  <div className="mt-4 space-y-3 rounded-xl border border-[#dce6d7] bg-[#f3f8f0] px-4 py-3 text-sm text-[#131f10] dark:border-[#24371f] dark:bg-[#162612] dark:text-[#ecf4e8]">
+                    {members && (
+                      <div className="flex items-start gap-2.5 text-[#263421] dark:text-[#dce9d7]">
+                        <UsersRound
+                          className="mt-0.5 h-4 w-4 shrink-0 text-[#278500] dark:text-[#7ce043]"
+                          aria-hidden="true"
+                        />
+                        <p className="min-w-0 break-words leading-relaxed">{members}</p>
+                      </div>
+                    )}
                     {notes && (
                       <p className="leading-relaxed text-[#263421] dark:text-[#dce9d7]">
                         {notes}
                       </p>
                     )}
                     {ev.link && (
-                      <div>
+                      <div className="pt-1">
                         <a
                           href={ev.link}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="inline-flex items-center gap-1.5 text-xs font-bold text-[#278500] hover:underline dark:text-[#7ce043]"
+                          className="inline-flex min-h-11 items-center gap-1.5 text-xs font-bold text-[#278500] hover:underline dark:text-[#7ce043]"
                         >
                           <span>{t.j_link}</span>
                           <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />

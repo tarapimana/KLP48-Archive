@@ -29,6 +29,7 @@ export interface ScheduleRawItem {
   eksklusif: string;
   nota: string;
   nota_en?: string;
+  members?: string;
   pautan?: string;
 }
 
@@ -207,7 +208,7 @@ export const SCHEDULE_DATA: ScheduleRawItem[] = [
   { tarikh_mula: "2026-11-15", tarikh_tamat: "", tajuk: "Meet & Greet: Talk Session", lokasi: "KLP48 Theatre, Lalaport BBCC", jenis: "event", eksklusif: "", nota: "" },
   { tarikh_mula: "2026-11-15", tarikh_tamat: "", tajuk: "Jaguh Rakan Muda Musim Ke-2 Final Live Show", lokasi: "MYNISS, Hextar World, Empire City", jenis: "show", eksklusif: "", nota: "Boleh ditonton secara langsung di Saluran Okey atau aplikasi RTM Klik.", nota_en: "Watch live on Saluran Okey or the RTM Klik app." },
   { tarikh_mula: "2026-11-21", tarikh_tamat: "", tajuk: "KLP Time: Devi Birthday Party", lokasi: "KLP48 Theatre, Lalaport BBCC", jenis: "show", eksklusif: "", nota: "" },
-  { tarikh_mula: "2026-11-21", tarikh_tamat: "", tajuk: "100 Hours Curry Opening Ceremony with KLP48", tajuk_en: "100 Hours Curry Opening Ceremony with KLP48", lokasi: "Lot B/0G/03, Courtyard Level, Block B, Plaza Mont Kiara", lokasi_en: "Lot B/0G/03, Courtyard Level, Block B, Plaza Mont Kiara", masa: "11:00 pagi – 1:00 petang", masa_en: "11:00 AM – 1:00 PM", jenis: "event", eksklusif: "", nota: "Yi Shyan, Salwa, Alice & Mashiro.", nota_en: "Yi Shyan, Salwa, Alice & Mashiro.", pautan: "https://www.instagram.com/p/DfsQDd4IpPq/?psln=dXgxeTIyaXk5ZXZl" },
+  { tarikh_mula: "2026-11-21", tarikh_tamat: "", tajuk: "100 Hours Curry Opening Ceremony with KLP48", tajuk_en: "100 Hours Curry Opening Ceremony with KLP48", lokasi: "Lot B/0G/03, Courtyard Level, Block B, Plaza Mont Kiara", lokasi_en: "Lot B/0G/03, Courtyard Level, Block B, Plaza Mont Kiara", masa: "11:00 pagi – 1:00 petang", masa_en: "11:00 AM – 1:00 PM", jenis: "event", eksklusif: "", nota: "", members: "Yi Shyan, Salwa, Alice & Mashiro.", pautan: "https://www.instagram.com/p/DfsQDd4IpPq/?psln=dXgxeTIyaXk5ZXZl" },
   { tarikh_mula: "2026-11-22", tarikh_tamat: "", tajuk: "KLP Time: Variety Show", lokasi: "KLP48 Theatre, Lalaport BBCC", jenis: "show", eksklusif: "", nota: "" },
   { tarikh_mula: "2026-11-23", tarikh_tamat: "", tajuk: "Discord 1-on-1 Video Call (Generasi ke-1)", tajuk_en: "Discord 1-on-1 Video Call (1st Generation)", lokasi: "Eksklusif Fan Club Premium", lokasi_en: "Fan Club Premium exclusive", jenis: "event", eksklusif: "ya", nota: "" },
   { tarikh_mula: "2026-11-24", tarikh_tamat: "", tajuk: "Discord 1-on-1 Video Call (Generasi ke-2)", tajuk_en: "Discord 1-on-1 Video Call (2nd Generation)", lokasi: "Eksklusif Fan Club Premium", lokasi_en: "Fan Club Premium exclusive", jenis: "event", eksklusif: "ya", nota: "" },
@@ -332,6 +333,7 @@ export interface ParsedEvent {
   exclusive: boolean;
   notes: string;
   notesEn?: string;
+  members?: string;
   time: string;
   timeEn?: string;
   link: string;
@@ -361,6 +363,7 @@ export function getParsedEvents(): ParsedEvent[] {
       exclusive: /^(ya|yes|y|1)$/i.test(item.eksklusif),
       notes: item.nota,
       notesEn: item.nota_en,
+      members: item.members,
       time: item.masa || '',
       timeEn: item.masa_en,
       link: item.pautan || '',
