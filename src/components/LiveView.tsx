@@ -243,145 +243,98 @@ export function LiveView({ lang, onPlayVideo }: LiveViewProps) {
 
   return (
     <div className="space-y-10">
-      {/* Real-Time Ticker Marquee */}
-      <div className="flex items-center justify-between gap-4 overflow-hidden rounded-2xl border border-[#dce6d7] bg-[#f0f6ec] px-4 py-2.5 text-xs font-semibold text-[#131f10] dark:border-[#24371f] dark:bg-[#121f0e] dark:text-[#ecf4e8]">
-        <div className="flex items-center gap-3 overflow-hidden whitespace-nowrap">
-          {verifiedActiveLiveStreams.length > 0 ? (
-            <>
-              <span className="inline-flex items-center gap-1.5 text-red-600 dark:text-red-400">
-                <span className="h-2 w-2 animate-ping rounded-full bg-red-500" />
-                <span className="font-bold">LIVE NOW:</span>
-              </span>
-              <span className="animate-marquee inline-block text-[#3f503a] dark:text-[#b5c7ae]">
-                {verifiedActiveLiveStreams
-                  .map(
-                    (s) =>
-                      `${s.member.nama} bersiaran di ${(
-                        s.statusInfo?.activeLiveRecord?.platform || 'TIKTOK'
-                      ).toUpperCase()}`
-                  )
-                  .join(' · ')}{' '}
-                · Disahkan melalui Firestore (Masa Nyata)
-              </span>
-            </>
-          ) : (
-            <>
-              <span className="inline-flex items-center gap-1.5 text-[#278500] dark:text-[#7ce043]">
-                <Wifi className="h-3.5 w-3.5" aria-hidden="true" />
-                <span className="font-bold">FIRESTORE LIVE MONITOR:</span>
-              </span>
-              <span className="animate-marquee inline-block text-[#3f503a] dark:text-[#b5c7ae]">
-                {t.lv_no_active_live} · 20 member aktif dipantau · Langganan masa nyata Firestore aktif
-              </span>
-            </>
-          )}
-        </div>
-
-        {/* Top Right Live Pill Badge */}
+      <section className="relative isolate overflow-hidden rounded-[28px] border border-white/[0.07] bg-[#151011] px-5 py-6 text-[#f4eeee] shadow-[0_24px_80px_rgba(0,0,0,0.22)] sm:px-8 sm:py-8">
         <div
-          className={`inline-flex shrink-0 items-center gap-2 rounded-full px-3.5 py-1 text-xs font-black tracking-wider shadow-sm transition-colors ${
-            verifiedActiveLiveStreams.length > 0
-              ? 'bg-red-600 text-white'
-              : 'border border-[#dce6d7] bg-white text-[#3f503a] dark:border-[#24371f] dark:bg-[#192b15] dark:text-[#c7d7c0]'
-          }`}
-        >
-          {verifiedActiveLiveStreams.length > 0 ? (
-            <>
-              <span className="flex gap-0.5">
-                <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-white" />
-                <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-white [animation-delay:0.2s]" />
-                <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-white [animation-delay:0.4s]" />
-              </span>
-              <span>{verifiedActiveLiveStreams.length} live</span>
-            </>
-          ) : (
-            <span className="flex items-center gap-1.5">
-              <span className="h-2 w-2 rounded-full bg-emerald-500" />
-              <span>0 live</span>
-            </span>
-          )}
-        </div>
-      </div>
-
-      {/* Main Header */}
-      <div className="space-y-4">
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <div className="inline-flex items-center gap-2 text-xs font-extrabold uppercase tracking-[0.16em] text-red-600 dark:text-red-400">
-            <span
-              className={`h-2 w-2 rounded-full ${
-                verifiedActiveLiveStreams.length > 0
-                  ? 'animate-ping bg-red-600 dark:bg-red-500'
-                  : 'bg-emerald-500'
-              }`}
-            />
-            <span>ON SIGNAL · FIRESTORE INTEGRATED</span>
-          </div>
-
-          {/* Firestore Connection Indicator */}
-          <div className="inline-flex items-center gap-1.5 rounded-full border border-[#dce6d7] bg-white/80 px-3 py-1 text-[11px] font-semibold text-[#3f503a] shadow-xs backdrop-blur-xs dark:border-[#24371f] dark:bg-[#142111] dark:text-[#b5c7ae]">
-            <span
-              className={`h-2 w-2 rounded-full ${
-                firestoreConnected ? 'bg-emerald-500' : 'bg-amber-500 animate-pulse'
-              }`}
-            />
-            <span>{t.lv_firestore_connected}</span>
-          </div>
-        </div>
-
-        <div className="flex flex-wrap items-baseline justify-between gap-4">
-          <div>
-            <h1 className="font-display text-4xl font-black tracking-tight text-[#131f10] sm:text-6xl dark:text-white">
-              LIVE{' '}
-              <span className="text-red-600 dark:text-red-500">
-                / {verifiedActiveLiveStreams.length}
-              </span>
-            </h1>
-            <p className="mt-2 text-sm text-[#3f503a] sm:text-base dark:text-[#c7d7c0]">
-              Status siaran langsung 20 member aktif di TikTok dan Instagram berdasarkan data Firestore yang disahkan.
-            </p>
-          </div>
-
-          {/* Filter Pills */}
-          <div
-            className="inline-flex rounded-full border border-[#dce6d7] bg-white p-1.5 shadow-sm dark:border-[#24371f] dark:bg-[#142111]"
-            role="group"
-            aria-label="Filter live streams by platform"
-          >
-            {(
-              [
-                { key: 'all', label: 'Semua' },
-                { key: 'tiktok', label: 'TikTok' },
-                { key: 'instagram', label: 'Instagram' },
-              ] as Array<{ key: PlatformFilter; label: string }>
-            ).map((tab) => {
-              const active = trackerPlatform === tab.key;
-              return (
-                <button
-                  key={tab.key}
-                  type="button"
-                  onClick={() => setTrackerPlatform(tab.key)}
-                  className={`min-h-[38px] whitespace-nowrap rounded-full px-5 text-xs font-bold transition-all ${
-                    active
-                      ? 'bg-red-600 text-white shadow-md shadow-red-600/25 dark:bg-red-600 dark:text-white'
-                      : 'text-[#3f503a] hover:text-[#131f10] dark:text-[#b5c7ae] dark:hover:text-white'
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(255,48,79,0.09),transparent_38%)]"
+        />
+        <div className="relative space-y-8">
+          {/* Main Header */}
+          <div className="space-y-5">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <div
+                className={`inline-flex items-center gap-2 text-xs font-extrabold uppercase tracking-[0.16em] ${
+                  verifiedActiveLiveStreams.length > 0 ? 'text-[#ff405d]' : 'text-white/60'
+                }`}
+              >
+                <span
+                  className={`h-1.5 w-1.5 rounded-full ${
+                    verifiedActiveLiveStreams.length > 0
+                      ? 'animate-pulse bg-[#ff405d]'
+                      : 'bg-white/35'
                   }`}
-                >
-                  {tab.label}
-                </button>
-              );
-            })}
+                />
+                <span>ON SIGNAL</span>
+              </div>
+
+              {/* Firestore Connection Indicator */}
+              <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-3 py-1.5 text-[11px] font-semibold text-white/65">
+                <span
+                  className={`h-1.5 w-1.5 rounded-full ${
+                    firestoreConnected ? 'bg-emerald-400' : 'animate-pulse bg-amber-400'
+                  }`}
+                />
+                <span>{t.lv_firestore_connected}</span>
+              </div>
+            </div>
+
+            <div className="flex flex-wrap items-end justify-between gap-5">
+              <div className="min-w-0">
+                <h1 className="font-display text-5xl font-black leading-[0.95] tracking-tight text-[#f5eeee] sm:text-7xl">
+                  LIVE{' '}
+                  <span className="text-[#ff3658]">/ {verifiedActiveLiveStreams.length}</span>
+                </h1>
+                <p className="mt-3 max-w-2xl text-sm leading-relaxed text-[#b9adaf] sm:text-[15px]">
+                  {lang === 'en'
+                    ? 'Verified member streams on TikTok and Instagram, updated in real time.'
+                    : 'Siaran member yang disahkan di TikTok dan Instagram, dikemas kini secara langsung.'}
+                </p>
+              </div>
+
+              {/* Filter Pills */}
+              <div
+                className="inline-flex max-w-full rounded-full border border-white/10 bg-[#20191a] p-1"
+                role="group"
+                aria-label="Filter live streams by platform"
+              >
+                {(
+                  [
+                    { key: 'all', label: 'Semua' },
+                    { key: 'tiktok', label: 'TikTok' },
+                    { key: 'instagram', label: 'Instagram' },
+                  ] as Array<{ key: PlatformFilter; label: string }>
+                ).map((tab) => {
+                  const active = trackerPlatform === tab.key;
+                  return (
+                    <button
+                      key={tab.key}
+                      type="button"
+                      onClick={() => setTrackerPlatform(tab.key)}
+                      className={`min-h-9 whitespace-nowrap rounded-full px-4 text-xs font-bold transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#ff5570] sm:px-5 ${
+                        active
+                          ? 'bg-[#ff3658] text-white shadow-sm shadow-[#ff3658]/20'
+                          : 'text-[#aa9fa1] hover:text-white'
+                      }`}
+                    >
+                      {tab.label}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
 
       {/* Confirmed LIVE Portrait Cards OR Verified Standby State */}
       <section aria-label="Verified live streams">
         {verifiedActiveLiveStreams.length > 0 ? (
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-x-4 gap-y-5 sm:grid-cols-2 lg:grid-cols-4">
             {verifiedActiveLiveStreams.map(({ member, originalIndex, statusInfo }, idx) => {
               const rec = statusInfo?.activeLiveRecord;
               const platform = rec?.platform || 'tiktok';
               const platformLabel = platform === 'tiktok' ? 'TikTok' : 'Instagram';
+              const socialHandle = isValidHandle(
+                platform === 'tiktok' ? member.tiktok : member.instagram
+              );
               const isPinned = pinnedNames.includes(member.nama);
               const liveUrl =
                 rec?.liveUrl ||
@@ -390,9 +343,9 @@ export function LiveView({ lang, onPlayVideo }: LiveViewProps) {
                   : `https://www.instagram.com/${isValidHandle(member.instagram)}`);
 
               return (
-                <div key={member.nama} className="space-y-2.5">
-                  <article className="group relative overflow-hidden rounded-3xl border border-[#dce6d7] bg-white shadow-md transition-transform duration-200 hover:-translate-y-1 dark:border-[#24371f] dark:bg-[#111f0e]">
-                    <div className="relative aspect-[3/4] overflow-hidden bg-[#e9f2e4] dark:bg-[#192915]">
+                <div key={member.nama} className="space-y-2">
+                  <article className="group relative overflow-hidden rounded-[20px] border border-white/10 bg-[#211b1c] shadow-lg transition-transform duration-200 hover:-translate-y-1">
+                    <div className="relative aspect-[4/5] overflow-hidden bg-[#211b1c]">
                       <button
                         type="button"
                         onClick={() => setSelectedMember({ member, index: originalIndex })}
@@ -408,16 +361,17 @@ export function LiveView({ lang, onPlayVideo }: LiveViewProps) {
                       </button>
 
                       <div className="absolute top-3.5 left-3.5">
-                        <span className="font-mono-num rounded-lg bg-white px-2.5 py-1 text-xs font-extrabold text-[#131f10] shadow-sm">
+                        <span className="font-mono-num rounded-md bg-[#171416]/90 px-2 py-1 text-[11px] font-extrabold text-[#ff405d] shadow-sm backdrop-blur-sm">
                           {String(idx + 1).padStart(2, '0')}
                         </span>
                       </div>
 
                       <div className="absolute top-3.5 right-3.5">
-                        <div className="inline-flex items-center gap-1.5 rounded-lg bg-red-600 px-3 py-1 text-[11px] font-black uppercase tracking-wider text-white shadow-lg">
-                          <span className="flex gap-0.5">
-                            <span className="h-1 w-1 animate-ping rounded-full bg-white" />
-                            <span className="h-1 w-1 animate-ping rounded-full bg-white [animation-delay:0.2s]" />
+                        <div className="inline-flex items-center gap-1.5 rounded-full bg-[#ff3658] px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.08em] text-white shadow-lg shadow-black/20">
+                          <span className="flex h-3 items-end gap-0.5" aria-hidden="true">
+                            <span className="h-1 w-0.5 rounded-full bg-white/75" />
+                            <span className="h-2 w-0.5 rounded-full bg-white" />
+                            <span className="h-3 w-0.5 animate-pulse rounded-full bg-white/85" />
                           </span>
                           <span>LIVE</span>
                         </div>
@@ -469,38 +423,45 @@ export function LiveView({ lang, onPlayVideo }: LiveViewProps) {
                       </div>
                     </div>
                   </article>
+                  {socialHandle && (
+                    <p className="truncate text-xs font-medium text-[#9e9294]" title={`@${socialHandle}`}>
+                      @{socialHandle}
+                    </p>
+                  )}
                 </div>
               );
             })}
           </div>
         ) : (
           /* Verified Standby Card when 0 members are verified LIVE in Firestore */
-          <div className="overflow-hidden rounded-3xl border border-[#dce6d7] bg-white/95 p-8 text-center backdrop-blur-md dark:border-[#24371f] dark:bg-[#0e190b]/94">
-            <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-[#e9f4e3] text-[#278500] dark:bg-[#1a3013] dark:text-[#7ce043]">
+          <div className="overflow-hidden rounded-[22px] border border-white/10 bg-[#1d1718] p-7 text-center sm:p-9">
+            <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-[#ff3658]/10 text-[#ff7187]">
               <Radio className="h-7 w-7" aria-hidden="true" />
             </div>
-            <h2 className="font-display mt-4 text-xl font-bold tracking-tight text-[#131f10] sm:text-2xl dark:text-white">
+            <h2 className="font-display mt-4 text-xl font-bold tracking-tight text-white sm:text-2xl">
               {t.lv_no_active_live}
             </h2>
-            <p className="mx-auto mt-2 max-w-xl text-sm text-[#4a5c43] dark:text-[#b4c8ad]">
+            <p className="mx-auto mt-2 max-w-xl text-sm leading-relaxed text-[#b9adaf]">
               Hanya siaran langsung yang disahkan dalam koleksi Firestore{' '}
-              <code className="rounded bg-[#ecf4e8] px-1.5 py-0.5 font-mono text-xs text-[#278500] dark:bg-[#192b15] dark:text-[#7ce043]">
+              <code className="rounded bg-white/[0.07] px-1.5 py-0.5 font-mono text-xs text-[#ff7187]">
                 live_status
               </code>{' '}
               akan dipaparkan sebagai LIVE. Tiada status palsu atau simulasi dicipta. Anda boleh menyemak pautan rasmi setiap member di bawah.
             </p>
             <div className="mt-5 flex flex-wrap items-center justify-center gap-3 text-xs">
-              <span className="inline-flex items-center gap-1.5 rounded-lg border border-[#dce6d7] bg-[#f7faf5] px-3 py-1.5 font-semibold text-[#131f10] dark:border-[#24371f] dark:bg-[#142111] dark:text-white">
-                <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400" />
+              <span className="inline-flex items-center gap-1.5 rounded-lg border border-white/10 bg-white/[0.04] px-3 py-1.5 font-semibold text-white/80">
+                <CheckCircle2 className="h-3.5 w-3.5 text-emerald-400" />
                 20 Member Aktif Disambung
               </span>
-              <span className="inline-flex items-center gap-1.5 rounded-lg border border-[#dce6d7] bg-[#f7faf5] px-3 py-1.5 font-semibold text-[#131f10] dark:border-[#24371f] dark:bg-[#142111] dark:text-white">
-                <Wifi className="h-3.5 w-3.5 text-[#278500] dark:text-[#7ce043]" />
+              <span className="inline-flex items-center gap-1.5 rounded-lg border border-white/10 bg-white/[0.04] px-3 py-1.5 font-semibold text-white/80">
+                <Wifi className="h-3.5 w-3.5 text-emerald-400" />
                 Langganan Firestore Real-Time Aktif
               </span>
             </div>
           </div>
         )}
+      </section>
+        </div>
       </section>
 
       {/* Member Tracker and Session History */}
