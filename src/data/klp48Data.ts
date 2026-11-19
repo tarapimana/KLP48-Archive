@@ -102,30 +102,6 @@ export const OFFICIAL_SITE_URL = 'https://klp48.my';
 
 export const RELEASES: ReleaseItem[] = [
   {
-    title: 'Green Flash',
-    date: '2025.09.12',
-    type: 'Album',
-    artworkUrl: 'https://image-cdn-fa.spotifycdn.com/image/ab67616d00001e02b56bb0f1fd0bba21afc5c9af',
-  },
-  {
-    title: 'Oh my pumpkin!',
-    date: '2025.08.13',
-    type: 'Single',
-    artworkUrl: 'https://image-cdn-fa.spotifycdn.com/image/ab67616d00001e02610eb27873fa0a9cdf655baa',
-  },
-  {
-    title: 'First Cry',
-    date: '2025.06.13',
-    type: 'EP',
-    artworkUrl: 'https://image-cdn-ak.spotifycdn.com/image/ab67616d00001e02d2a06fd9f46c0589e19f55e2',
-  },
-  {
-    title: 'Flying Get',
-    date: '2025.05.30',
-    type: 'Single',
-    artworkUrl: 'https://image-cdn-ak.spotifycdn.com/image/ab67616d00001e022ee35c4b03821badec202300',
-  },
-  {
     title: 'Alasanku Maybe',
     date: '2024.04.18',
     type: 'Single',
@@ -136,6 +112,30 @@ export const RELEASES: ReleaseItem[] = [
     date: '2024.08.14',
     type: 'Single',
     artworkUrl: 'https://image-cdn-ak.spotifycdn.com/image/ab67616d00001e02e20d55b107705d2d134e42e4',
+  },
+  {
+    title: 'Flying Get',
+    date: '2025.05.30',
+    type: 'Single',
+    artworkUrl: 'https://image-cdn-ak.spotifycdn.com/image/ab67616d00001e022ee35c4b03821badec202300',
+  },
+  {
+    title: 'First Cry',
+    date: '2025.06.13',
+    type: 'EP',
+    artworkUrl: 'https://image-cdn-ak.spotifycdn.com/image/ab67616d00001e02d2a06fd9f46c0589e19f55e2',
+  },
+  {
+    title: 'Oh my pumpkin!',
+    date: '2025.08.13',
+    type: 'Single',
+    artworkUrl: 'https://image-cdn-fa.spotifycdn.com/image/ab67616d00001e02610eb27873fa0a9cdf655baa',
+  },
+  {
+    title: 'Green Flash',
+    date: '2025.09.12',
+    type: 'Album',
+    artworkUrl: 'https://image-cdn-fa.spotifycdn.com/image/ab67616d00001e02b56bb0f1fd0bba21afc5c9af',
   },
   {
     title: 'Kerana Ku Suka',
