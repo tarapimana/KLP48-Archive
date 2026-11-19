@@ -357,10 +357,16 @@ const MEMBER_CATCHPHRASES: Record<string, string> = {
   ann_drea: "A N Squared D R E A thats my name, hello everybody im Ann Drea!",
   yurina: "Hai semua. Nama saya Yurina Gyoten, panggil saya Yurina. Everyone say Bikkuri (Gyoten) I’m surprise, I’m make everyone smile.",
   mashiro: "Hello Everyone. I'm Mashiro. Who is the pure white angel of KLP48? Please call me. Mashiro! Thank you.",
+  maia: "I spy with my little eye, Maia with an i!",
+  sharleez: "Hi all! I'll steal your heart and your fries. I'm a myth and a legend that everyone buys. I'm Princess Sharleez!",
   aisha: "Shining bright! Hi, I'm Aisha!",
+  alice: "Tell me, who is your favorite Wonder Girl? (Alice!) And I'm here to bring you guys? (Wonder!) And the one who brings wonder is? (Alice!)",
   cindy: "Cute, cheerful, full power. Hi everyone, call me Cindy!",
-  diva: "Shy like a cat, sweet like candy. I'm gonna twinkle twinkle on the stage because I'm? (Diva!)",
-  hana: "Tut tut, dancing and singing, it's my hobby, but you all, it's my lovely. Shine shine, it's me hahaha (Hana!)",
+  diva: "Hi hi (Hello!) Shy like a cat, sweet like candy. I'm gonna twinkle twinkle on the stage because I'm? (Diva!)",
+  hana: "Tut tut, dancing and singing is my hobby, but you all is my lovely. Shine shine, it's me ha ha ha (Hana!)",
+  joo: "Manis macam jus, energy takkan lose. Hi semua, it's Joo!",
+  shu_zhen: "Seperti harta karun dasar laut, sayalah mutiara di hatimu!",
+  tara: "Hello everyone, my name is Tara! Just like a shooting sTar-a! And whenever you look up at the night sky, don't forget to remember me, the cutest shooting sTar-a!",
   kei: "A playful jester whose sweetness will give you a Keeiivity. Hello everyone, Kei is here!",
 };
 
