@@ -113,7 +113,12 @@ export const RELEASES: ReleaseItem[] = [
     type: 'Single',
     artworkUrl: 'https://image-cdn-fa.spotifycdn.com/image/ab67616d00001e02610eb27873fa0a9cdf655baa',
   },
-  { title: 'First Cry', date: '2025.06.13', type: 'EP' },
+  {
+    title: 'First Cry',
+    date: '2025.06.13',
+    type: 'EP',
+    artworkUrl: 'https://image-cdn-ak.spotifycdn.com/image/ab67616d00001e02d2a06fd9f46c0589e19f55e2',
+  },
   {
     title: 'Flying Get',
     date: '2025.05.30',
