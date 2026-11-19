@@ -49,11 +49,9 @@ export function MemberModal({
       ? t.f_non
       : t.f_aktif;
   const statusNote =
-    member.statusCategory === 'active'
-      ? lang === 'en' && member.nota_status_en
-        ? member.nota_status_en
-        : member.nota_status
-      : '';
+    lang === 'en' && member.nota_status_en
+      ? member.nota_status_en
+      : member.nota_status;
   const birthDate =
     lang === 'en' && member.tarikh_lahir_en
       ? member.tarikh_lahir_en
