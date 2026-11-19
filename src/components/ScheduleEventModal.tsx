@@ -60,7 +60,9 @@ export function ScheduleEventModal({ event, lang, onClose }: ScheduleEventModalP
   const venue = lang === 'en' && event.venueEn ? event.venueEn : event.venue;
   const time = lang === 'en' && event.timeEn ? event.timeEn : event.time;
   const notes = lang === 'en' && event.notesEn ? event.notesEn : event.notes;
-  const participants = parseEventMemberNames(event.members);
+  const participants = parseEventMemberNames(event.members).sort((a, b) =>
+    a.localeCompare(b, 'en', { sensitivity: 'base' })
+  );
   const formatDate = (date: Date) =>
     `${date.getDate()} ${months[date.getMonth()]} ${date.getFullYear()}`;
   const dateLabel = formatDate(event.startDate) +
