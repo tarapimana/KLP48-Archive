@@ -109,7 +109,9 @@ export default function App() {
       <div className="relative min-h-screen text-[#131f10] transition-colors duration-150 dark:text-[#ecf4e8]">
         {/* Whole-page Video Background */}
         <video
-          src="/assets/aistudio/_MV__Kerana_Ku_Suka_-_Kimino_Kotoga_Suki_Dakara___KLP48_2160p_1087ffc5.mp4"
+          src="/video/bg-loop.mp4?v=full"
+          poster="/video/bg-poster.jpg"
+          preload="auto"
           autoPlay
           muted
           loop
@@ -119,7 +121,7 @@ export default function App() {
         />
         <div
           aria-hidden="true"
-          className="pointer-events-none fixed inset-0 z-0 bg-[#f6faf4]/88 transition-colors duration-150 dark:bg-[#0a1407]/82"
+          className="pointer-events-none fixed inset-0 z-0 bg-[#f6faf4]/82 transition-colors duration-150 dark:bg-[#0a1407]/72"
         />
 
         <div className="relative z-10 flex min-h-screen flex-col">
