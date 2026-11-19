@@ -157,10 +157,10 @@ export function LiveView({ lang, onPlayVideo }: LiveViewProps) {
 
   return (
     <div className="space-y-10">
-      <section className="relative isolate overflow-hidden rounded-[28px] border border-white/[0.07] bg-[#151011] px-5 py-6 text-[#f4eeee] shadow-[0_24px_80px_rgba(0,0,0,0.22)] sm:px-8 sm:py-8">
+      <section className="relative isolate overflow-hidden rounded-[28px] border border-[#dce6d7] bg-white/[0.92] px-5 py-6 text-[#131f10] shadow-[0_24px_80px_rgba(10,20,7,0.12)] backdrop-blur-md sm:px-8 sm:py-8 dark:border-[#24371f] dark:bg-[#0e180b]/90 dark:text-[#ecf4e8] dark:shadow-[0_24px_80px_rgba(0,0,0,0.28)]">
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(255,48,79,0.09),transparent_38%)]"
+          className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(111,212,58,0.1),transparent_38%)]"
         />
         <div className="relative space-y-8">
           {/* Main Header */}
@@ -168,21 +168,23 @@ export function LiveView({ lang, onPlayVideo }: LiveViewProps) {
             <div className="flex flex-wrap items-center justify-between gap-3">
               <div
                 className={`inline-flex items-center gap-2 text-xs font-extrabold uppercase tracking-[0.16em] ${
-                  filteredActiveLiveStreams.length > 0 ? 'text-[#ff405d]' : 'text-white/60'
+                  filteredActiveLiveStreams.length > 0
+                    ? 'text-[#278500] dark:text-[#6fd43a]'
+                    : 'text-[#52634c] dark:text-[#98ad90]'
                 }`}
               >
                 <span
                   className={`h-1.5 w-1.5 rounded-full ${
                     filteredActiveLiveStreams.length > 0
-                      ? 'animate-pulse bg-[#ff405d]'
-                      : 'bg-white/35'
+                      ? 'animate-pulse bg-[#278500] dark:bg-[#6fd43a]'
+                      : 'bg-[#8da087] dark:bg-[#5a7152]'
                   }`}
                 />
                 <span>ON SIGNAL</span>
               </div>
 
               {/* Firestore Connection Indicator */}
-              <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-3 py-1.5 text-[11px] font-semibold text-white/65">
+              <div className="inline-flex items-center gap-2 rounded-full border border-[#dce6d7] bg-[#f6faf4] px-3 py-1.5 text-[11px] font-semibold text-[#52634c] dark:border-[#24371f] dark:bg-[#142111] dark:text-[#98ad90]">
                 <span
                   className={`h-1.5 w-1.5 rounded-full ${
                     firestoreConnected ? 'bg-emerald-400' : 'animate-pulse bg-amber-400'
@@ -194,11 +196,11 @@ export function LiveView({ lang, onPlayVideo }: LiveViewProps) {
 
             <div className="flex flex-wrap items-end justify-between gap-5">
               <div className="min-w-0">
-                <h1 className="font-display text-5xl font-black leading-[0.95] tracking-tight text-[#f5eeee] sm:text-7xl">
+                <h1 className="font-display text-5xl font-black leading-[0.95] tracking-tight text-[#131f10] sm:text-7xl dark:text-[#ecf4e8]">
                   LIVE{' '}
-                  <span className="text-[#ff3658]">/ {filteredActiveLiveStreams.length}</span>
+                  <span className="text-[#278500] dark:text-[#6fd43a]">/ {filteredActiveLiveStreams.length}</span>
                 </h1>
-                <p className="mt-3 max-w-2xl text-sm leading-relaxed text-[#b9adaf] sm:text-[15px]">
+                <p className="mt-3 max-w-2xl text-sm leading-relaxed text-[#52634c] sm:text-[15px] dark:text-[#98ad90]">
                   {lang === 'en'
                     ? 'Verified member streams on TikTok and Instagram, updated in real time.'
                     : 'Siaran member yang disahkan di TikTok dan Instagram, dikemas kini secara langsung.'}
@@ -207,7 +209,7 @@ export function LiveView({ lang, onPlayVideo }: LiveViewProps) {
 
               {/* Filter Pills */}
               <div
-                className="inline-flex max-w-full rounded-full border border-white/10 bg-[#20191a] p-1"
+                className="inline-flex max-w-full rounded-full border border-[#dce6d7] bg-[#f6faf4] p-1 dark:border-[#24371f] dark:bg-[#142111]"
                 role="group"
                 aria-label="Filter live streams by platform"
               >
@@ -224,10 +226,10 @@ export function LiveView({ lang, onPlayVideo }: LiveViewProps) {
                       key={tab.key}
                       type="button"
                       onClick={() => setPlatformFilter(tab.key)}
-                      className={`min-h-9 whitespace-nowrap rounded-full px-4 text-xs font-bold transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#ff5570] sm:px-5 ${
+                      className={`min-h-9 whitespace-nowrap rounded-full px-4 text-xs font-bold transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#278500] dark:focus-visible:outline-[#6fd43a] sm:px-5 ${
                         active
-                          ? 'bg-[#ff3658] text-white shadow-sm shadow-[#ff3658]/20'
-                          : 'text-[#aa9fa1] hover:text-white'
+                          ? 'bg-[#278500] text-white shadow-sm shadow-[#278500]/20 dark:bg-[#6fd43a] dark:text-[#0a1407] dark:shadow-[#6fd43a]/15'
+                          : 'text-[#52634c] hover:text-[#131f10] dark:text-[#98ad90] dark:hover:text-[#ecf4e8]'
                       }`}
                     >
                       {tab.label}
@@ -258,8 +260,8 @@ export function LiveView({ lang, onPlayVideo }: LiveViewProps) {
 
               return (
                 <div key={member.nama} className="space-y-2">
-                  <article className="group relative overflow-hidden rounded-[20px] border border-white/10 bg-[#211b1c] shadow-lg transition-transform duration-200 hover:-translate-y-1">
-                    <div className="relative aspect-[4/5] overflow-hidden bg-[#211b1c]">
+                  <article className="group relative overflow-hidden rounded-[20px] border border-[#dce6d7] bg-white shadow-lg transition-transform duration-200 hover:-translate-y-1 dark:border-[#24371f] dark:bg-[#142111]">
+                    <div className="relative aspect-[4/5] overflow-hidden bg-[#e9f2e4] dark:bg-[#192915]">
                       <button
                         type="button"
                         onClick={() => setSelectedMember({ member, index: originalIndex })}
@@ -275,13 +277,13 @@ export function LiveView({ lang, onPlayVideo }: LiveViewProps) {
                       </button>
 
                       <div className="absolute top-3.5 left-3.5">
-                        <span className="font-mono-num rounded-md bg-[#171416]/90 px-2 py-1 text-[11px] font-extrabold text-[#ff405d] shadow-sm backdrop-blur-sm">
+                        <span className="font-mono-num rounded-md bg-black/70 px-2 py-1 text-[11px] font-extrabold text-[#6fd43a] shadow-sm backdrop-blur-sm">
                           {String(idx + 1).padStart(2, '0')}
                         </span>
                       </div>
 
                       <div className="absolute top-3.5 right-3.5">
-                        <div className="inline-flex items-center gap-1.5 rounded-full bg-[#ff3658] px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.08em] text-white shadow-lg shadow-black/20">
+                        <div className="inline-flex items-center gap-1.5 rounded-full bg-[#278500] px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.08em] text-white shadow-lg shadow-black/20 dark:bg-[#6fd43a] dark:text-[#0a1407]">
                           <span className="flex h-3 items-end gap-0.5" aria-hidden="true">
                             <span className="h-1 w-0.5 rounded-full bg-white/75" />
                             <span className="h-2 w-0.5 rounded-full bg-white" />
@@ -338,7 +340,7 @@ export function LiveView({ lang, onPlayVideo }: LiveViewProps) {
                     </div>
                   </article>
                   {socialHandle && (
-                    <p className="truncate text-xs font-medium text-[#9e9294]" title={`@${socialHandle}`}>
+                    <p className="truncate text-xs font-medium text-[#52634c] dark:text-[#98ad90]" title={`@${socialHandle}`}>
                       @{socialHandle}
                     </p>
                   )}
@@ -348,26 +350,26 @@ export function LiveView({ lang, onPlayVideo }: LiveViewProps) {
           </div>
         ) : (
           /* Verified Standby Card when 0 members are verified LIVE in Firestore */
-          <div className="overflow-hidden rounded-[22px] border border-white/10 bg-[#1d1718] p-7 text-center sm:p-9">
-            <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-[#ff3658]/10 text-[#ff7187]">
+          <div className="overflow-hidden rounded-[22px] border border-[#dce6d7] bg-white/[0.78] p-7 text-center backdrop-blur-sm sm:p-9 dark:border-[#24371f] dark:bg-[#142111]/90">
+            <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-[#e3f2da] text-[#278500] dark:bg-[#1d3314] dark:text-[#6fd43a]">
               <Radio className="h-7 w-7" aria-hidden="true" />
             </div>
-            <h2 className="font-display mt-4 text-xl font-bold tracking-tight text-white sm:text-2xl">
+            <h2 className="font-display mt-4 text-xl font-bold tracking-tight text-[#131f10] sm:text-2xl dark:text-[#ecf4e8]">
               {t.lv_no_active_live}
             </h2>
-            <p className="mx-auto mt-2 max-w-xl text-sm leading-relaxed text-[#b9adaf]">
+            <p className="mx-auto mt-2 max-w-xl text-sm leading-relaxed text-[#52634c] dark:text-[#98ad90]">
               Hanya siaran langsung yang disahkan dalam koleksi Firestore{' '}
-              <code className="rounded bg-white/[0.07] px-1.5 py-0.5 font-mono text-xs text-[#ff7187]">
+              <code className="rounded bg-[#e3f2da] px-1.5 py-0.5 font-mono text-xs text-[#278500] dark:bg-[#1d3314] dark:text-[#6fd43a]">
                 live_status
               </code>{' '}
               akan dipaparkan sebagai LIVE. Tiada status palsu atau simulasi dicipta. Anda boleh menyemak pautan rasmi setiap member di bawah.
             </p>
             <div className="mt-5 flex flex-wrap items-center justify-center gap-3 text-xs">
-              <span className="inline-flex items-center gap-1.5 rounded-lg border border-white/10 bg-white/[0.04] px-3 py-1.5 font-semibold text-white/80">
+              <span className="inline-flex items-center gap-1.5 rounded-lg border border-[#dce6d7] bg-[#f6faf4] px-3 py-1.5 font-semibold text-[#52634c] dark:border-[#24371f] dark:bg-[#0e190b] dark:text-[#c7d7c0]">
                 <CheckCircle2 className="h-3.5 w-3.5 text-emerald-400" />
                 20 Member Aktif Disambung
               </span>
-              <span className="inline-flex items-center gap-1.5 rounded-lg border border-white/10 bg-white/[0.04] px-3 py-1.5 font-semibold text-white/80">
+              <span className="inline-flex items-center gap-1.5 rounded-lg border border-[#dce6d7] bg-[#f6faf4] px-3 py-1.5 font-semibold text-[#52634c] dark:border-[#24371f] dark:bg-[#0e190b] dark:text-[#c7d7c0]">
                 <Wifi className="h-3.5 w-3.5 text-emerald-400" />
                 Langganan Firestore Real-Time Aktif
               </span>
