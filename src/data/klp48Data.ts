@@ -101,11 +101,31 @@ export interface LivePostItem {
 export const OFFICIAL_SITE_URL = 'https://klp48.my';
 
 export const RELEASES: ReleaseItem[] = [
-  { title: 'Green Flash', date: '2025.09.12', type: 'Album' },
-  { title: 'Oh my pumpkin!', date: '2025.08.13', type: 'Single' },
+  {
+    title: 'Green Flash',
+    date: '2025.09.12',
+    type: 'Album',
+    artworkUrl: 'https://image-cdn-fa.spotifycdn.com/image/ab67616d00001e02b56bb0f1fd0bba21afc5c9af',
+  },
+  {
+    title: 'Oh my pumpkin!',
+    date: '2025.08.13',
+    type: 'Single',
+    artworkUrl: 'https://image-cdn-fa.spotifycdn.com/image/ab67616d00001e02610eb27873fa0a9cdf655baa',
+  },
   { title: 'First Cry', date: '2025.06.13', type: 'EP' },
-  { title: 'Flying Get', date: '2025.05.30', type: 'Single' },
-  { title: 'Alasanku Maybe', date: '2024.04.18', type: 'Single' },
+  {
+    title: 'Flying Get',
+    date: '2025.05.30',
+    type: 'Single',
+    artworkUrl: 'https://image-cdn-ak.spotifycdn.com/image/ab67616d00001e022ee35c4b03821badec202300',
+  },
+  {
+    title: 'Alasanku Maybe',
+    date: '2024.04.18',
+    type: 'Single',
+    artworkUrl: 'https://image-cdn-ak.spotifycdn.com/image/ab67616d00001e02397615ff4016ec0a9eca7a0b',
+  },
   {
     title: 'Heavy Rotation',
     date: '2024.08.14',
