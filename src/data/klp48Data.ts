@@ -104,6 +104,8 @@ export const RELEASES: ReleaseItem[] = [
   { title: 'Oh my pumpkin!', date: '2025.08.13', type: 'Single' },
   { title: 'First Cry', date: '2025.06.13', type: 'EP' },
   { title: 'Flying Get', date: '2025.05.30', type: 'Single' },
+  { title: 'Alasanku Maybe', date: '2024.04.18', type: 'Single' },
+  { title: 'Heavy Rotation', date: '2024.08.14', type: 'Single' },
 ];
 
 const RAW_VIDEOS: Array<[string, string, string?]> = [
