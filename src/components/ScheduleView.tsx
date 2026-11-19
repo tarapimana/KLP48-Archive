@@ -199,9 +199,9 @@ export function ScheduleView({ lang }: ScheduleViewProps) {
               : weekdays[ev.startDate.getDay()];
 
             const title = lang === 'en' && ev.titleEn ? ev.titleEn : ev.title;
-  const venue = lang === 'en' && ev.venueEn ? ev.venueEn : ev.venue;
-  const VenueIcon = /fan\s*club/i.test(venue) ? UsersRound : MapPin;
-  const time = lang === 'en' && ev.timeEn ? ev.timeEn : ev.time;
+            const venue = lang === 'en' && ev.venueEn ? ev.venueEn : ev.venue;
+            const VenueIcon = /fan\s*club/i.test(venue) ? UsersRound : MapPin;
+            const time = lang === 'en' && ev.timeEn ? ev.timeEn : ev.time;
             const notes = lang === 'en' && ev.notesEn ? ev.notesEn : ev.notes;
             const members = ev.members || '';
             const participants = parseEventMemberNames(members)

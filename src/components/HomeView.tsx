@@ -316,9 +316,9 @@ export function HomeView({ lang, onNavigate, onPlayVideo }: HomeViewProps) {
               <div className="space-y-3">
                 {nextEvents.map((ev) => {
                   const title = lang === 'en' && ev.titleEn ? ev.titleEn : ev.title;
-  const venue = lang === 'en' && ev.venueEn ? ev.venueEn : ev.venue;
-  const VenueIcon = /fan\s*club/i.test(venue) ? UsersRound : MapPin;
-  const notes = lang === 'en' && ev.notesEn ? ev.notesEn : ev.notes;
+                  const venue = lang === 'en' && ev.venueEn ? ev.venueEn : ev.venue;
+                  const VenueIcon = /fan\s*club/i.test(venue) ? UsersRound : MapPin;
+                  const notes = lang === 'en' && ev.notesEn ? ev.notesEn : ev.notes;
                   const eventTime = lang === 'en' && ev.timeEn ? ev.timeEn : ev.time;
                   const dateNumber = ev.startDate.getTime() === ev.endDate.getTime()
                     ? String(ev.startDate.getDate())
