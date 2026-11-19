@@ -1,6 +1,7 @@
-import { ArrowRight, Check, Clock, ExternalLink, MapPin } from 'lucide-react';
+import { ArrowRight, Check, Clock, ExternalLink, MapPin, UsersRound } from 'lucide-react';
 import { useMemo, useState } from 'react';
-import { getParsedEvents } from '../data/klp48Data';
+import { useScheduleEvents } from '../context/useScheduleEvents';
+import { ScheduleCsvImporter } from './ScheduleCsvImporter';
 import {
   Lang,
   MONTHS_EN,
@@ -20,7 +21,7 @@ type ScheduleFilter = 'all' | 'show' | 'event';
 
 export function ScheduleView({ lang }: ScheduleViewProps) {
   const t = TRANSLATIONS[lang];
-  const allEvents = useMemo(() => getParsedEvents(), []);
+  const { events: allEvents } = useScheduleEvents();
   const now = new Date();
 
   const initialPeriod = useMemo(() => {
@@ -39,7 +40,6 @@ export function ScheduleView({ lang }: ScheduleViewProps) {
   const [month, setMonth] = useState<number>(initialPeriod.month);
   const [year, setYear] = useState<number>(initialPeriod.year);
   const [typeFilter, setTypeFilter] = useState<ScheduleFilter>('all');
-  const [expandedIds, setExpandedIds] = useState<Record<string, boolean>>({});
 
   const months = lang === 'en' ? MONTHS_EN : MONTHS_MS;
   const shortMonths = lang === 'en' ? MONTHS_SHORT_EN : MONTHS_SHORT_MS;
@@ -73,10 +73,6 @@ export function ScheduleView({ lang }: ScheduleViewProps) {
     });
   }, [filteredEvents]);
 
-  const toggleDetails = (id: string) => {
-    setExpandedIds((prev) => ({ ...prev, [id]: !prev[id] }));
-  };
-
   const pad2 = (n: number) => String(n).padStart(2, '0');
 
   return (
@@ -89,6 +85,8 @@ export function ScheduleView({ lang }: ScheduleViewProps) {
           {t.j_sub}
         </p>
       </header>
+
+      <ScheduleCsvImporter lang={lang} />
 
       {/* Filter Toolbar */}
       <div className="mb-8 flex flex-wrap items-end justify-between gap-4 border-b border-[#dce6d7] pb-6 dark:border-[#24371f]">
@@ -181,7 +179,6 @@ export function ScheduleView({ lang }: ScheduleViewProps) {
             const isPast = endOfDay < now;
             const isRange = ev.endDate.getTime() > ev.startDate.getTime();
             const isNext = idx === firstUpcomingIndex;
-            const isExpanded = Boolean(expandedIds[ev.id]);
 
             const dayLabel = isRange
               ? `${pad2(ev.startDate.getDate())}~${pad2(ev.endDate.getDate())}`
@@ -194,8 +191,8 @@ export function ScheduleView({ lang }: ScheduleViewProps) {
             const venue = lang === 'en' && ev.venueEn ? ev.venueEn : ev.venue;
             const time = lang === 'en' && ev.timeEn ? ev.timeEn : ev.time;
             const notes = lang === 'en' && ev.notesEn ? ev.notesEn : ev.notes;
+            const members = ev.members || '';
             const isBirthdayEvent = /birthday/i.test(ev.title);
-            const hasExtraDetails = Boolean(notes || ev.link);
 
             return (
               <article
@@ -208,7 +205,7 @@ export function ScheduleView({ lang }: ScheduleViewProps) {
                     : 'border-[#c8dcc0] bg-white/96 dark:border-[#2b4523] dark:bg-[#101c0d]/95'
                 }`}
               >
-                <div className="flex items-start justify-between gap-4">
+                <div className="flex items-start gap-4">
                   {/* Date & Main Info */}
                   <div className="flex min-w-0 flex-1 items-start gap-4">
                     {/* Crisp Tabular Date Column */}
@@ -305,44 +302,34 @@ export function ScheduleView({ lang }: ScheduleViewProps) {
                             <span className="font-mono-num">{time}</span>
                           </div>
                         )}
+                        {members && (
+                          <div className="flex items-start gap-1.5">
+                            <UsersRound
+                              className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#278500] dark:text-[#7ce043]"
+                              aria-hidden="true"
+                            />
+                            <span className="min-w-0 break-words">{members}</span>
+                          </div>
+                        )}
+                        {notes && <p className="leading-relaxed">{notes}</p>}
+                        {ev.link && (
+                          <a
+                            href={ev.link}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex min-h-11 items-center gap-1.5 font-bold text-[#278500] hover:underline dark:text-[#7ce043]"
+                          >
+                            <ExternalLink className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
+                            <span>{t.j_link}</span>
+                          </a>
+                        )}
                       </div>
                     </div>
                   </div>
 
-                  {hasExtraDetails && (
-                    <button
-                      type="button"
-                      onClick={() => toggleDetails(ev.id)}
-                      aria-expanded={isExpanded}
-                      className="min-h-[36px] shrink-0 whitespace-nowrap rounded-lg border border-[#278500] px-3 py-1.5 text-xs font-semibold text-[#278500] transition-colors hover:bg-[#e3f2da] dark:border-[#6fd43a] dark:text-[#7ce043] dark:hover:bg-[#1d3314]"
-                    >
-                      {isExpanded ? t.close : t.detail}
-                    </button>
-                  )}
+
                 </div>
 
-                {isExpanded && hasExtraDetails && (
-                  <div className="mt-4 space-y-2 rounded-xl border border-[#dce6d7] bg-[#f3f8f0] px-4 py-3 text-sm text-[#131f10] dark:border-[#24371f] dark:bg-[#162612] dark:text-[#ecf4e8]">
-                    {notes && (
-                      <p className="leading-relaxed text-[#263421] dark:text-[#dce9d7]">
-                        {notes}
-                      </p>
-                    )}
-                    {ev.link && (
-                      <div>
-                        <a
-                          href={ev.link}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="inline-flex items-center gap-1.5 text-xs font-bold text-[#278500] hover:underline dark:text-[#7ce043]"
-                        >
-                          <span>{t.j_link}</span>
-                          <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
-                        </a>
-                      </div>
-                    )}
-                  </div>
-                )}
               </article>
             );
           })}

@@ -2,7 +2,6 @@ import { ArrowRight, ExternalLink, Music } from 'lucide-react';
 import { useState } from 'react';
 import {
   getMemberCategory,
-  getParsedEvents,
   MemberItem,
   MEMBERS_DATA,
   NEWS_DATA,
@@ -11,6 +10,7 @@ import {
   VideoItem,
   VIDEOS,
 } from '../data/klp48Data';
+import { useScheduleEvents } from '../context/useScheduleEvents';
 import { Lang, MONTHS_EN, MONTHS_MS, TRANSLATIONS } from '../i18n/translations';
 import { BirthdayCountdown } from './BirthdayCountdown';
 import { MemberModal } from './MemberModal';
@@ -25,6 +25,7 @@ interface HomeViewProps {
 export function HomeView({ lang, onNavigate, onPlayVideo }: HomeViewProps) {
   const t = TRANSLATIONS[lang];
   const months = lang === 'en' ? MONTHS_EN : MONTHS_MS;
+  const { events } = useScheduleEvents();
   const now = new Date();
   const [selectedMember, setSelectedMember] = useState<MemberItem | null>(null);
   const selectedMemberIdx = selectedMember
@@ -35,7 +36,7 @@ export function HomeView({ lang, onNavigate, onPlayVideo }: HomeViewProps) {
     (m) => getMemberCategory(m.status) === 'aktif'
   ).length;
 
-  const upcomingEvents = getParsedEvents().filter((ev) => {
+  const upcomingEvents = events.filter((ev) => {
     const endOfDay = new Date(
       ev.endDate.getFullYear(),
       ev.endDate.getMonth(),

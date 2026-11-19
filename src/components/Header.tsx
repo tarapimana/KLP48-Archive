@@ -1,6 +1,7 @@
-import { LogOut, Menu, Shield, ShieldAlert, ShieldCheck, X } from 'lucide-react';
+import { LogOut, Menu, ShieldAlert, ShieldCheck, X } from 'lucide-react';
 import { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
+import { useLiveStatus } from '../context/LiveStatusContext';
 import { RouteKey } from '../data/klp48Data';
 import { Lang, TRANSLATIONS } from '../i18n/translations';
 
@@ -15,6 +16,17 @@ interface HeaderProps {
 
 const PRIMARY_NAV: RouteKey[] = ['jadwal', 'member', 'berita', 'bday', 'video'];
 
+function LiveBars() {
+  return (
+    <span aria-hidden="true" className="inline-flex h-3 items-end gap-[2px]">
+      <span className="h-[4px] w-[2px] rounded-full bg-current" />
+      <span className="h-[8px] w-[2px] rounded-full bg-current" />
+      <span className="h-[6px] w-[2px] rounded-full bg-current" />
+      <span className="h-[10px] w-[2px] rounded-full bg-current" />
+    </span>
+  );
+}
+
 export function Header({
   route,
   onNavigate,
@@ -26,6 +38,7 @@ export function Header({
   const [mobileOpen, setMobileOpen] = useState(false);
   const t = TRANSLATIONS[lang];
   const { user, isAdmin, openAuthModal, signOut } = useAuth();
+  const { liveCount } = useLiveStatus();
 
   const handleNav = (key: RouteKey) => {
     onNavigate(key);
@@ -75,13 +88,12 @@ export function Header({
           <button
             type="button"
             onClick={() => handleNav('live')}
-            className={`hidden shrink-0 whitespace-nowrap rounded-lg px-4 py-2 text-sm font-semibold transition-colors duration-150 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#278500] md:inline-flex dark:focus-visible:outline-[#6fd43a] ${
-              route === 'live'
-                ? 'bg-[#1e6800] text-white dark:bg-[#8be05a] dark:text-[#0a1407]'
-                : 'bg-[#278500] text-white hover:bg-[#206e00] dark:bg-[#6fd43a] dark:text-[#0a1407] dark:hover:bg-[#82df52]'
-            }`}
+            aria-label={`${t.n_live}: ${liveCount}`}
+            className="hidden shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full bg-[#278500] px-3 py-1.5 text-xs font-bold text-white shadow-[0_4px_12px_rgba(39,133,0,0.24)] transition-colors hover:bg-[#206e00] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#278500] dark:bg-[#6fd43a] dark:text-[#0a1407] dark:hover:bg-[#82df52] dark:focus-visible:outline-[#6fd43a] md:inline-flex"
           >
-            {t.n_live}
+            <LiveBars />
+            <span className="tabular-nums">{liveCount}</span>
+            <span>{t.n_live}</span>
           </button>
 
           {/* Desktop Administrator Status / Login Button */}
@@ -125,16 +137,7 @@ export function Header({
                 <LogOut className="h-3.5 w-3.5" />
               </button>
             </div>
-          ) : (
-            <button
-              type="button"
-              onClick={openAuthModal}
-              className="hidden shrink-0 items-center gap-1.5 whitespace-nowrap rounded-lg border border-[#dce6d7] bg-white px-3 py-2 text-xs font-semibold text-[#131f10] transition-colors hover:border-[#278500] hover:bg-[#edf5e9] md:inline-flex dark:border-[#24371f] dark:bg-[#142111] dark:text-[#ecf4e8] dark:hover:border-[#6fd43a] dark:hover:bg-[#1c2d17]"
-            >
-              <Shield className="h-3.5 w-3.5 text-[#278500] dark:text-[#6fd43a]" />
-              <span>{t.admin_login}</span>
-            </button>
-          )}
+          ) : null}
 
           <button
             type="button"
@@ -162,6 +165,7 @@ export function Header({
                     handleNav(key);
                   }}
                   aria-current={active ? 'page' : undefined}
+                  aria-label={key === 'live' ? `${t.n_live}: ${liveCount}` : undefined}
                   className={`flex min-h-[44px] items-center justify-between rounded-lg px-3 text-sm font-medium transition-colors ${
                     active
                       ? 'bg-[#e3f2da] font-semibold text-[#278500] dark:bg-[#1d3314] dark:text-[#6fd43a]'
@@ -169,6 +173,15 @@ export function Header({
                   }`}
                 >
                   <span>{t[`n_${key}`]}</span>
+                  {key === 'live' && (
+                    <span
+                      aria-hidden="true"
+                      className="inline-flex items-center gap-1.5 rounded-full bg-[#278500] px-2.5 py-1 text-[11px] font-bold leading-none text-white dark:bg-[#6fd43a] dark:text-[#0a1407]"
+                    >
+                      <LiveBars />
+                      <span className="tabular-nums">{liveCount}</span>
+                    </span>
+                  )}
                 </a>
               );
             })}
@@ -226,19 +239,7 @@ export function Header({
                   </button>
                 </div>
               </div>
-            ) : (
-              <button
-                type="button"
-                onClick={() => {
-                  openAuthModal();
-                  setMobileOpen(false);
-                }}
-                className="flex min-h-[44px] w-full items-center justify-center gap-2 rounded-xl border border-[#dce6d7] bg-white px-3 text-xs font-bold text-[#131f10] shadow-xs hover:bg-[#edf5e9] dark:border-[#24371f] dark:bg-[#142111] dark:text-[#ecf4e8] dark:hover:bg-[#1c2d17]"
-              >
-                <Shield className="h-4 w-4 text-[#278500] dark:text-[#6fd43a]" />
-                <span>{t.admin_login}</span>
-              </button>
-            )}
+            ) : null}
           </div>
 
           <div className="mt-4 flex items-center justify-between gap-3 border-t border-[#dce6d7] pt-3 dark:border-[#24371f]">
