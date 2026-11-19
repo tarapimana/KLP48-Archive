@@ -1,4 +1,4 @@
-import { ArrowLeft, Calendar, ExternalLink, X } from 'lucide-react';
+import { ArrowLeft, Calendar, X } from 'lucide-react';
 import { useEffect } from 'react';
 import {
   getMemberCategory,
@@ -51,12 +51,6 @@ export function MemberModal({
     lang === 'en' && member.tarikh_lahir_en
       ? member.tarikh_lahir_en
       : member.tarikh_lahir;
-
-  const socials = [
-    { label: 'Instagram', handle: member.instagram, baseUrl: 'https://www.instagram.com/' },
-    { label: 'TikTok', handle: member.tiktok, baseUrl: 'https://www.tiktok.com/@' },
-    { label: 'X', handle: member.x, baseUrl: 'https://x.com/' },
-  ].filter((s) => /^[A-Za-z0-9._]{1,40}$/.test((s.handle || '').trim().replace(/^@/, '')));
 
   const now = new Date();
   const months = lang === 'en' ? MONTHS_EN : MONTHS_MS;
@@ -152,34 +146,6 @@ export function MemberModal({
                 </dd>
               </div>
             </dl>
-
-            {socials.length > 0 && (
-              <section className="mt-6">
-                <h3 className="font-mono-num text-xs font-semibold uppercase tracking-[0.16em] text-[#52634c] dark:text-[#a8bc9f]">
-                  {t.m_social}
-                </h3>
-                <div className="mt-2.5 flex flex-wrap gap-2.5">
-                  {socials.map((s) => {
-                    const cleanHandle = s.handle.trim().replace(/^@/, '');
-                    return (
-                      <a
-                        key={s.label}
-                        href={`${s.baseUrl}${cleanHandle}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex min-h-[40px] max-w-full items-center gap-1.5 rounded-full border border-[#dce6d7] bg-[#ffffff] px-3.5 py-1.5 text-sm font-semibold text-[#278500] transition-colors hover:border-[#278500] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#278500] dark:border-[#24371f] dark:bg-[#101c0d] dark:text-[#7ce043] dark:hover:border-[#6fd43a] dark:focus-visible:outline-[#6fd43a]"
-                      >
-                        <span>{s.label}</span>
-                        <span className="truncate font-mono-num text-xs font-normal text-[#52634c] dark:text-[#a8bc9f]">
-                          @{cleanHandle}
-                        </span>
-                        <ExternalLink className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
-                      </a>
-                    );
-                  })}
-                </div>
-              </section>
-            )}
 
             {relatedEvents.length > 0 && (
               <section className="mt-6">
