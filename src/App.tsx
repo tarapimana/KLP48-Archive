@@ -4,6 +4,7 @@
  */
 
 import { useEffect, useState } from 'react';
+import { AdminAccessView } from './components/AdminAccessView';
 import { AdminAuthModal } from './components/AdminAuthModal';
 import { BirthdaysView } from './components/BirthdaysView';
 import { BackgroundVideo } from './components/BackgroundVideo';
@@ -105,61 +106,69 @@ export default function App() {
   const toggleLang = () => setLang((prev) => (prev === 'ms' ? 'en' : 'ms'));
   const toggleTheme = () => setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'));
 
+  const isAdminAccessPage = window.location.pathname.replace(/\/+$/, '') === '/admin';
+
   return (
     <AuthProvider>
       <div className="relative min-h-screen text-[#131f10] transition-colors duration-150 dark:text-[#ecf4e8]">
-        {/* Whole-page Video Background */}
-        <BackgroundVideo lang={lang} />
-        <div
-          aria-hidden="true"
-          className="pointer-events-none fixed inset-0 z-0 bg-[#f6faf4]/82 transition-colors duration-150 dark:bg-[#0a1407]/72"
-        />
-
-        <div className="relative z-10 flex min-h-screen flex-col">
-          <Header
-            route={route}
-            onNavigate={navigate}
-            lang={lang}
-            onToggleLang={toggleLang}
-            theme={theme}
-            onToggleTheme={toggleTheme}
-          />
-
-          <main className="mx-auto w-full max-w-6xl flex-1 px-4 pb-8 sm:px-6">
-            <UtilityBar
-              lang={lang}
-              onChangeLang={setLang}
-              theme={theme}
-              onToggleTheme={toggleTheme}
+        {isAdminAccessPage ? (
+          <AdminAccessView lang={lang} />
+        ) : (
+          <>
+            {/* Whole-page Video Background */}
+            <BackgroundVideo lang={lang} />
+            <div
+              aria-hidden="true"
+              className="pointer-events-none fixed inset-0 z-0 bg-[#f6faf4]/82 transition-colors duration-150 dark:bg-[#0a1407]/72"
             />
 
-            {route === 'home' && (
-              <HomeView
-                lang={lang}
+            <div className="relative z-10 flex min-h-screen flex-col">
+              <Header
+                route={route}
                 onNavigate={navigate}
-                onPlayVideo={(vid) => setActiveVideo(vid)}
+                lang={lang}
+                onToggleLang={toggleLang}
+                theme={theme}
+                onToggleTheme={toggleTheme}
               />
-            )}
-            {route === 'jadwal' && <ScheduleView lang={lang} />}
-            {route === 'member' && <MembersView lang={lang} />}
-            {route === 'berita' && <NewsView lang={lang} />}
-            {route === 'bday' && <BirthdaysView lang={lang} />}
-            {route === 'video' && (
-              <VideosView lang={lang} onPlayVideo={(vid) => setActiveVideo(vid)} />
-            )}
-            {route === 'live' && (
-              <LiveView lang={lang} onPlayVideo={(vid) => setActiveVideo(vid)} />
-            )}
-          </main>
 
-          <Footer lang={lang} onNavigate={navigate} />
-        </div>
+              <main className="mx-auto w-full max-w-6xl flex-1 px-4 pb-8 sm:px-6">
+                <UtilityBar
+                  lang={lang}
+                  onChangeLang={setLang}
+                  theme={theme}
+                  onToggleTheme={toggleTheme}
+                />
 
-        <VideoModal
-          video={activeVideo}
-          lang={lang}
-          onClose={() => setActiveVideo(null)}
-        />
+                {route === 'home' && (
+                  <HomeView
+                    lang={lang}
+                    onNavigate={navigate}
+                    onPlayVideo={(vid) => setActiveVideo(vid)}
+                  />
+                )}
+                {route === 'jadwal' && <ScheduleView lang={lang} />}
+                {route === 'member' && <MembersView lang={lang} />}
+                {route === 'berita' && <NewsView lang={lang} />}
+                {route === 'bday' && <BirthdaysView lang={lang} />}
+                {route === 'video' && (
+                  <VideosView lang={lang} onPlayVideo={(vid) => setActiveVideo(vid)} />
+                )}
+                {route === 'live' && (
+                  <LiveView lang={lang} onPlayVideo={(vid) => setActiveVideo(vid)} />
+                )}
+              </main>
+
+              <Footer lang={lang} onNavigate={navigate} />
+            </div>
+
+            <VideoModal
+              video={activeVideo}
+              lang={lang}
+              onClose={() => setActiveVideo(null)}
+            />
+          </>
+        )}
 
         <AdminAuthModal lang={lang} />
       </div>
