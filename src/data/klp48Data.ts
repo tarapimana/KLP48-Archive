@@ -356,6 +356,7 @@ const MEMBER_CATCHPHRASES: Record<string, string> = {
   hillary: "I rilly love you and you rilly love...?",
   haruka: "Hai semua! I’m sunflower in KLP48. Where is my kuaci?. Hello my kuaci, I’m Ha-chan!",
   khalies: "The world is lucky to have everyone and me! Hi everyone, I'm Khalies! Nama saya Khalies!",
+  lucine: "Shining on stage and bringing a luminous touch to you. Hello everyone, my name is Lucine!",
   yi_shyan: "Hi everyone my name is Yi Shyan, Manis sepertimu simpan saya di dalam hatimu.",
   ann_drea: "A N Squared D R E A thats my name, hello everybody im Ann Drea!",
   yurina: "Hai semua. Nama saya Yurina Gyoten, panggil saya Yurina. Everyone say Bikkuri (Gyoten) I’m surprise, I make everyone smile.",
