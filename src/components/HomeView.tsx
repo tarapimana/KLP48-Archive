@@ -23,6 +23,7 @@ import {
 } from '../i18n/translations';
 import { BirthdayCountdown } from './BirthdayCountdown';
 import { MemberModal } from './MemberModal';
+import { TikTokThumbnail } from './TikTokThumbnail';
 import { YouTubeThumbnail } from './YouTubeThumbnail';
 
 interface HomeViewProps {
@@ -59,7 +60,7 @@ export function HomeView({ lang, onNavigate, onPlayVideo }: HomeViewProps) {
   });
 
   const nextEvents = upcomingEvents.slice(0, 3);
-  const featuredVideos = VIDEOS.filter((v) => v.platform === 'youtube').slice(0, 2);
+  const featuredVideos = VIDEOS.slice(0, 4);
 
   const formatEventDateRange = (start: Date, end: Date) => {
     if (end.getTime() > start.getTime()) {
@@ -406,42 +407,50 @@ export function HomeView({ lang, onNavigate, onPlayVideo }: HomeViewProps) {
         </div>
 
         <div className="grid gap-4 md:grid-cols-2">
-          {featuredVideos.map((vid) => (
-            <div key={vid.url} className={`${cardSurface} overflow-hidden`}>
-              <button
-                type="button"
-                onClick={() => onPlayVideo(vid)}
-                className="group relative block w-full text-left"
-                aria-label={`${t.v_preview}: ${vid.title}`}
-              >
-                <YouTubeThumbnail
-                  youtubeId={vid.youtubeId}
-                  title={vid.title}
-                  playLabel={t.v_preview}
-                  badgeSize="lg"
-                />
-              </button>
-              <div className="flex items-start justify-between gap-4 p-4">
-                <div className="min-w-0">
-                  <div className="text-xs font-semibold text-[#278500] dark:text-[#6fd43a]">
-                    YouTube
-                  </div>
-                  <h3 className="mt-1 line-clamp-2 text-sm font-semibold text-[#131f10] dark:text-white">
-                    {vid.title}
-                  </h3>
-                </div>
-                <a
-                  href={vid.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex shrink-0 items-center gap-1 whitespace-nowrap text-xs font-semibold text-[#278500] hover:underline dark:text-[#6fd43a]"
+          {featuredVideos.map((vid) => {
+            const isYouTube = vid.platform === 'youtube';
+
+            return (
+              <div key={vid.url} className={`${cardSurface} overflow-hidden`}>
+                <button
+                  type="button"
+                  onClick={() => onPlayVideo(vid)}
+                  className="group relative block w-full text-left"
+                  aria-label={`${t.v_preview}: ${vid.title}`}
                 >
-                  <span>YouTube</span>
-                  <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
-                </a>
+                  {isYouTube ? (
+                    <YouTubeThumbnail
+                      youtubeId={vid.youtubeId}
+                      title={vid.title}
+                      playLabel={t.v_preview}
+                      badgeSize="lg"
+                    />
+                  ) : (
+                    <TikTokThumbnail thumbnail={vid.thumbnail} title={vid.title} />
+                  )}
+                </button>
+                <div className="flex items-start justify-between gap-4 p-4">
+                  <div className="min-w-0">
+                    <div className="text-xs font-semibold text-[#278500] dark:text-[#6fd43a]">
+                      {isYouTube ? 'YouTube' : 'TikTok'}
+                    </div>
+                    <h3 className="mt-1 line-clamp-2 text-sm font-semibold text-[#131f10] dark:text-white">
+                      {vid.title}
+                    </h3>
+                  </div>
+                  <a
+                    href={vid.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex shrink-0 items-center gap-1 whitespace-nowrap text-xs font-semibold text-[#278500] hover:underline dark:text-[#6fd43a]"
+                  >
+                    <span>{isYouTube ? 'YouTube' : t.v_open_tt}</span>
+                    <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
+                  </a>
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </section>
 
