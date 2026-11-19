@@ -101,16 +101,6 @@ export function HomeView({ lang, onNavigate, onPlayVideo }: HomeViewProps) {
 
             <div className="mt-6 flex flex-wrap items-center gap-3">
               <a
-                href="#jadwal"
-                onClick={(e) => {
-                  e.preventDefault();
-                  onNavigate('jadwal');
-                }}
-                className="inline-flex min-h-[42px] items-center rounded-full bg-[#278500] px-6 py-2.5 text-sm font-bold text-white transition-colors hover:bg-[#206e00] dark:bg-[#66c91a] dark:text-[#0b1608] dark:hover:bg-[#7ad92e]"
-              >
-                {t.h_b1}
-              </a>
-              <a
                 href="#member"
                 onClick={(e) => {
                   e.preventDefault();
@@ -119,6 +109,16 @@ export function HomeView({ lang, onNavigate, onPlayVideo }: HomeViewProps) {
                 className="inline-flex min-h-[42px] items-center rounded-full border border-[#278500] bg-white/75 px-6 py-2.5 text-sm font-bold text-[#278500] backdrop-blur-xs transition-colors hover:bg-[#edf5e9] dark:border-[#66c91a]/75 dark:bg-[#0e190b]/60 dark:text-[#6fd43a] dark:hover:border-[#66c91a] dark:hover:bg-[#162712]"
               >
                 {t.h_b2}
+              </a>
+              <a
+                href="#jadwal"
+                onClick={(e) => {
+                  e.preventDefault();
+                  onNavigate('jadwal');
+                }}
+                className="inline-flex min-h-[42px] items-center rounded-full bg-[#278500] px-6 py-2.5 text-sm font-bold text-white transition-colors hover:bg-[#206e00] dark:bg-[#66c91a] dark:text-[#0b1608] dark:hover:bg-[#7ad92e]"
+              >
+                {t.h_b1}
               </a>
               <a
                 href="#video"
