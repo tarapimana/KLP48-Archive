@@ -1,7 +1,8 @@
-import { ArrowRight, ExternalLink } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import { useMemo, useState } from 'react';
-import { NEWS_DATA, OFFICIAL_SITE_URL } from '../data/klp48Data';
+import { NEWS_DATA, NewsItem } from '../data/klp48Data';
 import { Lang, TRANSLATIONS } from '../i18n/translations';
+import { NewsModal } from './NewsModal';
 
 interface NewsViewProps {
   lang: Lang;
@@ -10,6 +11,7 @@ interface NewsViewProps {
 export function NewsView({ lang }: NewsViewProps) {
   const t = TRANSLATIONS[lang];
   const [category, setCategory] = useState<string>('all');
+  const [selectedItem, setSelectedItem] = useState<NewsItem | null>(null);
 
   const categories = useMemo(() => {
     const set = new Set<string>();
@@ -56,25 +58,15 @@ export function NewsView({ lang }: NewsViewProps) {
           ))}
         </div>
 
-        <a
-          href={`${OFFICIAL_SITE_URL}/news`}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex items-center gap-1.5 text-sm font-semibold text-[#278500] hover:underline dark:text-[#6fd43a]"
-        >
-          <span>{t.b_more}</span>
-          <ArrowRight className="h-4 w-4" aria-hidden="true" />
-        </a>
       </div>
 
       <div className="divide-y divide-[#dce6d7] rounded-2xl border border-[#dce6d7] bg-white dark:divide-[#24371f] dark:border-[#24371f] dark:bg-[#142111]">
         {filteredNews.map((item) => (
-          <a
+          <button
             key={item.pautan}
-            href={item.pautan}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="group flex items-start justify-between gap-4 p-5 transition-colors hover:bg-[#f6faf4] dark:hover:bg-[#1a2b15]"
+            type="button"
+            onClick={() => setSelectedItem(item)}
+            className="group flex w-full items-start justify-between gap-4 p-5 text-left transition-colors hover:bg-[#f6faf4] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[#278500] dark:hover:bg-[#1a2b15] dark:focus-visible:ring-[#6fd43a]"
           >
             <div className="min-w-0">
               <div className="flex items-center gap-2 text-xs font-medium text-[#52634c] dark:text-[#98ad90]">
@@ -88,13 +80,19 @@ export function NewsView({ lang }: NewsViewProps) {
                 {item.tajuk}
               </h2>
             </div>
-            <ExternalLink
-              className="mt-1 h-4 w-4 shrink-0 text-[#52634c] transition-colors group-hover:text-[#278500] dark:text-[#98ad90] dark:group-hover:text-[#6fd43a]"
+            <ArrowRight
+              className="mt-1 h-4 w-4 shrink-0 text-[#52634c] transition-transform group-hover:translate-x-0.5 group-hover:text-[#278500] dark:text-[#98ad90] dark:group-hover:text-[#6fd43a]"
               aria-hidden="true"
             />
-          </a>
+          </button>
         ))}
       </div>
+
+      <NewsModal
+        item={selectedItem}
+        lang={lang}
+        onClose={() => setSelectedItem(null)}
+      />
     </div>
   );
 }

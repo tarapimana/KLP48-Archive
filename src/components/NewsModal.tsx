@@ -1,0 +1,168 @@
+import { ArrowUpRight, X } from 'lucide-react';
+import { useEffect, useRef } from 'react';
+import { NEWS_ARTICLES } from '../data/newsArticleContent';
+import { NewsItem } from '../data/klp48Data';
+import { Lang, TRANSLATIONS } from '../i18n/translations';
+
+interface NewsModalProps {
+  item: NewsItem | null;
+  lang: Lang;
+  onClose: () => void;
+}
+
+function getArticleId(item: NewsItem) {
+  const match = item.pautan.match(/\/detail\/(\d+)\/?$/);
+  return match ? Number(match[1]) : null;
+}
+
+export function NewsModal({ item, lang, onClose }: NewsModalProps) {
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const dialogRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    if (!item) return;
+
+    const previousFocus = document.activeElement instanceof HTMLElement
+      ? document.activeElement
+      : null;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    closeButtonRef.current?.focus();
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        onClose();
+        return;
+      }
+
+      if (event.key !== 'Tab') return;
+      const focusable = Array.from(
+        dialogRef.current?.querySelectorAll<HTMLElement>(
+          'button:not([disabled]), a[href], [tabindex]:not([tabindex="-1"])'
+        ) ?? []
+      );
+      if (focusable.length === 0) return;
+
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      document.body.style.overflow = previousOverflow;
+      previousFocus?.focus();
+    };
+  }, [item, onClose]);
+
+  if (!item) return null;
+
+  const articleId = getArticleId(item);
+  const article = articleId ? NEWS_ARTICLES[articleId] : undefined;
+  const paragraphs = (article?.body ?? '')
+    .replace(/\u00a0/g, ' ')
+    .split(/\n\s*\n/)
+    .map((paragraph) => paragraph.trim())
+    .filter(Boolean);
+  const additionalLinks = (article?.links ?? []).filter(
+    (link) => link.url && !article?.body.includes(link.url) && !article?.body.includes(link.text)
+  );
+
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 p-4 backdrop-blur-sm sm:p-6"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="news-article-title"
+      onClick={onClose}
+    >
+      <article
+        ref={dialogRef}
+        className="flex max-h-[90vh] w-full max-w-3xl flex-col overflow-hidden rounded-2xl border border-[#294323] bg-[#142111] text-[#ecf4e8] shadow-2xl shadow-black/50"
+        onClick={(event) => event.stopPropagation()}
+      >
+        <header className="flex items-start justify-between gap-4 border-b border-[#294323] px-5 py-5 sm:px-7">
+          <div className="min-w-0">
+            <div className="font-mono-num text-xs font-medium text-[#98ad90]">
+              <span className="font-semibold text-[#7ddb47]">{item.kategori}</span>
+              <span aria-hidden="true"> · </span>
+              <time dateTime={item.tarikh.replaceAll('.', '-')}>{item.tarikh}</time>
+            </div>
+            <h2
+              id="news-article-title"
+              className="mt-1.5 font-display text-xl font-bold leading-snug sm:text-2xl"
+            >
+              {item.tajuk}
+            </h2>
+            <p className="mt-1 text-xs text-[#98ad90]">KLP48 official article</p>
+          </div>
+          <button
+            ref={closeButtonRef}
+            type="button"
+            onClick={onClose}
+            aria-label={TRANSLATIONS[lang].close}
+            className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-[#294323] text-[#98ad90] transition-colors hover:border-[#7ddb47] hover:text-[#ecf4e8] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#7ddb47]"
+          >
+            <X className="h-4 w-4" aria-hidden="true" />
+          </button>
+        </header>
+
+        <div className="overflow-y-auto px-5 py-5 sm:px-7 sm:py-6">
+          {paragraphs.length > 0 && (
+            <div className="space-y-4 text-sm leading-7 text-[#d4dfcf] sm:text-base">
+              {paragraphs.map((paragraph, index) => (
+                <p key={`${index}-${paragraph.slice(0, 24)}`} className="whitespace-pre-line">
+                  {paragraph}
+                </p>
+              ))}
+            </div>
+          )}
+
+          {(article?.images.length ?? 0) > 0 && (
+            <div className={`space-y-4 ${paragraphs.length > 0 ? 'mt-6' : ''}`}>
+              {article?.images.map((image, index) => (
+                <img
+                  key={`${image.url}-${index}`}
+                  src={image.url}
+                  alt={image.alt || `${item.tajuk} article image ${index + 1}`}
+                  loading="lazy"
+                  className="mx-auto max-h-[70vh] w-auto max-w-full rounded-xl border border-[#294323] object-contain"
+                />
+              ))}
+            </div>
+          )}
+
+          {paragraphs.length === 0 && (article?.images.length ?? 0) === 0 && (
+            <p className="text-sm leading-7 text-[#98ad90]">
+              The original article has no additional text.
+            </p>
+          )}
+
+          {additionalLinks.length > 0 && (
+            <div className="mt-6 flex flex-wrap gap-2 border-t border-[#294323] pt-4">
+              {additionalLinks.map((link) => (
+                <a
+                  key={link.url}
+                  href={link.url}
+                  target={link.url.startsWith('http') ? '_blank' : undefined}
+                  rel={link.url.startsWith('http') ? 'noopener noreferrer' : undefined}
+                  className="inline-flex min-h-10 items-center gap-2 rounded-lg border border-[#294323] px-3 py-2 text-sm font-semibold text-[#7ddb47] transition-colors hover:border-[#7ddb47] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#7ddb47]"
+                >
+                  <span>{link.text || link.url}</span>
+                  <ArrowUpRight className="h-4 w-4 shrink-0" aria-hidden="true" />
+                </a>
+              ))}
+            </div>
+          )}
+        </div>
+      </article>
+    </div>
+  );
+}

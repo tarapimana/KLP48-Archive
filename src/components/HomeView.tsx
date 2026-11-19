@@ -1,19 +1,31 @@
-import { ArrowRight, ExternalLink, Music } from 'lucide-react';
+import { ArrowRight, Clock, ExternalLink, MapPin, Music, Play, Users } from 'lucide-react';
 import { useState } from 'react';
 import {
   getMemberCategory,
   MemberItem,
   MEMBERS_DATA,
   NEWS_DATA,
+  NewsItem,
   RELEASES,
   RouteKey,
   VideoItem,
   VIDEOS,
 } from '../data/klp48Data';
 import { useScheduleEvents } from '../context/useScheduleEvents';
-import { Lang, MONTHS_EN, MONTHS_MS, TRANSLATIONS } from '../i18n/translations';
+import {
+  Lang,
+  MONTHS_EN,
+  MONTHS_MS,
+  MONTHS_SHORT_EN,
+  MONTHS_SHORT_MS,
+  TRANSLATIONS,
+  WEEKDAYS_EN,
+  WEEKDAYS_MS,
+} from '../i18n/translations';
 import { BirthdayCountdown } from './BirthdayCountdown';
 import { MemberModal } from './MemberModal';
+import { NewsModal } from './NewsModal';
+import { TikTokThumbnail } from './TikTokThumbnail';
 import { YouTubeThumbnail } from './YouTubeThumbnail';
 
 interface HomeViewProps {
@@ -25,9 +37,12 @@ interface HomeViewProps {
 export function HomeView({ lang, onNavigate, onPlayVideo }: HomeViewProps) {
   const t = TRANSLATIONS[lang];
   const months = lang === 'en' ? MONTHS_EN : MONTHS_MS;
+  const shortMonths = lang === 'en' ? MONTHS_SHORT_EN : MONTHS_SHORT_MS;
+  const weekdays = lang === 'en' ? WEEKDAYS_EN : WEEKDAYS_MS;
   const { events } = useScheduleEvents();
   const now = new Date();
   const [selectedMember, setSelectedMember] = useState<MemberItem | null>(null);
+  const [selectedNews, setSelectedNews] = useState<NewsItem | null>(null);
   const selectedMemberIdx = selectedMember
     ? MEMBERS_DATA.findIndex((m) => m.nama === selectedMember.nama)
     : 0;
@@ -48,7 +63,7 @@ export function HomeView({ lang, onNavigate, onPlayVideo }: HomeViewProps) {
   });
 
   const nextEvents = upcomingEvents.slice(0, 3);
-  const featuredVideos = VIDEOS.filter((v) => v.platform === 'youtube').slice(0, 2);
+  const featuredVideos = VIDEOS.slice(0, 4);
 
   const formatEventDateRange = (start: Date, end: Date) => {
     if (end.getTime() > start.getTime()) {
@@ -139,10 +154,10 @@ export function HomeView({ lang, onNavigate, onPlayVideo }: HomeViewProps) {
 
               <div className={`${cardSurface} p-4 text-center sm:p-5`}>
                 <div className="font-mono-num text-3xl font-bold text-[#278500] sm:text-4xl dark:text-[#66c91a]">
-                  {RELEASES.length}
+                  {VIDEOS.length}
                 </div>
                 <div className="mt-1 text-xs font-medium text-[#52634c] dark:text-[#a8bc9f]">
-                  {t.s_rel}
+                  {t.n_video}
                 </div>
               </div>
             </div>
@@ -168,13 +183,13 @@ export function HomeView({ lang, onNavigate, onPlayVideo }: HomeViewProps) {
             </div>
 
             <div className="space-y-3">
-              {NEWS_DATA.slice(0, 3).map((item) => (
-                <a
+              {NEWS_DATA.slice(0, 5).map((item) => (
+                <button
                   key={item.pautan}
-                  href={item.pautan}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={`${cardSurface} group block px-5 py-4 hover:border-[#278500] dark:hover:border-[#66c91a]`}
+                  type="button"
+                  onClick={() => setSelectedNews(item)}
+                  aria-haspopup="dialog"
+                  className={`${cardSurface} group block w-full px-5 py-4 text-left transition-colors hover:border-[#278500] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#278500] dark:hover:border-[#66c91a] dark:focus-visible:ring-[#66c91a]`}
                 >
                   <div className="flex items-center gap-2.5 text-xs">
                     <span className="rounded-md bg-[#e3f2da] px-2 py-0.5 font-semibold text-[#278500] dark:bg-[#193012] dark:text-[#6fd43a]">
@@ -187,7 +202,7 @@ export function HomeView({ lang, onNavigate, onPlayVideo }: HomeViewProps) {
                   <h3 className="mt-2 text-sm font-bold leading-snug text-[#131f10] transition-colors group-hover:text-[#278500] sm:text-base dark:text-white dark:group-hover:text-[#66c91a]">
                     {item.tajuk}
                   </h3>
-                </a>
+                </button>
               ))}
             </div>
           </section>
@@ -201,21 +216,62 @@ export function HomeView({ lang, onNavigate, onPlayVideo }: HomeViewProps) {
             </div>
 
             <div className="grid gap-3 sm:grid-cols-2">
-              {RELEASES.map((rel) => (
-                <div key={rel.title} className={`${cardSurface} p-4 sm:p-5`}>
-                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#e3f2da] text-[#278500] dark:bg-[#193012] dark:text-[#6fd43a]">
-                    <Music className="h-4 w-4" aria-hidden="true" />
-                  </div>
-                  <div className="mt-4">
-                    <h3 className="font-display text-base font-bold text-[#131f10] dark:text-white">
-                      {rel.title}
-                    </h3>
-                    <div className="font-mono-num mt-0.5 text-xs text-[#52634c] dark:text-[#98ad90]">
-                      {rel.type} · {rel.date}
+              {RELEASES.map((rel) => {
+                const video = rel.video;
+                const cardContent = (
+                  <>
+                    <div className="flex items-start justify-between gap-3">
+                      {rel.artworkUrl ? (
+                        <img
+                          src={rel.artworkUrl}
+                          alt={`${rel.title} cover art`}
+                          loading="lazy"
+                          decoding="async"
+                          className="h-10 w-10 rounded-xl object-cover"
+                        />
+                      ) : (
+                        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#e3f2da] text-[#278500] dark:bg-[#193012] dark:text-[#6fd43a]">
+                          <Music className="h-4 w-4" aria-hidden="true" />
+                        </div>
+                      )}
+                      {rel.video && (
+                        <span
+                          className="inline-flex size-8 items-center justify-center rounded-full bg-[#e3f2da] text-[#278500] dark:bg-[#193012] dark:text-[#6fd43a]"
+                          aria-hidden="true"
+                        >
+                          <Play className="h-4 w-4" />
+                        </span>
+                      )}
                     </div>
+                    <div className="mt-4">
+                      <h3 className="font-display text-base font-bold text-[#131f10] dark:text-white">
+                        {rel.title}
+                      </h3>
+                      {(rel.type || rel.date) && (
+                        <div className="font-mono-num mt-0.5 text-xs text-[#52634c] dark:text-[#98ad90]">
+                          {rel.type && rel.date ? `${rel.type} · ${rel.date}` : rel.type || rel.date}
+                        </div>
+                      )}
+                    </div>
+                  </>
+                );
+
+                return video ? (
+                  <button
+                    key={rel.title}
+                    type="button"
+                    onClick={() => onPlayVideo(video)}
+                    aria-label={`${t.v_preview}: ${rel.title}`}
+                    className={`${cardSurface} block w-full cursor-pointer p-4 text-left transition-colors hover:border-[#278500] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#278500] focus-visible:ring-offset-2 sm:p-5 dark:hover:border-[#66c91a] dark:focus-visible:ring-[#66c91a] dark:focus-visible:ring-offset-[#0a1407]`}
+                  >
+                    {cardContent}
+                  </button>
+                ) : (
+                  <div key={rel.title} className={`${cardSurface} p-4 sm:p-5`}>
+                    {cardContent}
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </section>
         </div>
@@ -247,44 +303,95 @@ export function HomeView({ lang, onNavigate, onPlayVideo }: HomeViewProps) {
                   const title = lang === 'en' && ev.titleEn ? ev.titleEn : ev.title;
                   const venue = lang === 'en' && ev.venueEn ? ev.venueEn : ev.venue;
                   const notes = lang === 'en' && ev.notesEn ? ev.notesEn : ev.notes;
+                  const eventTime = lang === 'en' && ev.timeEn ? ev.timeEn : ev.time;
+                  const dateNumber = ev.startDate.getTime() === ev.endDate.getTime()
+                    ? String(ev.startDate.getDate())
+                    : `${ev.startDate.getDate()}–${ev.endDate.getDate()}`;
+                  const dateTime = [
+                    ev.startDate.getFullYear(),
+                    String(ev.startDate.getMonth() + 1).padStart(2, '0'),
+                    String(ev.startDate.getDate()).padStart(2, '0'),
+                  ].join('-');
+
                   return (
-                    <a
+                    <article
                       key={ev.id}
-                      href="#jadwal"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        onNavigate('jadwal');
-                      }}
-                      className={`${cardSurface} group block px-5 py-4 hover:border-[#278500] dark:hover:border-[#66c91a]`}
+                      className="grid grid-cols-[72px_minmax(0,1fr)] gap-3.5 rounded-2xl border border-[#d5e2cf] bg-white/88 p-4 backdrop-blur-md transition-colors hover:border-[#278500] sm:gap-4 sm:p-5 dark:border-[#2b4522] dark:bg-[#10200e]/90 dark:hover:border-[#6fd43a]"
                     >
-                      <div className="flex flex-wrap items-center gap-2 text-xs">
-                        <span className="rounded-md bg-[#e3f2da] px-2 py-0.5 font-semibold text-[#278500] dark:bg-[#193012] dark:text-[#6fd43a]">
-                          {ev.type === 'show' ? t.t_show : t.t_event}
+                      <time
+                        dateTime={dateTime}
+                        aria-label={formatEventDateRange(ev.startDate, ev.endDate)}
+                        className="flex flex-col items-start border-r border-[#d5e2cf] pr-4 pt-0.5 text-[10px] font-bold leading-tight text-[#52634c] dark:border-[#2b4522] dark:text-[#a8bc9f]"
+                      >
+                        <span className="font-mono-num text-3xl leading-none text-[#278500] dark:text-[#6fd43a]">
+                          {dateNumber}
                         </span>
-                        {ev.exclusive && (
-                          <span className="font-semibold text-[#52634c] dark:text-[#98ad90]">
-                            · {t.exclusive}
+                        <span className="mt-1">
+                          {shortMonths[ev.startDate.getMonth()]} {ev.startDate.getFullYear()}
+                        </span>
+                        <span className="mt-0.5 text-[#278500] dark:text-[#6fd43a]">
+                          {weekdays[ev.startDate.getDay()]}
+                        </span>
+                      </time>
+
+                      <div className="min-w-0">
+                        <div className="flex flex-wrap items-center gap-2 text-xs">
+                          <span className="font-bold text-[#278500] dark:text-[#6fd43a]">
+                            {ev.type === 'show' ? t.t_show : t.t_event}
                           </span>
+                          {ev.exclusive && (
+                            <span className="font-semibold text-[#52634c] dark:text-[#98ad90]">
+                              · {t.exclusive}
+                            </span>
+                          )}
+                        </div>
+
+                        <h3 className="font-display mt-1.5 text-base font-bold leading-snug text-[#131f10] dark:text-white">
+                          <a
+                            href="#jadwal"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              onNavigate('jadwal');
+                            }}
+                            className="transition-colors hover:text-[#278500] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#278500] dark:hover:text-[#6fd43a] dark:focus-visible:outline-[#6fd43a]"
+                          >
+                            {title}
+                          </a>
+                        </h3>
+
+                        <div className="mt-2.5 space-y-1.5 text-[13px] leading-snug text-[#52634c] dark:text-[#c7d7c0]">
+                          <p className="flex items-start gap-2">
+                            <MapPin className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#278500] dark:text-[#6fd43a]" aria-hidden="true" />
+                            <span>{venue}</span>
+                          </p>
+                          {eventTime && (
+                            <p className="flex items-start gap-2">
+                              <Clock className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#278500] dark:text-[#6fd43a]" aria-hidden="true" />
+                              <span className="font-mono-num">{eventTime}</span>
+                            </p>
+                          )}
+                          {ev.members && (
+                            <p className="flex items-start gap-2">
+                              <Users className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#278500] dark:text-[#6fd43a]" aria-hidden="true" />
+                              <span>{ev.members}</span>
+                            </p>
+                          )}
+                          {notes && <p className="pl-[1.375rem]">{notes}</p>}
+                        </div>
+
+                        {ev.link && (
+                          <a
+                            href={ev.link}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="mt-3 inline-flex min-h-8 items-center gap-1.5 rounded-md text-sm font-bold text-[#278500] transition-colors hover:text-[#206e00] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#278500] dark:text-[#6fd43a] dark:hover:text-[#82df52] dark:focus-visible:outline-[#6fd43a]"
+                          >
+                            <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
+                            <span>{lang === 'en' ? 'Event link' : 'Pautan acara'}</span>
+                          </a>
                         )}
                       </div>
-
-                      <h3 className="font-display mt-2 text-base font-bold leading-snug text-[#131f10] transition-colors group-hover:text-[#278500] dark:text-white dark:group-hover:text-[#66c91a]">
-                        {title}
-                      </h3>
-
-                      <p className="mt-1 text-xs leading-relaxed text-[#52634c] dark:text-[#a8bc9f]">
-                        <span className="font-mono-num">
-                          {formatEventDateRange(ev.startDate, ev.endDate)}
-                        </span>{' '}
-                        · {venue}
-                      </p>
-
-                      {notes && (
-                        <p className="mt-1 text-xs text-[#3b4e34] dark:text-[#c7d7c0]">
-                          {notes}
-                        </p>
-                      )}
-                    </a>
+                    </article>
                   );
                 })}
               </div>
@@ -344,42 +451,50 @@ export function HomeView({ lang, onNavigate, onPlayVideo }: HomeViewProps) {
         </div>
 
         <div className="grid gap-4 md:grid-cols-2">
-          {featuredVideos.map((vid) => (
-            <div key={vid.url} className={`${cardSurface} overflow-hidden`}>
-              <button
-                type="button"
-                onClick={() => onPlayVideo(vid)}
-                className="group relative block w-full text-left"
-                aria-label={`${t.v_preview}: ${vid.title}`}
-              >
-                <YouTubeThumbnail
-                  youtubeId={vid.youtubeId}
-                  title={vid.title}
-                  playLabel={t.v_preview}
-                  badgeSize="lg"
-                />
-              </button>
-              <div className="flex items-start justify-between gap-4 p-4">
-                <div className="min-w-0">
-                  <div className="text-xs font-semibold text-[#278500] dark:text-[#6fd43a]">
-                    YouTube
-                  </div>
-                  <h3 className="mt-1 line-clamp-2 text-sm font-semibold text-[#131f10] dark:text-white">
-                    {vid.title}
-                  </h3>
-                </div>
-                <a
-                  href={vid.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex shrink-0 items-center gap-1 whitespace-nowrap text-xs font-semibold text-[#278500] hover:underline dark:text-[#6fd43a]"
+          {featuredVideos.map((vid) => {
+            const isYouTube = vid.platform === 'youtube';
+
+            return (
+              <div key={vid.url} className={`${cardSurface} overflow-hidden`}>
+                <button
+                  type="button"
+                  onClick={() => onPlayVideo(vid)}
+                  className="group relative block w-full text-left"
+                  aria-label={`${t.v_preview}: ${vid.title}`}
                 >
-                  <span>YouTube</span>
-                  <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
-                </a>
+                  {isYouTube ? (
+                    <YouTubeThumbnail
+                      youtubeId={vid.youtubeId}
+                      title={vid.title}
+                      playLabel={t.v_preview}
+                      badgeSize="lg"
+                    />
+                  ) : (
+                    <TikTokThumbnail thumbnail={vid.thumbnail} title={vid.title} />
+                  )}
+                </button>
+                <div className="flex items-start justify-between gap-4 p-4">
+                  <div className="min-w-0">
+                    <div className="text-xs font-semibold text-[#278500] dark:text-[#6fd43a]">
+                      {isYouTube ? 'YouTube' : 'TikTok'}
+                    </div>
+                    <h3 className="mt-1 line-clamp-2 text-sm font-semibold text-[#131f10] dark:text-white">
+                      {vid.title}
+                    </h3>
+                  </div>
+                  <a
+                    href={vid.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex shrink-0 items-center gap-1 whitespace-nowrap text-xs font-semibold text-[#278500] hover:underline dark:text-[#6fd43a]"
+                  >
+                    <span>{isYouTube ? 'YouTube' : t.v_open_tt}</span>
+                    <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
+                  </a>
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </section>
 
@@ -388,6 +503,11 @@ export function HomeView({ lang, onNavigate, onPlayVideo }: HomeViewProps) {
         indexNumber={selectedMemberIdx >= 0 ? selectedMemberIdx : 0}
         lang={lang}
         onClose={() => setSelectedMember(null)}
+      />
+      <NewsModal
+        item={selectedNews}
+        lang={lang}
+        onClose={() => setSelectedNews(null)}
       />
     </div>
   );

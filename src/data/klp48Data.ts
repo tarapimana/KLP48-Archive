@@ -2,8 +2,10 @@ export type RouteKey = 'home' | 'live' | 'jadwal' | 'member' | 'berita' | 'bday'
 
 export interface ReleaseItem {
   title: string;
-  date: string;
-  type: 'Album' | 'Single' | 'EP';
+  date?: string;
+  type?: 'Album' | 'Single' | 'EP';
+  artworkUrl?: string;
+  video?: VideoItem;
 }
 
 export interface VideoItem {
@@ -11,6 +13,7 @@ export interface VideoItem {
   url: string;
   platform: 'youtube' | 'tiktok';
   youtubeId?: string;
+  youtubePlaylistId?: string;
   tiktokId?: string;
   thumbnail?: string;
   publishedAt?: string;
@@ -100,10 +103,102 @@ export interface LivePostItem {
 export const OFFICIAL_SITE_URL = 'https://klp48.my';
 
 export const RELEASES: ReleaseItem[] = [
-  { title: 'Green Flash', date: '2025.09.12', type: 'Album' },
-  { title: 'Oh my pumpkin!', date: '2025.08.13', type: 'Single' },
-  { title: 'First Cry', date: '2025.06.13', type: 'EP' },
-  { title: 'Flying Get', date: '2025.05.30', type: 'Single' },
+  {
+    title: 'Heavy Rotation',
+    date: '2024.08.14',
+    type: 'Single',
+    artworkUrl: 'https://image-cdn-ak.spotifycdn.com/image/ab67616d00001e02e20d55b107705d2d134e42e4',
+    video: {
+      title: 'Heavy Rotation',
+      url: 'https://music.youtube.com/watch?v=LhZxvaEkLAw',
+      platform: 'youtube',
+      youtubeId: 'LhZxvaEkLAw',
+    },
+  },
+  {
+    title: 'Alasanku Maybe',
+    date: '2025.04.18',
+    type: 'Single',
+    artworkUrl: 'https://image-cdn-ak.spotifycdn.com/image/ab67616d00001e02397615ff4016ec0a9eca7a0b',
+    video: {
+      title: 'Alasanku Maybe',
+      url: 'https://music.youtube.com/watch?v=5UUrLmMuWoE',
+      platform: 'youtube',
+      youtubeId: '5UUrLmMuWoE',
+    },
+  },
+  {
+    title: 'Flying Get',
+    date: '2025.05.31',
+    type: 'Single',
+    artworkUrl: 'https://image-cdn-ak.spotifycdn.com/image/ab67616d00001e022ee35c4b03821badec202300',
+    video: {
+      title: 'Flying Get',
+      url: 'https://music.youtube.com/watch?v=u3vn8JIQ0mY',
+      platform: 'youtube',
+      youtubeId: 'u3vn8JIQ0mY',
+    },
+  },
+  {
+    title: 'First Cry',
+    date: '2025.06.13',
+    type: 'EP',
+    artworkUrl: 'https://image-cdn-ak.spotifycdn.com/image/ab67616d00001e02d2a06fd9f46c0589e19f55e2',
+    video: {
+      title: 'First Cry',
+      url: 'https://music.youtube.com/playlist?list=OLAK5uy_lLAigpr63fL7Vj6XuujY29MafXiwKz-UA',
+      platform: 'youtube',
+      youtubePlaylistId: 'OLAK5uy_lLAigpr63fL7Vj6XuujY29MafXiwKz-UA',
+    },
+  },
+  {
+    title: 'Oh my pumpkin!',
+    date: '2025.08.13',
+    type: 'Single',
+    artworkUrl: 'https://image-cdn-fa.spotifycdn.com/image/ab67616d00001e02610eb27873fa0a9cdf655baa',
+    video: {
+      title: 'Oh my pumpkin!',
+      url: 'https://music.youtube.com/watch?v=gbcM2A3aU34',
+      platform: 'youtube',
+      youtubeId: 'gbcM2A3aU34',
+    },
+  },
+  {
+    title: 'Green Flash',
+    date: '2025.09.12',
+    type: 'Album',
+    artworkUrl: 'https://image-cdn-fa.spotifycdn.com/image/ab67616d00001e02b56bb0f1fd0bba21afc5c9af',
+    video: {
+      title: 'Green Flash',
+      url: 'https://music.youtube.com/watch?v=3SqbNRLUQtA',
+      platform: 'youtube',
+      youtubeId: '3SqbNRLUQtA',
+    },
+  },
+  {
+    title: 'Kerana Ku Suka',
+    date: '2026.06.02',
+    type: 'Single',
+    artworkUrl: 'https://image-cdn-ak.spotifycdn.com/image/ab67616d00001e027827e60a33737fb444efaa26',
+    video: {
+      title: 'Kerana Ku Suka',
+      url: 'https://music.youtube.com/watch?v=p73lJfaNphY',
+      platform: 'youtube',
+      youtubeId: 'p73lJfaNphY',
+    },
+  },
+  {
+    title: 'Full Power! Pokémon Mezastar! Gorgeous Star',
+    date: '2026.10.31',
+    type: 'Single',
+    artworkUrl: 'https://i.ytimg.com/vi/o9CpUmbJKoo/hq720.jpg?sqp=-oaymwFFCNAFEJQDSFryq4qpAzcIARUAAIhCGAHYAQHiAQoIGBACGAY4AUAB8AEB-AH-CYAC0AWKAgwIABABGEUgPCh_MA-4AvcY&rs=AOn4CLBlVIJJVnwQUQ-G03Mc9NbId6_pHA',
+    video: {
+      title: 'Full Power! Pokémon Mezastar! Gorgeous Star',
+      url: 'https://www.youtube.com/watch?v=o9CpUmbJKoo',
+      platform: 'youtube',
+      youtubeId: 'o9CpUmbJKoo',
+    },
+  },
 ];
 
 const RAW_VIDEOS: Array<[string, string, string?]> = [
@@ -125,7 +220,7 @@ const RAW_VIDEOS: Array<[string, string, string?]> = [
   ["Jeritan Permata Intan (Oogoe Diamond) Members Selection Announcement", "https://www.youtube.com/watch?v=C9M0jikyehE"],
   ["FIRST JAPAN EXPO!!! | a day in a life of an IDOL? 😳⁉️", "https://www.youtube.com/watch?v=feQ6ETgG2Ac"],
   ["Kerana Ku Suka | 2025.12.27 KLP48 1st Solo Concert \"SUPER BASH\" (MALAYSIA/JIO SPACE)", "https://www.youtube.com/watch?v=r_6QO_T92BU"],
-  ["Single ke-6 KLP48 “Kerana Ku Suka” #KLP48", "https://www.tiktok.com/@klp48_official/video/7645993560872897812"],
+  ["Single ke-6 KLP48 “Kerana Ku Suka” #KLP48", "https://www.tiktok.com/@klp48_official/video/7645993560872897812", "/images/tiktok/7645993560872897812.jpg"],
   ["[MV] Kerana Ku Suka - Kimino Kotoga Suki Dakara / KLP48", "https://www.youtube.com/watch?v=EDliuALaUm0"],
   ["[MV Teaser] Kerana Ku Suka - Kimino Kotoga Suki Dakara / KLP48", "https://www.youtube.com/watch?v=v1Qj2uiBSjA"],
   ["TIF concert Result Announcement", "https://www.youtube.com/watch?v=RlKbEa8pyHU"],
@@ -151,7 +246,7 @@ const RAW_VIDEOS: Array<[string, string, string?]> = [
   ["KLP48 AUDITION Member Interview【Yi Shyan】#shorts", "https://www.youtube.com/watch?v=Q2SoJb5PGs0"],
   ["KLP48 AUDITION Member Interview【Yurina】#shorts", "https://www.youtube.com/watch?v=jnVycSYDv0k"],
   ["KLP48 2nd Generation Audition", "https://www.youtube.com/watch?v=NV-YXelftxw"],
-  ["What made Suzuha join KLP48? Applications open 1 July 2025 klp48audition.com #KLP48 #KLP482ndGenAudition 📅", "https://www.tiktok.com/@klp48_official/video/7524651758690356487"],
+  ["What made Suzuha join KLP48? Applications open 1 July 2025 klp48audition.com #KLP48 #KLP482ndGenAudition 📅", "https://www.tiktok.com/@klp48_official/video/7524651758690356487", "/images/tiktok/7524651758690356487.jpg"],
   ["KLP48 TIME EP2", "https://www.youtube.com/watch?v=PnIXsIMy9to"],
   ["#AlasankuMaybeKLP48", "https://www.youtube.com/watch?v=FAGf9VzkK7I"],
   ["Who Will Win?? Part 3", "https://www.youtube.com/watch?v=FlBBO6Iz-do"],
@@ -253,7 +348,36 @@ export const NEWS_DATA: NewsItem[] = [
   { tajuk: "Start of 1 on 1 TALK applications", tarikh: "2026.09.08", kategori: "Fanclub", pautan: "https://klp48.my/news/detail/46" },
   { tajuk: "Discord Radio Talk Info", tarikh: "2026.09.01", kategori: "Fanclub", pautan: "https://klp48.my/news/detail/45" },
   { tajuk: "PENGUMUMAN RASMI Pelantikan Penerbit Baharu [BM]", tarikh: "2026.08.12", kategori: "News", pautan: "https://klp48.my/news/detail/44" },
+  { tajuk: "OFFICIAL ANNOUNCEMENT Appointment of New Producer [EN]", tarikh: "2026.08.12", kategori: "News", pautan: "https://klp48.my/news/detail/43" },
+  { tajuk: "[Official Announcement Regarding Cindy Hiatus]", tarikh: "2026.08.11", kategori: "News", pautan: "https://klp48.my/news/detail/42" },
+  { tajuk: "Discord radio talk info", tarikh: "2026.08.04", kategori: "Fanclub", pautan: "https://klp48.my/news/detail/41" },
+  { tajuk: "OFFICIAL STATEMENT - CLARIFICATION REGARDING THE LOGO OF \"AKT38\"", tarikh: "2026.07.07", kategori: "News", pautan: "https://klp48.my/news/detail/40" },
+  { tajuk: "Notice Regarding 1 on 1 TALK Applications", tarikh: "2026.06.10", kategori: "Fanclub", pautan: "https://klp48.my/news/detail/39" },
+  { tajuk: "Start of 1 on 1 TALK applications", tarikh: "2026.06.05", kategori: "Fanclub", pautan: "https://klp48.my/news/detail/38" },
+  { tajuk: "KLP48 6th Single “KERANA KU SUKA” (KIMI NO KOTO GA SUKI DAKARA) Is Now Available for Streaming", tarikh: "2026.06.03", kategori: "News", pautan: "https://klp48.my/news/detail/37" },
+  { tajuk: "OFFICIAL ANNOUNCEMENT FOR THE RELEASE OF “KERANA KU SUKA” ON DIGITAL MUSIC PLATFORMS", tarikh: "2026.06.01", kategori: "News", pautan: "https://klp48.my/news/detail/36" },
+  { tajuk: "[Appearance Confirmed] TOKYO IDOL FESTIVAL 2026", tarikh: "2026.05.20", kategori: "News", pautan: "https://klp48.my/news/detail/35" },
+  { tajuk: "Official Announcement for Online Booking Issue of “520 Dinner with KLP48 Members” Event.", tarikh: "2026.05.17", kategori: "News", pautan: "https://klp48.my/news/detail/34" },
+  { tajuk: "Discord radio talk info", tarikh: "2026.05.03", kategori: "Fanclub", pautan: "https://klp48.my/news/detail/33" },
+  { tajuk: "Start of 1 on 1 TALK applications", tarikh: "2026.05.02", kategori: "Fanclub", pautan: "https://klp48.my/news/detail/32" },
+  { tajuk: "Announcement - Postponement of KLP48 Theatre Opening", tarikh: "2026.04.20", kategori: "News", pautan: "https://klp48.my/news/detail/31" },
+  { tajuk: "Discord Radio talk info", tarikh: "2026.04.17", kategori: "Fanclub", pautan: "https://klp48.my/news/detail/29" },
+  { tajuk: "Update: 2nd Generation Members' Blogs Now on Discord", tarikh: "2026.04.17", kategori: "Fanclub", pautan: "https://klp48.my/news/detail/28" },
+  { tajuk: "Notice : Postponement for the Release of “Kerana Kusuka\"", tarikh: "2026.02.07", kategori: "News", pautan: "https://klp48.my/news/detail/25" },
   { tajuk: "OFFICIAL ANNOUNCEMENT REGARDING CONCLUSION OF KLP48 ACTIVITIES BY COCOA, SUZUHA, HARUKA, AND YURINA", tarikh: "2026.01.31", kategori: "News", pautan: "https://klp48.my/news/detail/24" },
+  { tajuk: "HARMFUL AI-GENERATED CONTENT", tarikh: "2026.01.12", kategori: "News", pautan: "https://klp48.my/news/detail/22" },
+  { tajuk: "Discord Radio talk info", tarikh: "2026.01.06", kategori: "Fanclub", pautan: "https://klp48.my/news/detail/21" },
+  { tajuk: "Refund for Cocoa Meet & Greet Session – KLP48 SUPERBASH (27 December 2025)", tarikh: "2025.12.29", kategori: "Store", pautan: "https://klp48.my/news/detail/20" },
+  { tajuk: "OFFICIAL STATEMENT", tarikh: "2025.12.26", kategori: "News", pautan: "https://klp48.my/news/detail/19" },
+  { tajuk: "サポート窓口 年末年始休業のお知らせ", tarikh: "2025.12.26", kategori: "News", pautan: "https://klp48.my/news/detail/17" },
+  { tajuk: "OFFICIAL STATEMENT REGARDING YI SHYAN, AMANDA, ANN DREA, HILLARY, KHALIES AND SALWA", tarikh: "2025.12.19", kategori: "News", pautan: "https://klp48.my/news/detail/16" },
+  { tajuk: "KLP48 1st Solo Concert Super Bash 「TICKET」", tarikh: "2025.11.10", kategori: "LIVE", pautan: "https://klp48.my/news/detail/15" },
+  { tajuk: "Start of 1 on 1 TALK applications", tarikh: "2025.09.01", kategori: "Fanclub", pautan: "https://klp48.my/news/detail/11" },
+  { tajuk: "Discord radio talk info", tarikh: "2025.09.01", kategori: "Fanclub", pautan: "https://klp48.my/news/detail/9" },
+  { tajuk: "KLP48 4th Single「Oh my pumpkin!」", tarikh: "2025.08.03", kategori: "News", pautan: "https://klp48.my/news/detail/8" },
+  { tajuk: "KLP48 1st Anniversary Concert「BLOOM」", tarikh: "2025.08.02", kategori: "LIVE", pautan: "https://klp48.my/news/detail/7" },
+  { tajuk: "KLP48 OFFICIAL FANCLUB START", tarikh: "2025.08.01", kategori: "Fanclub", pautan: "https://klp48.my/news/detail/4" },
+  { tajuk: "OFFICIAL SITE RENEWAL", tarikh: "2025.05.29", kategori: "News", pautan: "https://klp48.my/news/detail/1" },
 ];
 
 const INSTAGRAM_LIVE_POSTS: LivePostItem[] = [

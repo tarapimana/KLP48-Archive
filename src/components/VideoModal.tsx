@@ -21,7 +21,7 @@ export function VideoModal({ video, lang, onClose }: VideoModalProps) {
     return () => window.removeEventListener('keydown', onKeyDown);
   }, [video, onClose]);
 
-  if (!video || (!video.youtubeId && !video.tiktokId)) return null;
+  if (!video || (!video.youtubeId && !video.youtubePlaylistId && !video.tiktokId)) return null;
 
   const isTikTok = video.platform === 'tiktok' && Boolean(video.tiktokId);
 
@@ -76,7 +76,9 @@ export function VideoModal({ video, lang, onClose }: VideoModalProps) {
             src={
               isTikTok
                 ? `https://www.tiktok.com/player/v1/${video.tiktokId}?autoplay=1&music_info=1&description=1`
-                : `https://www.youtube-nocookie.com/embed/${video.youtubeId}?autoplay=1&rel=0&playsinline=1`
+                : video.youtubePlaylistId
+                  ? `https://www.youtube-nocookie.com/embed/videoseries?list=${encodeURIComponent(video.youtubePlaylistId)}&autoplay=1&rel=0&playsinline=1`
+                  : `https://www.youtube-nocookie.com/embed/${video.youtubeId}?autoplay=1&rel=0&playsinline=1`
             }
             title={video.title}
             className="h-full w-full border-0"

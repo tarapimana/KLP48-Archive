@@ -1,4 +1,12 @@
-import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+  type Context,
+  type ReactNode,
+} from 'react';
 import { MEMBERS_DATA } from '../data/klp48Data';
 import {
   LiveStatusRecord,
@@ -12,7 +20,15 @@ interface LiveStatusContextValue {
   liveCount: number;
 }
 
-const LiveStatusContext = createContext<LiveStatusContextValue | null>(null);
+// Keep provider and hook references aligned when Vite replaces this module during development.
+const LiveStatusContext =
+  (import.meta.hot?.data.liveStatusContext as
+    | Context<LiveStatusContextValue | null>
+    | undefined) ?? createContext<LiveStatusContextValue | null>(null);
+
+if (import.meta.hot) {
+  import.meta.hot.data.liveStatusContext = LiveStatusContext;
+}
 const ACTIVE_MEMBER_IDS = new Set(
   MEMBERS_DATA.filter((member) => member.statusCategory === 'active').map((member) =>
     member.id.toLowerCase()
