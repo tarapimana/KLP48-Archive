@@ -190,7 +190,6 @@ export function ScheduleView({ lang }: ScheduleViewProps) {
             const notes = lang === 'en' && ev.notesEn ? ev.notesEn : ev.notes;
             const members = ev.members || '';
             const isBirthdayEvent = /birthday/i.test(ev.title);
-            const hasExtraDetails = Boolean(notes || members || ev.link);
 
             return (
               <article
@@ -203,7 +202,7 @@ export function ScheduleView({ lang }: ScheduleViewProps) {
                     : 'border-[#c8dcc0] bg-white/96 dark:border-[#2b4523] dark:bg-[#101c0d]/95'
                 }`}
               >
-                <div className="flex items-start justify-between gap-4">
+                <div className="flex items-start gap-4">
                   {/* Date & Main Info */}
                   <div className="flex min-w-0 flex-1 items-start gap-4">
                     {/* Crisp Tabular Date Column */}
@@ -300,6 +299,27 @@ export function ScheduleView({ lang }: ScheduleViewProps) {
                             <span className="font-mono-num">{time}</span>
                           </div>
                         )}
+                        {members && (
+                          <div className="flex items-start gap-1.5">
+                            <UsersRound
+                              className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#278500] dark:text-[#7ce043]"
+                              aria-hidden="true"
+                            />
+                            <span className="min-w-0 break-words">{members}</span>
+                          </div>
+                        )}
+                        {notes && <p className="leading-relaxed">{notes}</p>}
+                        {ev.link && (
+                          <a
+                            href={ev.link}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex min-h-11 items-center gap-1.5 font-bold text-[#278500] hover:underline dark:text-[#7ce043]"
+                          >
+                            <ExternalLink className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
+                            <span>{t.j_link}</span>
+                          </a>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -307,31 +327,6 @@ export function ScheduleView({ lang }: ScheduleViewProps) {
 
                 </div>
 
-                {hasExtraDetails && (
-                  <div className="mt-4 space-y-2 border-t border-[#dce6d7] pt-3 text-sm text-[#263421] dark:border-[#24371f] dark:text-[#dce9d7]">
-                    {members && (
-                      <div className="flex items-start gap-2.5">
-                        <UsersRound
-                          className="mt-0.5 h-4 w-4 shrink-0 text-[#278500] dark:text-[#7ce043]"
-                          aria-hidden="true"
-                        />
-                        <p className="min-w-0 break-words leading-relaxed">{members}</p>
-                      </div>
-                    )}
-                    {notes && <p className="leading-relaxed">{notes}</p>}
-                    {ev.link && (
-                      <a
-                        href={ev.link}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex min-h-11 items-center gap-1.5 text-xs font-bold text-[#278500] hover:underline dark:text-[#7ce043]"
-                      >
-                        <span>{t.j_link}</span>
-                        <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
-                      </a>
-                    )}
-                  </div>
-                )}
               </article>
             );
           })}
