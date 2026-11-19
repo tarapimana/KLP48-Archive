@@ -5,6 +5,7 @@ export interface ReleaseItem {
   date?: string;
   type?: 'Album' | 'Single' | 'EP';
   artworkUrl?: string;
+  video?: VideoItem;
 }
 
 export interface VideoItem {
@@ -106,6 +107,12 @@ export const RELEASES: ReleaseItem[] = [
     date: '2024.08.14',
     type: 'Single',
     artworkUrl: 'https://image-cdn-ak.spotifycdn.com/image/ab67616d00001e02e20d55b107705d2d134e42e4',
+    video: {
+      title: 'Heavy Rotation',
+      url: 'https://youtu.be/0gS2beElS1E?si=pZQE3JRWWkqZbwp2',
+      platform: 'youtube',
+      youtubeId: '0gS2beElS1E',
+    },
   },
   {
     title: 'Alasanku Maybe',

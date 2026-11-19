@@ -1,4 +1,4 @@
-import { ArrowRight, Clock, ExternalLink, MapPin, Music, Users } from 'lucide-react';
+import { ArrowRight, Clock, ExternalLink, MapPin, Music, Play, Users } from 'lucide-react';
 import { useState } from 'react';
 import {
   getMemberCategory,
@@ -216,33 +216,62 @@ export function HomeView({ lang, onNavigate, onPlayVideo }: HomeViewProps) {
             </div>
 
             <div className="grid gap-3 sm:grid-cols-2">
-              {RELEASES.map((rel) => (
-                <div key={rel.title} className={`${cardSurface} p-4 sm:p-5`}>
-                  {rel.artworkUrl ? (
-                    <img
-                      src={rel.artworkUrl}
-                      alt={`${rel.title} cover art`}
-                      loading="lazy"
-                      decoding="async"
-                      className="h-10 w-10 rounded-xl object-cover"
-                    />
-                  ) : (
-                    <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#e3f2da] text-[#278500] dark:bg-[#193012] dark:text-[#6fd43a]">
-                      <Music className="h-4 w-4" aria-hidden="true" />
+              {RELEASES.map((rel) => {
+                const video = rel.video;
+                const cardContent = (
+                  <>
+                    <div className="flex items-start justify-between gap-3">
+                      {rel.artworkUrl ? (
+                        <img
+                          src={rel.artworkUrl}
+                          alt={`${rel.title} cover art`}
+                          loading="lazy"
+                          decoding="async"
+                          className="h-10 w-10 rounded-xl object-cover"
+                        />
+                      ) : (
+                        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#e3f2da] text-[#278500] dark:bg-[#193012] dark:text-[#6fd43a]">
+                          <Music className="h-4 w-4" aria-hidden="true" />
+                        </div>
+                      )}
+                      {rel.video && (
+                        <span
+                          className="inline-flex size-8 items-center justify-center rounded-full bg-[#e3f2da] text-[#278500] dark:bg-[#193012] dark:text-[#6fd43a]"
+                          aria-hidden="true"
+                        >
+                          <Play className="h-4 w-4" />
+                        </span>
+                      )}
                     </div>
-                  )}
-                  <div className="mt-4">
-                    <h3 className="font-display text-base font-bold text-[#131f10] dark:text-white">
-                      {rel.title}
-                    </h3>
-                    {(rel.type || rel.date) && (
-                      <div className="font-mono-num mt-0.5 text-xs text-[#52634c] dark:text-[#98ad90]">
-                        {rel.type && rel.date ? `${rel.type} · ${rel.date}` : rel.type || rel.date}
-                      </div>
-                    )}
+                    <div className="mt-4">
+                      <h3 className="font-display text-base font-bold text-[#131f10] dark:text-white">
+                        {rel.title}
+                      </h3>
+                      {(rel.type || rel.date) && (
+                        <div className="font-mono-num mt-0.5 text-xs text-[#52634c] dark:text-[#98ad90]">
+                          {rel.type && rel.date ? `${rel.type} · ${rel.date}` : rel.type || rel.date}
+                        </div>
+                      )}
+                    </div>
+                  </>
+                );
+
+                return video ? (
+                  <button
+                    key={rel.title}
+                    type="button"
+                    onClick={() => onPlayVideo(video)}
+                    aria-label={`${t.v_preview}: ${rel.title}`}
+                    className={`${cardSurface} block w-full cursor-pointer p-4 text-left transition-colors hover:border-[#278500] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#278500] focus-visible:ring-offset-2 sm:p-5 dark:hover:border-[#66c91a] dark:focus-visible:ring-[#66c91a] dark:focus-visible:ring-offset-[#0a1407]`}
+                  >
+                    {cardContent}
+                  </button>
+                ) : (
+                  <div key={rel.title} className={`${cardSurface} p-4 sm:p-5`}>
+                    {cardContent}
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </section>
         </div>
