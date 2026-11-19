@@ -109,7 +109,9 @@ export default function App() {
       <div className="relative min-h-screen text-[#131f10] transition-colors duration-150 dark:text-[#ecf4e8]">
         {/* Whole-page Video Background */}
         <video
-          src="/assets/aistudio/_MV__Kerana_Ku_Suka_-_Kimino_Kotoga_Suki_Dakara___KLP48_2160p_1087ffc5.mp4"
+          src="/video/bg-loop.mp4"
+          poster="/video/bg-poster.jpg"
+          preload="auto"
           autoPlay
           muted
           loop
