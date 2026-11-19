@@ -7,6 +7,7 @@ import {
   subscribeLiveStatuses,
   testConnection,
 } from '../services/liveService';
+import { useAuth } from '../context/AuthContext';
 import { MemberAvatar } from './MemberAvatar';
 import { MemberModal } from './MemberModal';
 
@@ -26,6 +27,7 @@ function isValidHandle(handle?: string): string {
 
 export function LiveView({ lang, onPlayVideo }: LiveViewProps) {
   const t = TRANSLATIONS[lang];
+  const { isAdmin } = useAuth();
 
   // Firestore real-time state
   const [liveStatuses, setLiveStatuses] = useState<LiveStatusRecord[]>([]);
@@ -357,23 +359,27 @@ export function LiveView({ lang, onPlayVideo }: LiveViewProps) {
             <h2 className="font-display mt-4 text-xl font-bold tracking-tight text-[#131f10] sm:text-2xl dark:text-[#ecf4e8]">
               {t.lv_no_active_live}
             </h2>
-            <p className="mx-auto mt-2 max-w-xl text-sm leading-relaxed text-[#52634c] dark:text-[#98ad90]">
-              Hanya siaran langsung yang disahkan dalam koleksi Firestore{' '}
-              <code className="rounded bg-[#e3f2da] px-1.5 py-0.5 font-mono text-xs text-[#278500] dark:bg-[#1d3314] dark:text-[#6fd43a]">
-                live_status
-              </code>{' '}
-              akan dipaparkan sebagai LIVE. Tiada status palsu atau simulasi dicipta. Anda boleh menyemak pautan rasmi setiap member di bawah.
-            </p>
-            <div className="mt-5 flex flex-wrap items-center justify-center gap-3 text-xs">
-              <span className="inline-flex items-center gap-1.5 rounded-lg border border-[#dce6d7] bg-[#f6faf4] px-3 py-1.5 font-semibold text-[#52634c] dark:border-[#24371f] dark:bg-[#0e190b] dark:text-[#c7d7c0]">
-                <CheckCircle2 className="h-3.5 w-3.5 text-emerald-400" />
-                20 Member Aktif Disambung
-              </span>
-              <span className="inline-flex items-center gap-1.5 rounded-lg border border-[#dce6d7] bg-[#f6faf4] px-3 py-1.5 font-semibold text-[#52634c] dark:border-[#24371f] dark:bg-[#0e190b] dark:text-[#c7d7c0]">
-                <Wifi className="h-3.5 w-3.5 text-emerald-400" />
-                Langganan Firestore Real-Time Aktif
-              </span>
-            </div>
+            {isAdmin && (
+              <>
+                <p className="mx-auto mt-2 max-w-xl text-sm leading-relaxed text-[#52634c] dark:text-[#98ad90]">
+                  Hanya siaran langsung yang disahkan dalam koleksi Firestore{' '}
+                  <code className="rounded bg-[#e3f2da] px-1.5 py-0.5 font-mono text-xs text-[#278500] dark:bg-[#1d3314] dark:text-[#6fd43a]">
+                    live_status
+                  </code>{' '}
+                  akan dipaparkan sebagai LIVE. Tiada status palsu atau simulasi dicipta. Anda boleh menyemak pautan rasmi setiap member di bawah.
+                </p>
+                <div className="mt-5 flex flex-wrap items-center justify-center gap-3 text-xs">
+                  <span className="inline-flex items-center gap-1.5 rounded-lg border border-[#dce6d7] bg-[#f6faf4] px-3 py-1.5 font-semibold text-[#52634c] dark:border-[#24371f] dark:bg-[#0e190b] dark:text-[#c7d7c0]">
+                    <CheckCircle2 className="h-3.5 w-3.5 text-emerald-400" />
+                    20 Member Aktif Disambung
+                  </span>
+                  <span className="inline-flex items-center gap-1.5 rounded-lg border border-[#dce6d7] bg-[#f6faf4] px-3 py-1.5 font-semibold text-[#52634c] dark:border-[#24371f] dark:bg-[#0e190b] dark:text-[#c7d7c0]">
+                    <Wifi className="h-3.5 w-3.5 text-emerald-400" />
+                    Langganan Firestore Real-Time Aktif
+                  </span>
+                </div>
+              </>
+            )}
           </div>
         )}
       </section>
