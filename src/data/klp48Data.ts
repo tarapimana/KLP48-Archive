@@ -2,8 +2,8 @@ export type RouteKey = 'home' | 'live' | 'jadwal' | 'member' | 'berita' | 'bday'
 
 export interface ReleaseItem {
   title: string;
-  date: string;
-  type: 'Album' | 'Single' | 'EP';
+  date?: string;
+  type?: 'Album' | 'Single' | 'EP';
   artworkUrl?: string;
 }
 
@@ -137,6 +137,7 @@ export const RELEASES: ReleaseItem[] = [
     type: 'Single',
     artworkUrl: 'https://image-cdn-ak.spotifycdn.com/image/ab67616d00001e02e20d55b107705d2d134e42e4',
   },
+  { title: 'Kerana Ku Suka' },
 ];
 
 const RAW_VIDEOS: Array<[string, string, string?]> = [

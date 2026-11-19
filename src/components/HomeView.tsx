@@ -235,9 +235,11 @@ export function HomeView({ lang, onNavigate, onPlayVideo }: HomeViewProps) {
                     <h3 className="font-display text-base font-bold text-[#131f10] dark:text-white">
                       {rel.title}
                     </h3>
-                    <div className="font-mono-num mt-0.5 text-xs text-[#52634c] dark:text-[#98ad90]">
-                      {rel.type} · {rel.date}
-                    </div>
+                    {(rel.type || rel.date) && (
+                      <div className="font-mono-num mt-0.5 text-xs text-[#52634c] dark:text-[#98ad90]">
+                        {rel.type && rel.date ? `${rel.type} · ${rel.date}` : rel.type || rel.date}
+                      </div>
+                    )}
                   </div>
                 </div>
               ))}
