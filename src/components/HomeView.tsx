@@ -150,10 +150,10 @@ export function HomeView({ lang, onNavigate, onPlayVideo }: HomeViewProps) {
 
               <div className={`${cardSurface} p-4 text-center sm:p-5`}>
                 <div className="font-mono-num text-3xl font-bold text-[#278500] sm:text-4xl dark:text-[#66c91a]">
-                  {RELEASES.length}
+                  {VIDEOS.length}
                 </div>
                 <div className="mt-1 text-xs font-medium text-[#52634c] dark:text-[#a8bc9f]">
-                  {t.s_rel}
+                  {t.n_video}
                 </div>
               </div>
             </div>
