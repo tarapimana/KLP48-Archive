@@ -1,0 +1,153 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "User Profile",
+      "description": "User profile and pinned favorites",
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "displayName": {
+          "type": "string",
+          "maxLength": 100
+        },
+        "pinnedMembers": {
+          "type": "array"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "userId"
+      ]
+    },
+    "LiveStatus": {
+      "title": "Member LIVE Status",
+      "description": "Current verified live streaming status for active KLP48 members",
+      "type": "object",
+      "properties": {
+        "memberId": {
+          "type": "string",
+          "maxLength": 64,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "memberName": {
+          "type": "string",
+          "maxLength": 100
+        },
+        "platform": {
+          "type": "string",
+          "enum": [
+            "tiktok",
+            "instagram"
+          ]
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "LIVE",
+            "OFFLINE",
+            "UNKNOWN"
+          ]
+        },
+        "source": {
+          "type": "string",
+          "maxLength": 100
+        },
+        "checkedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "startedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "liveUrl": {
+          "type": "string",
+          "maxLength": 500
+        }
+      },
+      "required": [
+        "memberId",
+        "memberName",
+        "platform",
+        "status",
+        "checkedAt"
+      ]
+    },
+    "LiveSession": {
+      "title": "LIVE Session History",
+      "description": "Historical record of past verified KLP48 LIVE streaming sessions",
+      "type": "object",
+      "properties": {
+        "memberId": {
+          "type": "string",
+          "maxLength": 64,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "memberName": {
+          "type": "string",
+          "maxLength": 100
+        },
+        "platform": {
+          "type": "string",
+          "enum": [
+            "tiktok",
+            "instagram"
+          ]
+        },
+        "startedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "endedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "duration": {
+          "type": "number"
+        },
+        "liveUrl": {
+          "type": "string",
+          "maxLength": 500
+        },
+        "source": {
+          "type": "string",
+          "maxLength": 100
+        }
+      },
+      "required": [
+        "memberId",
+        "memberName",
+        "platform",
+        "startedAt",
+        "endedAt"
+      ]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": {
+        "$ref": "#/entities/UserProfile"
+      },
+      "description": "User profile and pinned oshi preferences"
+    },
+    "/live_status/{statusId}": {
+      "schema": {
+        "$ref": "#/entities/LiveStatus"
+      },
+      "description": "Current live status records for active members"
+    },
+    "/live_sessions/{sessionId}": {
+      "schema": {
+        "$ref": "#/entities/LiveSession"
+      },
+      "description": "Historical live session records"
+    }
+  }
+}

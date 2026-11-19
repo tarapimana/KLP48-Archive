@@ -1,0 +1,95 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    // 1. Hardened administrator authentication requiring verified email
+    function isAdmin() {
+      return isSignedIn() &&
+             request.auth.token.email == 'it.aiman2009@gmail.com' &&
+             request.auth.token.email_verified == true;
+    }
+
+    // 2. Member validation restricting strictly to the 20 exact canonical active KLP48 member IDs
+    // Strictly excludes graduated members (cocoa, yurina, lucine, haruka, suzuha) and non-active member (cindy)
+    function isActiveMemberId(memberId) {
+      return memberId in [
+        'yi_shyan', 'devi', 'amanda', 'ann_drea', 'hillary',
+        'khalies', 'salwa', 'tiffany', 'maia', 'mashiro',
+        'sharleez', 'shu_zhen', 'tara', 'aisha', 'alice',
+        'diva', 'hana', 'isabel', 'joo', 'kei'
+      ];
+    }
+
+    function isValidUserProfile(data) {
+      return data.keys().hasAll(['userId']) &&
+             data.keys().hasOnly(['userId', 'displayName', 'pinnedMembers', 'updatedAt']) &&
+             data.userId is string && data.userId.size() <= 128 &&
+             (!data.keys().has('displayName') || (data.displayName is string && data.displayName.size() <= 100)) &&
+             (!data.keys().has('pinnedMembers') || data.pinnedMembers is list) &&
+             (!data.keys().has('updatedAt') || data.updatedAt is string);
+    }
+
+    // 3. Documented field validation with keys().hasOnly(...) and canonical active member ID check
+    function isValidLiveStatus(data) {
+      return data.keys().hasAll(['memberId', 'memberName', 'platform', 'status', 'checkedAt']) &&
+             data.keys().hasOnly(['memberId', 'memberName', 'platform', 'status', 'checkedAt', 'source', 'startedAt', 'liveUrl']) &&
+             data.memberId is string && data.memberId.size() <= 64 && isActiveMemberId(data.memberId) &&
+             data.memberName is string && data.memberName.size() <= 100 &&
+             data.platform in ['tiktok', 'instagram'] &&
+             data.status in ['LIVE', 'OFFLINE', 'UNKNOWN'] &&
+             data.checkedAt is string &&
+             (!data.keys().has('source') || (data.source is string && data.source.size() <= 100)) &&
+             (!data.keys().has('startedAt') || data.startedAt is string || data.startedAt == null) &&
+             (!data.keys().has('liveUrl') || (data.liveUrl is string && data.liveUrl.size() <= 500));
+    }
+
+    function isValidLiveSession(data) {
+      return data.keys().hasAll(['memberId', 'memberName', 'platform', 'startedAt', 'endedAt']) &&
+             data.keys().hasOnly(['memberId', 'memberName', 'platform', 'startedAt', 'endedAt', 'duration', 'liveUrl', 'source']) &&
+             data.memberId is string && data.memberId.size() <= 64 && isActiveMemberId(data.memberId) &&
+             data.memberName is string && data.memberName.size() <= 100 &&
+             data.platform in ['tiktok', 'instagram'] &&
+             data.startedAt is string &&
+             data.endedAt is string &&
+             (!data.keys().has('duration') || data.duration is number || data.duration is string) &&
+             (!data.keys().has('liveUrl') || (data.liveUrl is string && data.liveUrl.size() <= 500)) &&
+             (!data.keys().has('source') || (data.source is string && data.source.size() <= 100));
+    }
+
+    match /users/{userId} {
+      allow get, list: if isOwner(userId);
+      allow create: if isOwner(userId) && isValidId(userId) && isValidUserProfile(request.resource.data) && request.resource.data.userId == userId;
+      allow update: if isOwner(userId) && isValidId(userId) && isValidUserProfile(request.resource.data) && request.resource.data.userId == resource.data.userId;
+      allow delete: if isOwner(userId);
+    }
+
+    // Public read-only for verified LIVE status and session history
+    // Anonymous visitors and untrusted clients CANNOT write or modify
+    match /live_status/{statusId} {
+      allow get, list: if true;
+      allow create, update: if isAdmin() && isValidId(statusId) && isValidLiveStatus(request.resource.data);
+      allow delete: if isAdmin() && isValidId(statusId);
+    }
+
+    match /live_sessions/{sessionId} {
+      allow get, list: if true;
+      allow create, update: if isAdmin() && isValidId(sessionId) && isValidLiveSession(request.resource.data);
+      allow delete: if isAdmin() && isValidId(sessionId);
+    }
+  }
+}

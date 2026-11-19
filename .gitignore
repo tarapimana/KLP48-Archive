@@ -1,0 +1,32 @@
+node_modules/
+build/
+dist/
+coverage/
+.DS_Store
+*.log
+.env*
+!.env.example
+
+# Firebase private credentials
+.firebase/
+service-account*.json
+*-service-account*.json
+firebase-adminsdk*.json
+
+# Private keys
+*.pem
+*.key
+
+# Local environment
+.env
+.env.local
+.env.*.local
+
+# AI Studio temporary media
+.aistudio/**/.tempmediaStorage/
+
+# Antigravity local files
+.antigravity/
+
+# Large video files
+public/assets/aistudio/*.mp4
