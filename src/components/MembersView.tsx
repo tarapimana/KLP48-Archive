@@ -177,7 +177,7 @@ export function MembersView({ lang }: MembersViewProps) {
                       {member.nama}
                     </h2>
                     <span className="font-mono-num shrink-0 text-[11px] font-medium text-[#52634c] dark:text-[#98ad90]">
-                      {member.gen}
+                      GEN {member.gen}
                     </span>
                   </div>
 

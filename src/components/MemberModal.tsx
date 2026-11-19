@@ -136,7 +136,7 @@ export function MemberModal({
           <div className="flex items-center justify-between py-3">
             <dt className="text-[#52634c] dark:text-[#98ad90]">{t.m_gen}</dt>
             <dd className="font-mono-num font-semibold text-[#131f10] dark:text-[#ecf4e8]">
-              {member.gen}
+              GEN {member.gen}
             </dd>
           </div>
           <div className="flex items-center justify-between py-3">
