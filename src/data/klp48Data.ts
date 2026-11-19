@@ -187,6 +187,18 @@ export const RELEASES: ReleaseItem[] = [
       youtubeId: 'p73lJfaNphY',
     },
   },
+  {
+    title: 'Full Power! Pokémon Mezastar! Gorgeous Star',
+    date: '2026.10.31',
+    type: 'Single',
+    artworkUrl: 'https://i.ytimg.com/vi/o9CpUmbJKoo/hq720.jpg?sqp=-oaymwFFCNAFEJQDSFryq4qpAzcIARUAAIhCGAHYAQHiAQoIGBACGAY4AUAB8AEB-AH-CYAC0AWKAgwIABABGEUgPCh_MA-4AvcY&rs=AOn4CLBlVIJJVnwQUQ-G03Mc9NbId6_pHA',
+    video: {
+      title: 'Full Power! Pokémon Mezastar! Gorgeous Star',
+      url: 'https://www.youtube.com/watch?v=o9CpUmbJKoo',
+      platform: 'youtube',
+      youtubeId: 'o9CpUmbJKoo',
+    },
+  },
 ];
 
 const RAW_VIDEOS: Array<[string, string, string?]> = [
