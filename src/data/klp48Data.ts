@@ -293,7 +293,7 @@ export const VIDEOS: VideoItem[] = RAW_VIDEOS.map(([title, url, thumbnail]) => {
 
 export const SCHEDULE_DATA: ScheduleRawItem[] = [
   { tarikh_mula: "2026-11-01", tarikh_tamat: "", tajuk: "Mini Live Show", lokasi: "KLP48 Theatre, Lalaport BBCC", jenis: "show", eksklusif: "", nota: "" },
-  { tarikh_mula: "2026-11-01", tarikh_tamat: "", tajuk: "Pokemon Mezastar Festival", lokasi: "Wow Plaza, GF, Lalaport BBCC", jenis: "event", eksklusif: "", nota: "" },
+  { tarikh_mula: "2026-11-01", tarikh_tamat: "", tajuk: "Pokemon Mezastar Festival", lokasi: "Wow Plaza, GF, Lalaport BBCC", masa: "4:00 petang – 8:00 malam", masa_en: "4:00 PM – 8:00 PM", jenis: "event", eksklusif: "", nota: "", members: "Hana, Alice, Isabel, Joo & Tara", pautan: "https://www.instagram.com/p/De_iJ3PEu2J/?img_index=3&gwpx=MTBmdnNwbXQwanExcw==" },
   { tarikh_mula: "2026-11-01", tarikh_tamat: "", tajuk: "Spook-tacle Halloween Weekend Meet & Greet", lokasi: "West Atrium Walkway, GF Lalaport BBCC", jenis: "event", eksklusif: "", nota: "" },
   { tarikh_mula: "2026-11-05", tarikh_tamat: "", tajuk: "Discord Radio", lokasi: "Eksklusif Fan Club", lokasi_en: "Fan Club Exclusive", jenis: "event", eksklusif: "ya", nota: "" },
   { tarikh_mula: "2026-11-05", tarikh_tamat: "", tajuk: "AEON MALL KL Midtown Grand Opening", lokasi: "AEON MALL KL Midtown", masa: "6:00 petang – 6:15 petang", masa_en: "6:00 PM – 6:15 PM", jenis: "event", eksklusif: "", nota: "", members: "Hana, Isabel, Diva, Amanda, Devi & Salwa", pautan: "https://www.instagram.com/p/DfTaFcfj-ni/?jplx=MWFiMWpidWltOHZteg==" },
