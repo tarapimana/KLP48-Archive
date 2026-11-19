@@ -1,28 +1,9 @@
-import {
-  AlertCircle,
-  CheckCircle2,
-  Clock,
-  ExternalLink,
-  History,
-  Radio,
-  Search,
-  Star,
-  Tv,
-  Users,
-  Wifi,
-} from 'lucide-react';
+import { CheckCircle2, ExternalLink, Radio, Star, Wifi } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
-import {
-  getMemberCategory,
-  MemberItem,
-  MEMBERS_DATA,
-  VideoItem,
-} from '../data/klp48Data';
+import { MemberItem, MEMBERS_DATA, VideoItem } from '../data/klp48Data';
 import { formatRelativeTime, Lang, TRANSLATIONS } from '../i18n/translations';
 import {
-  LiveSessionRecord,
   LiveStatusRecord,
-  subscribeLiveSessions,
   subscribeLiveStatuses,
   testConnection,
 } from '../services/liveService';
@@ -35,8 +16,6 @@ interface LiveViewProps {
 }
 
 type PlatformFilter = 'all' | 'tiktok' | 'instagram';
-type GenFilter = 'all' | '1' | '2';
-type ViewTab = 'tracker' | 'history';
 
 const PINNED_STORAGE_KEY = 'klp48_live_pinned_members';
 
@@ -45,24 +24,15 @@ function isValidHandle(handle?: string): string {
   return /^[A-Za-z0-9._]{1,40}$/.test(cleaned) ? cleaned : '';
 }
 
-function normalizeKey(str: string): string {
-  return str.toLowerCase().replace(/[^a-z0-9]/g, '');
-}
-
 export function LiveView({ lang, onPlayVideo }: LiveViewProps) {
   const t = TRANSLATIONS[lang];
 
   // Firestore real-time state
   const [liveStatuses, setLiveStatuses] = useState<LiveStatusRecord[]>([]);
-  const [liveSessions, setLiveSessions] = useState<LiveSessionRecord[]>([]);
   const [firestoreConnected, setFirestoreConnected] = useState<boolean>(false);
 
   // UI state
-  const [activeTab, setActiveTab] = useState<ViewTab>('tracker');
-  const [query, setQuery] = useState('');
-  const [trackerPlatform, setTrackerPlatform] = useState<PlatformFilter>('all');
-  const [genFilter, setGenFilter] = useState<GenFilter>('all');
-  const [pinnedOnly, setPinnedOnly] = useState(false);
+  const [platformFilter, setPlatformFilter] = useState<PlatformFilter>('all');
   const [pinnedNames, setPinnedNames] = useState<string[]>(() => {
     try {
       const raw = localStorage.getItem(PINNED_STORAGE_KEY);
@@ -98,23 +68,9 @@ export function LiveView({ lang, onPlayVideo }: LiveViewProps) {
       }
     );
 
-    // Real-time live_sessions subscription
-    const unsubSessions = subscribeLiveSessions(
-      (records) => {
-        if (isMounted) {
-          setLiveSessions(records);
-          setFirestoreConnected(true);
-        }
-      },
-      (err) => {
-        console.warn('Real-time live_sessions warning:', err.message);
-      }
-    );
-
     return () => {
       isMounted = false;
       unsubStatuses();
-      unsubSessions();
     };
   }, []);
 
@@ -192,54 +148,12 @@ export function LiveView({ lang, onPlayVideo }: LiveViewProps) {
     });
   }, [memberStatusMap]);
 
-  // The 20 active members strictly filtered for the LIVE monitoring roster
-  const trackedMembers = useMemo(() => {
-    const q = query.trim().toLowerCase();
-    const pinnedSet = new Set(pinnedNames);
-
-    return MEMBERS_DATA.map((member, originalIndex) => {
-      const tiktokHandle = isValidHandle(member.tiktok);
-      const igHandle = isValidHandle(member.instagram);
-      const key = member.id;
-      const statusInfo = memberStatusMap.get(key) || {
-        overallStatus: 'UNKNOWN' as const,
-      };
-
-      return {
-        member,
-        originalIndex,
-        tiktokHandle,
-        igHandle,
-        statusInfo,
-      };
-    })
-      .filter(({ member, tiktokHandle, igHandle, statusInfo }) => {
-        // Strictly only active members appear in LIVE monitoring
-        if (member.statusCategory !== 'active') return false;
-        if (!tiktokHandle && !igHandle) return false;
-        if (genFilter !== 'all' && member.gen !== genFilter) return false;
-        if (trackerPlatform === 'tiktok' && !tiktokHandle) return false;
-        if (trackerPlatform === 'instagram' && !igHandle) return false;
-        if (pinnedOnly && !pinnedSet.has(member.nama)) return false;
-        if (q) {
-          const haystack = `${member.nama} ${member.nama_penuh} ${tiktokHandle} ${igHandle}`.toLowerCase();
-          if (!haystack.includes(q)) return false;
-        }
-        return true;
-      })
-      .sort((a, b) => {
-        const aPinned = pinnedSet.has(a.member.nama) ? 0 : 1;
-        const bPinned = pinnedSet.has(b.member.nama) ? 0 : 1;
-        if (aPinned !== bPinned) return aPinned - bPinned;
-        // Prioritize confirmed LIVE members to top
-        const aLive = a.statusInfo.overallStatus === 'LIVE' ? 0 : 1;
-        const bLive = b.statusInfo.overallStatus === 'LIVE' ? 0 : 1;
-        if (aLive !== bLive) return aLive - bLive;
-        return a.member.nama.localeCompare(b.member.nama, undefined, {
-          sensitivity: 'base',
-        });
-      });
-  }, [query, trackerPlatform, genFilter, pinnedOnly, pinnedNames, memberStatusMap]);
+  const filteredActiveLiveStreams = useMemo(() => {
+    if (platformFilter === 'all') return verifiedActiveLiveStreams;
+    return verifiedActiveLiveStreams.filter(
+      ({ statusInfo }) => statusInfo?.activeLiveRecord?.platform === platformFilter
+    );
+  }, [platformFilter, verifiedActiveLiveStreams]);
 
   return (
     <div className="space-y-10">
@@ -254,12 +168,12 @@ export function LiveView({ lang, onPlayVideo }: LiveViewProps) {
             <div className="flex flex-wrap items-center justify-between gap-3">
               <div
                 className={`inline-flex items-center gap-2 text-xs font-extrabold uppercase tracking-[0.16em] ${
-                  verifiedActiveLiveStreams.length > 0 ? 'text-[#ff405d]' : 'text-white/60'
+                  filteredActiveLiveStreams.length > 0 ? 'text-[#ff405d]' : 'text-white/60'
                 }`}
               >
                 <span
                   className={`h-1.5 w-1.5 rounded-full ${
-                    verifiedActiveLiveStreams.length > 0
+                    filteredActiveLiveStreams.length > 0
                       ? 'animate-pulse bg-[#ff405d]'
                       : 'bg-white/35'
                   }`}
@@ -282,7 +196,7 @@ export function LiveView({ lang, onPlayVideo }: LiveViewProps) {
               <div className="min-w-0">
                 <h1 className="font-display text-5xl font-black leading-[0.95] tracking-tight text-[#f5eeee] sm:text-7xl">
                   LIVE{' '}
-                  <span className="text-[#ff3658]">/ {verifiedActiveLiveStreams.length}</span>
+                  <span className="text-[#ff3658]">/ {filteredActiveLiveStreams.length}</span>
                 </h1>
                 <p className="mt-3 max-w-2xl text-sm leading-relaxed text-[#b9adaf] sm:text-[15px]">
                   {lang === 'en'
@@ -304,12 +218,12 @@ export function LiveView({ lang, onPlayVideo }: LiveViewProps) {
                     { key: 'instagram', label: 'Instagram' },
                   ] as Array<{ key: PlatformFilter; label: string }>
                 ).map((tab) => {
-                  const active = trackerPlatform === tab.key;
+                  const active = platformFilter === tab.key;
                   return (
                     <button
                       key={tab.key}
                       type="button"
-                      onClick={() => setTrackerPlatform(tab.key)}
+                      onClick={() => setPlatformFilter(tab.key)}
                       className={`min-h-9 whitespace-nowrap rounded-full px-4 text-xs font-bold transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#ff5570] sm:px-5 ${
                         active
                           ? 'bg-[#ff3658] text-white shadow-sm shadow-[#ff3658]/20'
@@ -326,9 +240,9 @@ export function LiveView({ lang, onPlayVideo }: LiveViewProps) {
 
       {/* Confirmed LIVE Portrait Cards OR Verified Standby State */}
       <section aria-label="Verified live streams">
-        {verifiedActiveLiveStreams.length > 0 ? (
+        {filteredActiveLiveStreams.length > 0 ? (
           <div className="grid gap-x-4 gap-y-5 sm:grid-cols-2 lg:grid-cols-4">
-            {verifiedActiveLiveStreams.map(({ member, originalIndex, statusInfo }, idx) => {
+            {filteredActiveLiveStreams.map(({ member, originalIndex, statusInfo }, idx) => {
               const rec = statusInfo?.activeLiveRecord;
               const platform = rec?.platform || 'tiktok';
               const platformLabel = platform === 'tiktok' ? 'TikTok' : 'Instagram';
@@ -464,338 +378,6 @@ export function LiveView({ lang, onPlayVideo }: LiveViewProps) {
         </div>
       </section>
 
-      {/* Member Tracker and Session History */}
-      <section aria-label="Member LIVE Tracker and History" className="space-y-4 border-t border-[#dce6d7] pt-6 dark:border-[#24371f]">
-          {/* View Tab Switcher */}
-          <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#dce6d7] pb-3 dark:border-[#24371f]">
-            <div
-              className="inline-flex rounded-xl border border-[#dce6d7] bg-[#f0f6ec] p-1 dark:border-[#24371f] dark:bg-[#121f0e]"
-              role="tablist"
-              aria-label="View toggle"
-            >
-              <button
-                type="button"
-                role="tab"
-                aria-selected={activeTab === 'tracker'}
-                onClick={() => setActiveTab('tracker')}
-                className={`inline-flex items-center gap-2 rounded-lg px-4 py-2 text-xs font-bold transition-all ${
-                  activeTab === 'tracker'
-                    ? 'bg-white text-[#131f10] shadow-sm dark:bg-[#203419] dark:text-white'
-                    : 'text-[#4e6047] hover:text-[#131f10] dark:text-[#9bb193] dark:hover:text-white'
-                }`}
-              >
-                <Users className="h-4 w-4" />
-                <span>{t.lv_tracker_title}</span>
-                <span className="rounded-full bg-[#278500]/15 px-2 py-0.5 text-[11px] font-extrabold text-[#278500] dark:text-[#7ce043]">
-                  {trackedMembers.length}
-                </span>
-              </button>
-
-              <button
-                type="button"
-                role="tab"
-                aria-selected={activeTab === 'history'}
-                onClick={() => setActiveTab('history')}
-                className={`inline-flex items-center gap-2 rounded-lg px-4 py-2 text-xs font-bold transition-all ${
-                  activeTab === 'history'
-                    ? 'bg-white text-[#131f10] shadow-sm dark:bg-[#203419] dark:text-white'
-                    : 'text-[#4e6047] hover:text-[#131f10] dark:text-[#9bb193] dark:hover:text-white'
-                }`}
-              >
-                <History className="h-4 w-4" />
-                <span>{t.lv_history_title}</span>
-                <span className="rounded-full bg-slate-200 px-2 py-0.5 text-[11px] font-bold text-slate-700 dark:bg-slate-800 dark:text-slate-300">
-                  {liveSessions.length}
-                </span>
-              </button>
-            </div>
-          </div>
-
-          {/* TAB 1: 20 Active Members Tracker */}
-          {activeTab === 'tracker' && (
-            <div className="space-y-4">
-              {/* Filter & Search Bar */}
-              <div className="space-y-3 rounded-2xl border border-[#dce6d7] bg-white/94 p-4 backdrop-blur-md dark:border-[#24371f] dark:bg-[#0e190b]/92">
-                <div className="flex flex-wrap items-center gap-2.5">
-                  <div className="relative min-w-[200px] flex-1">
-                    <Search
-                      className="pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-[#52634c] dark:text-[#98ad90]"
-                      aria-hidden="true"
-                    />
-                    <input
-                      type="search"
-                      value={query}
-                      onChange={(e) => setQuery(e.target.value)}
-                      placeholder={t.lv_search_ph}
-                      aria-label={t.lv_search_ph}
-                      className="min-h-[38px] w-full rounded-lg border border-[#dce6d7] bg-white py-1.5 pr-3 pl-9 text-sm text-[#131f10] placeholder:text-[#52634c] focus:border-[#278500] focus:outline-none dark:border-[#24371f] dark:bg-[#142111] dark:text-[#ecf4e8] dark:placeholder:text-[#98ad90] dark:focus:border-[#6fd43a]"
-                    />
-                  </div>
-
-                  {/* Gen Filter */}
-                  <div
-                    className="inline-flex rounded-lg border border-[#dce6d7] bg-[#f7faf5] p-0.5 dark:border-[#24371f] dark:bg-[#142111]"
-                    role="group"
-                    aria-label="Filter by generation"
-                  >
-                    {(
-                      [
-                        { key: 'all', label: t.gen_all },
-                        { key: '1', label: t.gen_1 },
-                        { key: '2', label: t.gen_2 },
-                      ] as Array<{ key: GenFilter; label: string }>
-                    ).map((opt) => (
-                      <button
-                        key={opt.key}
-                        type="button"
-                        onClick={() => setGenFilter(opt.key)}
-                        className={`min-h-[32px] whitespace-nowrap rounded-md px-2.5 text-xs font-semibold transition-colors ${
-                          genFilter === opt.key
-                            ? 'bg-[#278500] text-white dark:bg-[#66c91a] dark:text-[#0b1608]'
-                            : 'text-[#52634c] hover:text-[#131f10] dark:text-[#b5c7ae] dark:hover:text-[#ecf4e8]'
-                        }`}
-                      >
-                        {opt.label}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              </div>
-
-              {/* Members Grid */}
-              {trackedMembers.length > 0 ? (
-                <div className="grid gap-3 sm:grid-cols-2">
-                  {trackedMembers.map(
-                    ({ member, originalIndex, tiktokHandle, igHandle, statusInfo }) => {
-                      const isPinned = pinnedNames.includes(member.nama);
-                      const isLive = statusInfo.overallStatus === 'LIVE';
-                      const isOffline = statusInfo.overallStatus === 'OFFLINE';
-
-                      return (
-                        <article
-                          key={member.nama}
-                          className={`rounded-2xl border p-4 backdrop-blur-md transition-colors ${
-                            isLive
-                              ? 'border-red-500 bg-red-50/60 dark:border-red-600/70 dark:bg-red-950/20'
-                              : isPinned
-                              ? 'border-[#278500] bg-white dark:border-[#66c91a] dark:bg-[#11200d]'
-                              : 'border-[#dce6d7] bg-white/95 dark:border-[#24371f] dark:bg-[#0e190b]/94'
-                          }`}
-                        >
-                          <div className="flex items-start justify-between gap-3">
-                            <button
-                              type="button"
-                              onClick={() => setSelectedMember({ member, index: originalIndex })}
-                              className="group flex min-w-0 flex-1 items-center gap-3 text-left"
-                            >
-                              <MemberAvatar
-                                member={member}
-                                indexNumber={originalIndex}
-                                className="h-12 w-12 shrink-0 rounded-xl border border-black/10"
-                                initialsClassName="text-sm"
-                              />
-                              <div className="min-w-0">
-                                <h3 className="font-display truncate text-base font-bold text-[#131f10] transition-colors group-hover:text-[#278500] dark:text-white dark:group-hover:text-[#7ce043]">
-                                  {member.nama}
-                                </h3>
-                                <div className="mt-0.5 flex flex-wrap items-center gap-1.5">
-                                  <span className="font-mono-num text-xs text-[#4d5e47] dark:text-[#b7cab0]">
-                                    GEN {member.gen}
-                                  </span>
-                                  <span className="text-[#899c83]">•</span>
-                                  {/* Real-time status indicator */}
-                                  {isLive ? (
-                                    <span className="inline-flex items-center gap-1 rounded bg-red-600 px-1.5 py-0.5 text-[10px] font-black uppercase tracking-wider text-white">
-                                      <span className="h-1 w-1 animate-ping rounded-full bg-white" />
-                                      LIVE
-                                    </span>
-                                  ) : isOffline ? (
-                                    <span className="rounded bg-slate-100 px-1.5 py-0.5 text-[10px] font-semibold text-slate-600 dark:bg-slate-800 dark:text-slate-300">
-                                      OFFLINE
-                                    </span>
-                                  ) : (
-                                    <span
-                                      className="rounded bg-amber-50 px-1.5 py-0.5 text-[10px] font-medium text-amber-700 dark:bg-amber-950/40 dark:text-amber-400"
-                                      title="Tiada rekod status disahkan dari Firestore / Unverified"
-                                    >
-                                      UNKNOWN
-                                    </span>
-                                  )}
-                                </div>
-                              </div>
-                            </button>
-
-                            <button
-                              type="button"
-                              onClick={() => togglePin(member.nama)}
-                              aria-pressed={isPinned}
-                              title={isPinned ? t.lv_pinned : t.lv_pin}
-                              className={`inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border transition-colors ${
-                                isPinned
-                                  ? 'border-[#278500] bg-[#e3f2da] text-[#278500] dark:border-[#66c91a] dark:bg-[#1a3312] dark:text-[#7ce043]'
-                                  : 'border-[#dce6d7] bg-[#f7faf5] text-[#52634c] hover:border-[#278500] hover:text-[#278500] dark:border-[#24371f] dark:bg-[#142111] dark:text-[#98ad90] dark:hover:border-[#6fd43a] dark:hover:text-[#7ce043]'
-                              }`}
-                            >
-                              <Star
-                                className={`h-3.5 w-3.5 ${isPinned ? 'fill-current' : ''}`}
-                                aria-hidden="true"
-                              />
-                            </button>
-                          </div>
-
-                          <div className="mt-3.5 grid grid-cols-2 gap-2">
-                            {tiktokHandle ? (
-                              <a
-                                href={
-                                  statusInfo.tiktok?.status === 'LIVE'
-                                    ? `https://www.tiktok.com/@${tiktokHandle}/live`
-                                    : `https://www.tiktok.com/@${tiktokHandle}`
-                                }
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className={`flex min-h-[34px] items-center justify-between gap-1 rounded-lg border px-2.5 py-1 text-xs transition-colors ${
-                                  statusInfo.tiktok?.status === 'LIVE'
-                                    ? 'border-red-400 bg-red-100/80 font-bold text-red-700 hover:bg-red-200 dark:border-red-700 dark:bg-red-950/60 dark:text-red-300'
-                                    : 'border-[#dce6d7] bg-[#f7faf5] hover:border-[#278500] dark:border-[#24371f] dark:bg-[#142111] dark:hover:border-[#6fd43a]'
-                                }`}
-                              >
-                                <span className="font-bold text-[#131f10] dark:text-white">
-                                  TikTok
-                                </span>
-                                <Radio
-                                  className={`h-3 w-3 ${
-                                    statusInfo.tiktok?.status === 'LIVE'
-                                      ? 'animate-pulse text-red-600'
-                                      : 'text-[#52634c] dark:text-[#98ad90]'
-                                  }`}
-                                  aria-hidden="true"
-                                />
-                              </a>
-                            ) : (
-                              <div className="flex items-center justify-center text-xs text-[#52634c] opacity-40">
-                                -
-                              </div>
-                            )}
-
-                            {igHandle ? (
-                              <a
-                                href={`https://www.instagram.com/${igHandle}`}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className={`flex min-h-[34px] items-center justify-between gap-1 rounded-lg border px-2.5 py-1 text-xs transition-colors ${
-                                  statusInfo.instagram?.status === 'LIVE'
-                                    ? 'border-red-400 bg-red-100/80 font-bold text-red-700 hover:bg-red-200 dark:border-red-700 dark:bg-red-950/60 dark:text-red-300'
-                                    : 'border-[#dce6d7] bg-[#f7faf5] hover:border-[#278500] dark:border-[#24371f] dark:bg-[#142111] dark:hover:border-[#6fd43a]'
-                                }`}
-                              >
-                                <span className="font-bold text-[#131f10] dark:text-white">
-                                  Instagram
-                                </span>
-                                <Tv
-                                  className={`h-3 w-3 ${
-                                    statusInfo.instagram?.status === 'LIVE'
-                                      ? 'animate-pulse text-pink-600'
-                                      : 'text-pink-500'
-                                  }`}
-                                  aria-hidden="true"
-                                />
-                              </a>
-                            ) : (
-                              <div className="flex items-center justify-center text-xs text-[#52634c] opacity-40">
-                                -
-                              </div>
-                            )}
-                          </div>
-                        </article>
-                      );
-                    }
-                  )}
-                </div>
-              ) : (
-                <div className="rounded-2xl border border-[#dce6d7] bg-white/95 p-8 text-center text-sm text-[#3f503a] dark:border-[#24371f] dark:bg-[#0e190b]/94 dark:text-[#c7d7c0]">
-                  {t.nomatch}
-                </div>
-              )}
-            </div>
-          )}
-
-          {/* TAB 2: LIVE Session History */}
-          {activeTab === 'history' && (
-            <div className="space-y-4">
-              {liveSessions.length > 0 ? (
-                <div className="space-y-3">
-                  {liveSessions.map((session) => (
-                    <div
-                      key={session.id}
-                      className="rounded-2xl border border-[#dce6d7] bg-white/95 p-4 shadow-xs dark:border-[#24371f] dark:bg-[#0e190b]/94"
-                    >
-                      <div className="flex flex-wrap items-center justify-between gap-2">
-                        <div className="flex items-center gap-2">
-                          <span
-                            className={`rounded px-2 py-0.5 text-xs font-bold uppercase tracking-wider ${
-                              session.platform === 'tiktok'
-                                ? 'bg-black text-white dark:bg-white dark:text-black'
-                                : 'bg-pink-600 text-white'
-                            }`}
-                          >
-                            {session.platform}
-                          </span>
-                          <h3 className="font-display font-bold text-[#131f10] dark:text-white">
-                            {session.memberName}
-                          </h3>
-                        </div>
-
-                        {session.liveUrl && (
-                          <a
-                            href={session.liveUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="inline-flex items-center gap-1 text-xs font-semibold text-[#278500] hover:underline dark:text-[#7ce043]"
-                          >
-                            <span>Pautan Sesi</span>
-                            <ExternalLink className="h-3 w-3" />
-                          </a>
-                        )}
-                      </div>
-
-                      <div className="mt-2.5 flex flex-wrap items-center gap-4 text-xs text-[#52634c] dark:text-[#98ad90]">
-                        <span className="flex items-center gap-1">
-                          <Clock className="h-3.5 w-3.5" />
-                          <span>Mula: {session.startedAt ? formatRelativeTime(session.startedAt, lang) : '-'}</span>
-                        </span>
-                        {session.duration && (
-                          <span>
-                            Durasi: {typeof session.duration === 'number' ? `${Math.round(session.duration / 60)} minit` : session.duration}
-                          </span>
-                        )}
-                        {session.source && (
-                          <span className="text-[11px] opacity-75">
-                            Sumber: {session.source}
-                          </span>
-                        )}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <div className="rounded-2xl border border-[#dce6d7] bg-white/95 p-10 text-center dark:border-[#24371f] dark:bg-[#0e190b]/94">
-                  <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-[#e9f4e3] text-[#278500] dark:bg-[#1a3013] dark:text-[#7ce043]">
-                    <History className="h-6 w-6" aria-hidden="true" />
-                  </div>
-                  <h3 className="font-display mt-3 text-lg font-bold text-[#131f10] dark:text-white">
-                    {t.lv_history_title}
-                  </h3>
-                  <p className="mx-auto mt-1.5 max-w-md text-sm text-[#52634c] dark:text-[#98ad90]">
-                    {t.lv_history_empty}
-                  </p>
-                  <p className="mx-auto mt-2 max-w-md text-xs text-[#71866b] dark:text-[#809978]">
-                    Hanya sesi siaran langsung yang telah disahkan akan disimpan dalam pangkalan data. Tiada rekod sejarah palsu dicipta.
-                  </p>
-                </div>
-              )}
-            </div>
-          )}
-      </section>
 
       {/* Member Details Modal */}
       {selectedMember && (
