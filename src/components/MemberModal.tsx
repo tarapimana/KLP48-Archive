@@ -140,9 +140,9 @@ export function MemberModal({
                 </dd>
               </div>
               <div className="grid grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] items-center gap-3 border-t border-[#e3ecde] py-4 sm:py-5 dark:border-[#24371f]">
-                <dt className="text-sm text-[#52634c] sm:text-base dark:text-[#a8bc9f]">{t.m_gen}</dt>
+                <dt className="text-sm text-[#52634c] sm:text-base dark:text-[#a8bc9f]">{t.m_place}</dt>
                 <dd className="text-right font-semibold text-[#131f10] sm:text-lg dark:text-[#ecf4e8]">
-                  {member.gen}
+                  {member.birthplace}
                 </dd>
               </div>
               <div className="grid grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] items-start gap-3 border-t border-[#e3ecde] py-4 sm:py-5 dark:border-[#24371f]">

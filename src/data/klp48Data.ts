@@ -47,6 +47,7 @@ export interface MemberItem {
   tarikh_lahir_en?: string;
   tahun_lahir: string;
   gen: string;
+  birthplace?: string;
   status: string;
   statusCategory: MemberStatusCategory;
   nota_status: string;
@@ -317,7 +318,36 @@ export const SCHEDULE_DATA: ScheduleRawItem[] = [
   { tarikh_mula: "2026-11-29", tarikh_tamat: "", tajuk: "Mini Live Show", lokasi: "KLP48 Theatre, Lalaport BBCC", jenis: "show", eksklusif: "", nota: "" },
 ];
 
-export const MEMBERS_DATA: MemberItem[] = [
+const MEMBER_BIRTHPLACES: Record<string, string> = {
+  yi_shyan: "Perak, Malaysia",
+  yurina: "Kagawa Prefecture, Japan",
+  haruka: "Saitama Prefecture, Japan",
+  suzuha: "Hyogo Prefecture, Japan",
+  cocoa: "Hiroshima Prefecture, Japan",
+  devi: "Denpasar, Bali, Indonesia",
+  amanda: "Kuala Lumpur, Malaysia",
+  ann_drea: "Selangor, Malaysia",
+  hillary: "Hong Kong",
+  khalies: "Kuala Lumpur, Malaysia",
+  salwa: "Kuala Lumpur, Malaysia",
+  tiffany: "Sarawak, Malaysia",
+  lucine: "Kuala Lumpur, Malaysia",
+  maia: "Selangor, Malaysia",
+  mashiro: "Nara, Japan",
+  sharleez: "Kuala Lumpur, Malaysia",
+  shu_zhen: "Perak, Malaysia",
+  tara: "Selangor, Malaysia",
+  aisha: "Almaty, Kazakhstan",
+  alice: "Selangor, Malaysia",
+  cindy: "Tangerang Selatan, Indonesia",
+  diva: "Jawa Barat, Indonesia",
+  hana: "Jawa Tengah, Indonesia",
+  isabel: "Kuala Lumpur, Malaysia",
+  joo: "Sabah, Malaysia",
+  kei: "Selangor, Malaysia",
+};
+
+export const MEMBERS_DATA: MemberItem[] = ([
   { id: "yi_shyan", nama: "Yi Shyan", nama_penuh: "Foo Yi Shyan", tarikh_lahir: "28 Jun", tarikh_lahir_en: "28 Jun", tahun_lahir: "2004", gen: "1", status: "aktif", statusCategory: "active", nota_status: "", gambar: "/images/members/Yi_Shyan.jpg", x: "Yishyan_klp48", instagram: "yishyan_klp48", tiktok: "https.shyan" },
   { id: "yurina", nama: "Yurina", nama_penuh: "Yurina Gyoten", tarikh_lahir: "14 Mac", tarikh_lahir_en: "14 Mar", tahun_lahir: "1999", gen: "1", status: "graduated", statusCategory: "graduated", nota_status: "Kembali ke AKB48 (28 Feb 2026)", nota_status_en: "Returned to AKB48 (28 Feb 2026)", gambar: "/images/members/Yurina.png", x: "tenten_yurina", instagram: "yurina.0314", tiktok: "yurina_gyoten0314" },
   { id: "haruka", nama: "Haruka", nama_penuh: "Haruka Kurosu", tarikh_lahir: "28 Feb", tarikh_lahir_en: "28 Feb", tahun_lahir: "2001", gen: "1", status: "graduated", statusCategory: "graduated", nota_status: "Kembali ke AKB48 (28 Feb 2026)", nota_status_en: "Returned to AKB48 (28 Feb 2026)", gambar: "/images/members/Haruka.png", x: "kurooosu_48_16", instagram: "hachan_haruka", tiktok: "haachan_xxx" },
@@ -344,7 +374,7 @@ export const MEMBERS_DATA: MemberItem[] = [
   { id: "isabel", nama: "Isabel", nama_penuh: "Wee Xi Ting", tarikh_lahir: "11 Sep", tarikh_lahir_en: "11 Sep", tahun_lahir: "2008", gen: "2", status: "aktif", statusCategory: "active", nota_status: "", gambar: "/images/members/Isabel.jpg", x: "isabel_klp48", instagram: "isabel.klp48", tiktok: "isabel.klp48" },
   { id: "joo", nama: "Joo", nama_penuh: "Jocelyna Marcelly", tarikh_lahir: "27 Nov", tarikh_lahir_en: "27 Nov", tahun_lahir: "2005", gen: "2", status: "aktif", statusCategory: "active", nota_status: "", gambar: "/images/members/Joo.jpg", x: "jocelyna_klp48", instagram: "jocelyna.klp48", tiktok: "jocelyna.klp48" },
   { id: "kei", nama: "Kei", nama_penuh: "Kei Annisa Adnan", tarikh_lahir: "16 Apr", tarikh_lahir_en: "16 Apr", tahun_lahir: "2009", gen: "2", status: "aktif", statusCategory: "active", nota_status: "", gambar: "/images/members/Kei.jpg", x: "kei_klp48", instagram: "kei.klp48", tiktok: "kei.klp48" },
-];
+] satisfies MemberItem[]).map((member) => ({ ...member, birthplace: MEMBER_BIRTHPLACES[member.id] ?? "" }));
 
 export const NEWS_DATA: NewsItem[] = [
   { tajuk: "Announcement KLP48 at Nihon Live, Nihon Matsuri", tarikh: "2026.10.24", kategori: "News", pautan: "https://klp48.my/news/detail/48" },
