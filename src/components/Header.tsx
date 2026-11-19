@@ -1,4 +1,4 @@
-import { LogOut, Menu, ShieldAlert, ShieldCheck, X } from 'lucide-react';
+import { ArrowUpRight, LogOut, Menu, ShieldAlert, ShieldCheck, X } from 'lucide-react';
 import { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useLiveStatus } from '../context/LiveStatusContext';
@@ -95,6 +95,16 @@ export function Header({
             <span className="tabular-nums">{liveCount}</span>
             <span>{t.n_live}</span>
           </button>
+          <a
+            href="https://dumapp.com/en/klp48/"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Oshi Sorter (opens in a new tab)"
+            className="inline-flex min-h-11 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-lg bg-[#278500] px-3 py-2 text-xs font-bold text-white shadow-[0_4px_12px_rgba(39,133,0,0.24)] transition-colors hover:bg-[#206e00] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#278500] dark:bg-[#6fd43a] dark:text-[#0a1407] dark:hover:bg-[#82df52] dark:focus-visible:outline-[#6fd43a]"
+          >
+            <span>Oshi Sorter</span>
+            <ArrowUpRight className="h-3.5 w-3.5" aria-hidden="true" />
+          </a>
 
           {/* Desktop Administrator Status / Login Button */}
           {isAdmin ? (
