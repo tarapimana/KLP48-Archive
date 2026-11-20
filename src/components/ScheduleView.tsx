@@ -1,5 +1,5 @@
-import { ArrowRight, Check, Clock, MapPin, UsersRound } from 'lucide-react';
-import { useMemo, useState } from 'react';
+import { ArrowRight, Check, Clock, MapPin, MoreVertical, UsersRound } from 'lucide-react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useScheduleEvents } from '../context/useScheduleEvents';
 import { MEMBERS_DATA, MemberItem, parseEventMemberNames } from '../data/klp48Data';
 import { formatScheduleTime } from '../lib/scheduleTime';
@@ -55,6 +55,37 @@ export function ScheduleView({ lang }: ScheduleViewProps) {
     member: MemberItem;
     index: number;
   } | null>(null);
+  const [openEventMenuId, setOpenEventMenuId] = useState<string | null>(null);
+  const eventMenuRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (!openEventMenuId) return;
+
+    const closeOnOutsideClick = (event: PointerEvent) => {
+      if (!eventMenuRef.current?.contains(event.target as Node)) {
+        setOpenEventMenuId(null);
+      }
+    };
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setOpenEventMenuId(null);
+        eventMenuRef.current
+          ?.querySelector<HTMLButtonElement>('[data-event-menu-trigger]')
+          ?.focus();
+      }
+    };
+
+    document.addEventListener('pointerdown', closeOnOutsideClick);
+    document.addEventListener('keydown', closeOnEscape);
+    eventMenuRef.current
+      ?.querySelector<HTMLElement>('[data-event-menu-item]')
+      ?.focus();
+
+    return () => {
+      document.removeEventListener('pointerdown', closeOnOutsideClick);
+      document.removeEventListener('keydown', closeOnEscape);
+    };
+  }, [openEventMenuId]);
 
   const months = lang === 'en' ? MONTHS_EN : MONTHS_MS;
   const shortMonths = lang === 'en' ? MONTHS_SHORT_EN : MONTHS_SHORT_MS;
@@ -318,8 +349,8 @@ export function ScheduleView({ lang }: ScheduleViewProps) {
             return (
               <article
                 key={ev.id}
-                className={`rounded-2xl border p-5 backdrop-blur-md transition-colors ${
-                  isNext
+                className={`relative rounded-2xl border p-5 backdrop-blur-md transition-colors ${
+                  openEventMenuId === ev.id ? 'z-20 ' : ''}${isNext
                     ? 'border-[#278500] bg-white shadow-sm dark:border-[#66c91a] dark:bg-[#11200d]'
                     : isPast
                     ? 'border-[#dce6d7] bg-white/92 dark:border-[#24371f] dark:bg-[#0e180b]/92'
@@ -408,16 +439,59 @@ export function ScheduleView({ lang }: ScheduleViewProps) {
                             {title}
                           </h2>
                         </div>
-                        <button
-                          type="button"
-                          aria-label={`${t.j_add_calendar}: ${title}`}
-                          onClick={() =>
-                            downloadScheduleEventCalendar(ev, { title, venue, notes })
-                          }
-                          className="inline-flex min-h-10 shrink-0 items-center whitespace-nowrap rounded-md px-1.5 text-[11px] font-bold text-[#278500] hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#278500] sm:text-xs dark:text-[#7ce043] dark:focus-visible:outline-[#6fd43a]"
+                        <div
+                          ref={openEventMenuId === ev.id ? eventMenuRef : null}
+                          className="relative z-10 shrink-0"
                         >
-                          {t.j_add_calendar}
-                        </button>
+                          <button
+                            type="button"
+                            data-event-menu-trigger
+                            aria-label={`${t.j_more_options}: ${title}`}
+                            aria-expanded={openEventMenuId === ev.id}
+                            aria-controls={
+                              openEventMenuId === ev.id ? `event-actions-${ev.id}` : undefined
+                            }
+                            onClick={() =>
+                              setOpenEventMenuId((currentId) =>
+                                currentId === ev.id ? null : ev.id
+                              )
+                            }
+                            className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[#dce6d7] bg-white/80 text-[#278500] transition-colors hover:border-[#278500] hover:bg-[#edf5e9] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#278500] dark:border-[#2b4523] dark:bg-[#142111] dark:text-[#7ce043] dark:hover:border-[#6fd43a] dark:hover:bg-[#1d3314] dark:focus-visible:outline-[#6fd43a]"
+                          >
+                            <MoreVertical className="h-4 w-4" aria-hidden="true" />
+                          </button>
+                          {openEventMenuId === ev.id && (
+                            <div
+                              id={`event-actions-${ev.id}`}
+                              role="group"
+                              aria-label={t.j_more_options}
+                              className="absolute right-0 top-full z-30 mt-2 w-48 rounded-xl border border-[#dce6d7] bg-white p-1 shadow-xl dark:border-[#2b4523] dark:bg-[#142111]"
+                            >
+                              <button
+                                type="button"
+                                data-event-menu-item
+                                onClick={() => {
+                                  downloadScheduleEventCalendar(ev, { title, venue, notes });
+                                  setOpenEventMenuId(null);
+                                }}
+                                className="flex min-h-11 w-full items-center rounded-lg px-3 text-left text-sm font-semibold text-[#278500] transition-colors hover:bg-[#edf5e9] focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-[#278500] dark:text-[#7ce043] dark:hover:bg-[#1d3314] dark:focus-visible:outline-[#6fd43a]"
+                              >
+                                {t.j_add_calendar}
+                              </button>
+                              {ev.link && (
+                                <a
+                                  href={ev.link}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  onClick={() => setOpenEventMenuId(null)}
+                                  className="flex min-h-11 items-center rounded-lg px-3 text-sm font-semibold text-[#278500] transition-colors hover:bg-[#edf5e9] focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-[#278500] dark:text-[#7ce043] dark:hover:bg-[#1d3314] dark:focus-visible:outline-[#6fd43a]"
+                                >
+                                  {t.j_link}
+                                </a>
+                              )}
+                            </div>
+                          )}
+                        </div>
                       </div>
 
                       <div className="mt-2 space-y-1 text-xs leading-relaxed text-[#3f503a] sm:text-sm dark:text-[#c7d7c0]">
@@ -478,16 +552,6 @@ export function ScheduleView({ lang }: ScheduleViewProps) {
                           </div>
                         )}
                         {notes && <p className="leading-relaxed">{notes}</p>}
-                        {ev.link && (
-                          <a
-                            href={ev.link}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="inline-flex min-h-11 items-center gap-1.5 font-bold text-[#278500] hover:underline dark:text-[#7ce043]"
-                          >
-                            <span>{t.j_link}</span>
-                          </a>
-                        )}
                       </div>
                     </div>
                   </div>
