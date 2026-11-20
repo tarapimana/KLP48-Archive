@@ -205,22 +205,15 @@ export function VideosView({ lang, onPlayVideo }: VideosViewProps) {
                     </h2>
                   </div>
 
-                  <div className="mt-4 flex items-center justify-between border-t border-[#dce6d7] pt-3 text-xs dark:border-[#24371f]">
-                    <button
-                      type="button"
-                      onClick={() => onPlayVideo(vid)}
-                      className="font-semibold text-[#131f10] hover:text-[#278500] dark:text-[#ecf4e8] dark:hover:text-[#6fd43a]"
-                    >
-                      {t.v_preview}
-                    </button>
-
+                  <div className="mt-4 flex items-center justify-end border-t border-[#dce6d7] pt-3 text-xs dark:border-[#24371f]">
                     <a
                       href={vid.url}
                       target="_blank"
                       rel="noopener noreferrer"
+                      aria-label={`${isYouTube ? t.v_open_yt : t.v_open_tt} (opens in a new tab)`}
                       className="inline-flex items-center gap-1 font-semibold text-[#278500] hover:underline dark:text-[#6fd43a]"
                     >
-                      <span>{isYouTube ? 'YouTube' : t.v_open_tt}</span>
+                      <span>{isYouTube ? t.v_open_yt : t.v_open_tt}</span>
                       <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
                     </a>
                   </div>
