@@ -1,6 +1,7 @@
 export {
   parseSocialCurrent,
   parseSocialObservation,
+  parseSocialObservationTransport,
   parseSocialSnapshot,
   parseSocialTrackingConfig,
   parseSocialTrackingLog,

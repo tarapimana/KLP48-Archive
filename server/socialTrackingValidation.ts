@@ -220,6 +220,42 @@ export function parseSocialObservation(value: unknown): ServerSocialObservation 
   };
 }
 
+export function parseSocialObservationTransport(value: unknown): ServerSocialObservation {
+  const record = exactRecord(
+    value,
+    [
+      'memberId',
+      'platform',
+      'followers',
+      'following',
+      'totalLikes',
+      'videoCount',
+      'mediaCount',
+      'capturedAtMs',
+      'collectionStatus',
+    ],
+    ['memberId', 'platform', 'followers', 'capturedAtMs', 'collectionStatus'],
+  );
+  const capturedAtMs = record.capturedAtMs;
+  if (
+    !Number.isSafeInteger(capturedAtMs) ||
+    (capturedAtMs as number) < MIN_FIRESTORE_TIMESTAMP_SECONDS * 1000 ||
+    (capturedAtMs as number) > MAX_FIRESTORE_TIMESTAMP_SECONDS * 1000 + 999
+  ) {
+    return invalidData();
+  }
+
+  try {
+    const { capturedAtMs: _capturedAtMs, ...observation } = record;
+    return parseSocialObservation({
+      ...observation,
+      capturedAt: AdminTimestamp.fromMillis(capturedAtMs as number),
+    });
+  } catch {
+    return invalidData();
+  }
+}
+
 export function parseSocialSnapshot(value: unknown): ServerSocialSnapshot {
   return parseSocialObservation(value);
 }
