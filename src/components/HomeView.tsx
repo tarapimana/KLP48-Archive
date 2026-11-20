@@ -1,4 +1,4 @@
-import { ArrowRight, Clock, ExternalLink, MapPin, Music, Play, UsersRound } from 'lucide-react';
+import { ArrowRight, Clock, MapPin, Music, Play, UsersRound } from 'lucide-react';
 import { useState } from 'react';
 import {
   getMemberCategory,
@@ -348,17 +348,7 @@ export function HomeView({ lang, onNavigate, onPlayVideo }: HomeViewProps) {
                           {vid.title}
                         </h3>
                       </div>
-                      {isYouTube && (
-                        <a
-                          href={vid.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="inline-flex shrink-0 items-center gap-1 whitespace-nowrap text-xs font-semibold text-[#278500] hover:underline dark:text-[#6fd43a]"
-                        >
-                          <span>YouTube</span>
-                          <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
-                        </a>
-                      )}
+
                     </div>
                   </div>
                 );
