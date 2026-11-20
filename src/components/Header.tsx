@@ -1,8 +1,8 @@
-import { ArrowUpRight, LogOut, Menu, ShieldAlert, ShieldCheck, X } from 'lucide-react';
+import { ArrowUpRight, ExternalLink, LogOut, Menu, ShieldAlert, ShieldCheck, X } from 'lucide-react';
 import { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useLiveStatus } from '../context/LiveStatusContext';
-import { RouteKey } from '../data/klp48Data';
+import { OFFICIAL_SITE_URL, RouteKey } from '../data/klp48Data';
 import { Lang, TRANSLATIONS } from '../i18n/translations';
 
 interface HeaderProps {
@@ -47,7 +47,7 @@ export function Header({
 
   return (
     <header className="sticky top-0 z-30 border-b border-[#dce6d7] bg-[#f6faf4]/85 backdrop-blur-md dark:border-[#24371f] dark:bg-[#0d160b]/80">
-      <div className="mx-auto flex max-w-6xl items-center justify-between gap-8 px-4 py-3 sm:px-6">
+      <div className="relative mx-auto flex max-w-6xl items-center justify-between gap-8 px-4 py-3 sm:px-6">
         <a
           href="#home"
           onClick={(e) => {
@@ -59,7 +59,7 @@ export function Header({
           Arkib <span className="text-[#278500] dark:text-[#6fd43a]">KLP48</span>
         </a>
 
-        <nav className="hidden items-center gap-6 md:flex" aria-label="Primary navigation">
+        <nav className="hidden flex-1 items-center justify-center gap-6 lg:flex xl:absolute xl:left-1/2 xl:w-max xl:flex-none xl:-translate-x-1/2" aria-label="Primary navigation">
           {PRIMARY_NAV.map((key) => {
             const active = route === key;
             return (
@@ -84,6 +84,16 @@ export function Header({
         </nav>
 
         <div className="flex shrink-0 items-center gap-2 sm:gap-3">
+          <a
+            href={OFFICIAL_SITE_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={`${t.footer_official} (opens in a new tab)`}
+            className="hidden shrink-0 items-center gap-1 whitespace-nowrap text-[10px] font-semibold text-[#278500] transition-colors hover:text-[#206e00] hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#278500] dark:text-[#6fd43a] dark:hover:text-[#82df52] dark:focus-visible:outline-[#6fd43a] sm:inline-flex"
+          >
+            <span>{t.footer_official}</span>
+            <ExternalLink className="h-3 w-3" aria-hidden="true" />
+          </a>
           <a
             href="https://dumapp.com/en/klp48/"
             target="_blank"
@@ -155,7 +165,7 @@ export function Header({
             onClick={() => setMobileOpen((prev) => !prev)}
             aria-expanded={mobileOpen}
             aria-label={mobileOpen ? 'Close navigation menu' : 'Open navigation menu'}
-            className="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-[#dce6d7] bg-white text-[#131f10] transition-colors hover:bg-[#edf5e9] md:hidden dark:border-[#24371f] dark:bg-[#142111] dark:text-[#ecf4e8] dark:hover:bg-[#1c2d17]"
+            className="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-[#dce6d7] bg-white text-[#131f10] transition-colors hover:bg-[#edf5e9] lg:hidden dark:border-[#24371f] dark:bg-[#142111] dark:text-[#ecf4e8] dark:hover:bg-[#1c2d17]"
           >
             {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </button>
@@ -163,7 +173,7 @@ export function Header({
       </div>
 
       {mobileOpen && (
-        <div className="border-t border-[#dce6d7] bg-[#f6faf4] px-4 py-4 md:hidden dark:border-[#24371f] dark:bg-[#0d160b]">
+        <div className="border-t border-[#dce6d7] bg-[#f6faf4] px-4 py-4 lg:hidden dark:border-[#24371f] dark:bg-[#0d160b]">
           <nav className="flex flex-col gap-1" aria-label="Mobile navigation">
             {(['home', ...PRIMARY_NAV, 'live'] as RouteKey[]).map((key) => {
               const active = route === key;
