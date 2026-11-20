@@ -19,8 +19,17 @@ export type SocialAccountAuthorizationStatus =
   | 'disconnected'
   | 'error';
 export type SocialAccountType = 'business' | 'creator' | 'personal' | 'unknown';
-export type SocialCollectionSource = 'instagram_graph_api' | 'tiktok_display_api';
 export type SocialCollectionStatus = 'success' | 'partial';
+export const SOCIAL_TRACKING_ERROR_CODES = [
+  'TOKEN_EXPIRED',
+  'AUTH_REVOKED',
+  'RATE_LIMITED',
+  'PROVIDER_ERROR',
+  'INVALID_RESPONSE',
+  'AUTH_REQUIRED',
+  'UNKNOWN_ERROR',
+] as const;
+export type SocialTrackingErrorCode = typeof SOCIAL_TRACKING_ERROR_CODES[number];
 export type SocialTrackingTrigger = 'scheduled' | 'manual';
 export type SocialTrackingRunStatus = 'running' | 'success' | 'partial' | 'failed';
 
@@ -49,7 +58,6 @@ export interface SocialObservation {
   totalLikes?: number;
   videoCount?: number;
   capturedAt: Timestamp;
-  collectionSource: SocialCollectionSource;
   collectionStatus: SocialCollectionStatus;
 }
 
@@ -74,5 +82,5 @@ export interface SocialTrackingLog {
   accountsAttempted: number;
   accountsSucceeded: number;
   accountsFailed: number;
-  errorCode?: string;
+  errorCode?: SocialTrackingErrorCode;
 }

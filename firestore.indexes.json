@@ -40,6 +40,14 @@
         { "fieldPath": "platform", "order": "ASCENDING" },
         { "fieldPath": "videoCount", "order": "DESCENDING" }
       ]
+    },
+    {
+      "collectionGroup": "social_accounts",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "platform", "order": "ASCENDING" },
+        { "fieldPath": "providerAccountId", "order": "ASCENDING" }
+      ]
     }
   ],
   "fieldOverrides": []

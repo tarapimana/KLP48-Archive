@@ -101,6 +101,7 @@ service cloud.firestore {
 
     function isValidTrackedMemberIds(memberIds) {
       return memberIds is list && memberIds.size() <= 20 &&
+             memberIds.toSet().size() == memberIds.size() &&
              memberIds.hasOnly([
                'yi_shyan', 'devi', 'amanda', 'ann_drea', 'hillary',
                'khalies', 'salwa', 'tiffany', 'maia', 'mashiro',
@@ -116,7 +117,7 @@ service cloud.firestore {
              isValidTrackedMemberIds(data.trackedMemberIds) &&
              data.timezone is string && data.timezone.size() <= 64 &&
              data.updatedAt is timestamp &&
-             data.updatedBy is string && data.updatedBy.size() <= 128;
+             data.updatedBy is string && data.updatedBy.size() > 0 && data.updatedBy.size() <= 128;
     }
 
     match /users/{userId} {
@@ -153,8 +154,8 @@ service cloud.firestore {
       allow read, write: if false;
     }
 
-    // Firestore Rules cannot redact fields from a document. These dedicated public projection
-    // collections must contain only SocialObservation fields; clients cannot write to them.
+    // Public reads remain queryable. Trusted Admin SDK writers must validate and project data
+    // with the server-side parser before writing; Rules do not intercept Admin SDK writes.
     match /social_snapshots/{snapshotId} {
       allow get, list: if true;
       allow create, update, delete: if false;
