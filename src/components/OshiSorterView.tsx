@@ -625,7 +625,7 @@ export function OshiSorterView({ lang }: OshiSorterViewProps) {
             </h2>
           </div>
 
-          <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1 rounded-xl border border-[#dce6d7] bg-[#f6faf4] px-3 py-2.5 text-xs dark:border-[#2b4225] dark:bg-[#152112]">
+          <div className="flex flex-col gap-3 rounded-xl border border-[#dce6d7] bg-[#f6faf4] px-3 py-2.5 text-xs dark:border-[#2b4225] dark:bg-[#152112] sm:flex-row sm:items-center sm:justify-between">
             <p className="flex flex-wrap items-center gap-x-2 text-[#263b20] dark:text-[#e3efdc]">
               <span className="font-semibold">{t.oshi_member_count.replace('%n', String(session.sorted.length))}</span>
               <span aria-hidden="true" className="text-[#8a9b82]">·</span>
@@ -633,9 +633,34 @@ export function OshiSorterView({ lang }: OshiSorterViewProps) {
                 {t.oshi_filter_label}: {SORTER_GENERATIONS.map((generation) => `Gen ${generation}`).join(', ')}
               </span>
             </p>
-            <p className="text-[#52634c] dark:text-[#a8b99f]">
-              {t.oshi_comparisons}: {session.comparisons}
-            </p>
+            <div className="flex flex-wrap items-center gap-2">
+              <p className="rounded-lg border border-[#dce6d7] px-2.5 py-2 text-[#52634c] dark:border-[#34472d] dark:text-[#a8b99f]">
+                {t.oshi_comparisons}: {session.comparisons}
+              </p>
+              <button
+                type="button"
+                onClick={startSort}
+                className="inline-flex min-h-9 items-center justify-center gap-1.5 rounded-lg bg-[#263b20] px-3 text-xs font-bold text-white shadow-sm transition-colors hover:bg-[#1d2d17] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#278500] dark:bg-[#263720] dark:text-[#e3efdc] dark:hover:bg-[#33472b] dark:focus-visible:outline-[#6fd43a]"
+              >
+                <RotateCcw aria-hidden="true" className="h-4 w-4 shrink-0" />
+                <span>{t.oshi_sort_again}</span>
+              </button>
+              <a
+                href={shareUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={(event) => {
+                  if (navigator.share) {
+                    event.preventDefault();
+                    void navigator.share({ title: t.oshi_title, text: rankingText }).catch(() => {});
+                  }
+                }}
+                className="inline-flex min-h-9 items-center justify-center gap-1.5 rounded-lg bg-[#278500] px-3 text-xs font-bold text-white shadow-sm transition-colors hover:bg-[#206e00] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#278500] dark:bg-[#6fd43a] dark:text-[#0a1407] dark:hover:bg-[#82df52] dark:focus-visible:outline-[#6fd43a]"
+              >
+                <Share2 aria-hidden="true" className="h-4 w-4" />
+                {t.oshi_share_ranking}
+              </a>
+            </div>
           </div>
 
           <ol className="mx-auto grid w-full max-w-[36rem] grid-cols-3 gap-2 sm:gap-3" aria-label={`${t.oshi_results} 1–3`}>
@@ -651,32 +676,6 @@ export function OshiSorterView({ lang }: OshiSorterViewProps) {
               ))}
             </ol>
           )}
-
-          <div>
-            <button
-              type="button"
-              onClick={startSort}
-              className="inline-flex min-h-10 w-full items-center justify-center gap-1.5 rounded-lg bg-[#263b20] px-3 text-xs font-bold text-white shadow-sm transition-colors hover:bg-[#1d2d17] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#278500] dark:bg-[#263720] dark:text-[#e3efdc] dark:hover:bg-[#33472b] dark:focus-visible:outline-[#6fd43a]"
-            >
-              <RotateCcw aria-hidden="true" className="h-4 w-4 shrink-0" />
-              <span className="truncate">{t.oshi_sort_again}</span>
-            </button>
-          </div>
-          <a
-            href={shareUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            onClick={(event) => {
-              if (navigator.share) {
-                event.preventDefault();
-                void navigator.share({ title: t.oshi_title, text: rankingText }).catch(() => {});
-              }
-            }}
-            className="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-xl bg-[#278500] px-4 text-sm font-bold text-white shadow-[0_5px_16px_rgba(39,133,0,0.2)] transition-colors hover:bg-[#206e00] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#278500] dark:bg-[#6fd43a] dark:text-[#0a1407] dark:hover:bg-[#82df52] dark:focus-visible:outline-[#6fd43a]"
-          >
-            <Share2 aria-hidden="true" className="h-4 w-4" />
-            {t.oshi_share_ranking}
-          </a>
         </div>
       )}
     </section>
