@@ -1,4 +1,4 @@
-import type { ParsedEvent } from '../data/klp48Data';
+import type { MemberItem, ParsedEvent } from '../data/klp48Data';
 import { formatScheduleTime } from './scheduleTime';
 
 const KUALA_LUMPUR_UTC_OFFSET_MINUTES = 8 * 60;
@@ -121,6 +121,39 @@ export function downloadScheduleEventCalendar(
   const anchor = document.createElement('a');
   anchor.href = downloadUrl;
   anchor.download = safeFileName(details.title);
+  anchor.click();
+  window.setTimeout(() => URL.revokeObjectURL(downloadUrl), 1000);
+}
+
+export function downloadMemberBirthdayCalendar(
+  member: Pick<MemberItem, 'id'>,
+  date: Date,
+  title: string
+): void {
+  const lines = [
+    'BEGIN:VCALENDAR',
+    'VERSION:2.0',
+    'PRODID:-//KLP48 Archive//Member Birthdays//EN',
+    'CALSCALE:GREGORIAN',
+    'METHOD:PUBLISH',
+    'BEGIN:VEVENT',
+    `UID:birthday-${encodeURIComponent(member.id)}@klp48-archive`,
+    `DTSTAMP:${new Date().toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '')}`,
+    `SUMMARY:${escapeIcsText(title)}`,
+    `DTSTART;VALUE=DATE:${formatCalendarDate(date)}`,
+    'DURATION:P1D',
+    'RRULE:FREQ=YEARLY',
+    'END:VEVENT',
+    'END:VCALENDAR',
+  ];
+
+  const calendarFile = new Blob([`${lines.map(foldIcsLine).join('\r\n')}\r\n`], {
+    type: 'text/calendar;charset=utf-8',
+  });
+  const downloadUrl = URL.createObjectURL(calendarFile);
+  const anchor = document.createElement('a');
+  anchor.href = downloadUrl;
+  anchor.download = safeFileName(title);
   anchor.click();
   window.setTimeout(() => URL.revokeObjectURL(downloadUrl), 1000);
 }

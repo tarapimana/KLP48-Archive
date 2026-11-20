@@ -183,9 +183,9 @@ export function MembersView({ lang }: MembersViewProps) {
                     </span>
                   </div>
 
-                  <p className="mt-0.5 truncate text-xs text-[#52634c] dark:text-[#98ad90]">
+                  <p className="mt-0.5 break-words text-xs leading-relaxed text-[#52634c] dark:text-[#98ad90]">
                     {member.nama_penuh}
-                    {birthDate ? ` · ${birthDate}` : ''}
+                    {birthDate && <span className="whitespace-nowrap"> · {birthDate}</span>}
                   </p>
 
                   {statusNote && (
