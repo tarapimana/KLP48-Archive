@@ -14,6 +14,7 @@ export function BackgroundVideo({
   onToggleVideoOnly,
 }: BackgroundVideoProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
+  const audioRef = useRef<HTMLAudioElement>(null);
   const manuallyEnabledRef = useRef(false);
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(() =>
     typeof window !== 'undefined' &&
@@ -65,14 +66,19 @@ export function BackgroundVideo({
   };
 
   const toggleSound = () => {
-    const video = videoRef.current;
-    if (!video) return;
+    const audio = audioRef.current;
+    if (!audio) return;
 
-    const nextMuted = !video.muted;
-    video.muted = nextMuted;
+    const nextMuted = !isMuted;
+    audio.muted = nextMuted;
     setIsMuted(nextMuted);
 
-    if (!nextMuted) void video.play().catch(() => setNeedsPlay(true));
+    if (!nextMuted) {
+      void audio.play().catch(() => {
+        audio.muted = true;
+        setIsMuted(true);
+      });
+    }
   };
 
   const t = TRANSLATIONS[lang];
@@ -80,13 +86,21 @@ export function BackgroundVideo({
 
   return (
     <>
+      <audio
+        ref={audioRef}
+        src="/audio/klp48-background-music.m4a"
+        preload="none"
+        muted={isMuted}
+        loop
+        aria-hidden="true"
+      />
       <video
         ref={videoRef}
         src="/video/bg-loop.mp4?v=1080p"
         poster="/video/bg-poster.jpg"
         preload="metadata"
         autoPlay
-        muted={isMuted}
+        muted
         loop
         playsInline
         aria-hidden="true"
