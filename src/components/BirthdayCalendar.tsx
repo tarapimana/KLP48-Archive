@@ -17,6 +17,7 @@ import {
   WEEKDAYS_MS,
 } from '../i18n/translations';
 import { MemberAvatar } from './MemberAvatar';
+import { BirthdayCalendarMenu } from './BirthdayCalendarMenu';
 
 interface BirthdayCalendarProps {
   lang: Lang;
@@ -351,31 +352,40 @@ export function BirthdayCalendar({ lang, onSelectMember }: BirthdayCalendarProps
               const turningAge =
                 entry.birthYear !== null ? viewYear - entry.birthYear : null;
               return (
-                <button
+                <div
                   key={entry.member.nama}
-                  type="button"
-                  onClick={() => onSelectMember(entry.member)}
-                  className="inline-flex items-center gap-2.5 rounded-xl border border-[#dce6d7] bg-[#f7faf5] px-3 py-2 text-left transition-colors hover:border-[#278500] hover:bg-[#edf5e9] dark:border-[#24371f] dark:bg-[#0e190b]/80 dark:hover:border-[#66c91a] dark:hover:bg-[#1a2b15]"
+                  className="inline-flex items-center gap-1.5 rounded-xl border border-[#dce6d7] bg-[#f7faf5] px-1.5 py-1.5 dark:border-[#24371f] dark:bg-[#0e190b]/80"
                 >
-                  <MemberAvatar
+                  <button
+                    type="button"
+                    onClick={() => onSelectMember(entry.member)}
+                    className="inline-flex items-center gap-2.5 rounded-lg px-1.5 py-0.5 text-left transition-colors hover:bg-[#edf5e9] focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-[#278500] dark:hover:bg-[#1a2b15] dark:focus-visible:outline-[#6fd43a]"
+                  >
+                    <MemberAvatar
+                      member={entry.member}
+                      indexNumber={entry.originalIndex}
+                      className="h-8 w-8 shrink-0 rounded-lg border border-black/10"
+                      initialsClassName="text-xs"
+                    />
+                    <div className="min-w-0">
+                      <div className="font-display text-xs font-bold text-[#131f10] sm:text-sm dark:text-[#ecf4e8]">
+                        {entry.member.nama}
+                      </div>
+                      <div className="font-mono-num text-[11px] text-[#52634c] dark:text-[#98ad90]">
+                        {entry.day} {shortMonths[viewMonth]}
+                        {turningAge !== null
+                          ? ` · ${t.bd_years.replace('%n', String(turningAge))}`
+                          : ''}
+                        {entry.isGraduated ? ` · ${t.f_grad}` : ''}
+                      </div>
+                    </div>
+                  </button>
+                  <BirthdayCalendarMenu
                     member={entry.member}
-                    indexNumber={entry.originalIndex}
-                    className="h-8 w-8 shrink-0 rounded-lg border border-black/10"
-                    initialsClassName="text-xs"
+                    date={new Date(viewYear, viewMonth, entry.day)}
+                    lang={lang}
                   />
-                  <div className="min-w-0">
-                    <div className="font-display text-xs font-bold text-[#131f10] sm:text-sm dark:text-[#ecf4e8]">
-                      {entry.member.nama}
-                    </div>
-                    <div className="font-mono-num text-[11px] text-[#52634c] dark:text-[#98ad90]">
-                      {entry.day} {shortMonths[viewMonth]}
-                      {turningAge !== null
-                        ? ` · ${t.bd_years.replace('%n', String(turningAge))}`
-                        : ''}
-                      {entry.isGraduated ? ` · ${t.f_grad}` : ''}
-                    </div>
-                  </div>
-                </button>
+                </div>
               );
             })}
           </div>

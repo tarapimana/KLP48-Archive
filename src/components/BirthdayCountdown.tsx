@@ -8,6 +8,7 @@ import {
 import { Lang, MONTHS_EN, MONTHS_MS, TRANSLATIONS } from '../i18n/translations';
 import { BirthdayCalendar } from './BirthdayCalendar';
 import { MemberAvatar } from './MemberAvatar';
+import { BirthdayCalendarMenu } from './BirthdayCalendarMenu';
 
 interface BirthdayCountdownProps {
   lang: Lang;
@@ -60,7 +61,7 @@ function calcTimeLeft(targetDate: Date): TimeLeft {
   };
 }
 
-const ITEMS_PER_PAGE = 5;
+const ITEMS_PER_PAGE = 7;
 
 export function BirthdayCountdown({
   lang,
@@ -300,34 +301,39 @@ export function BirthdayCountdown({
                             : '';
 
                         return (
-                          <button
+                          <div
                             key={entry.member.nama}
-                            type="button"
-                            onClick={() => onSelectMember(entry.member)}
-                            className="flex w-full cursor-pointer items-center justify-between gap-4 px-5 py-3.5 text-left transition-colors hover:bg-[#edf5e9]/70 dark:hover:bg-[#1a2b15]/80"
+                            className="flex items-center gap-2 px-3 py-2.5 sm:px-5 sm:py-3.5"
                           >
-                            <div className="flex min-w-0 items-center gap-3.5">
-                              <MemberAvatar
-                                member={entry.member}
-                                indexNumber={entry.originalIndex}
-                                className="h-11 w-11 shrink-0 rounded-xl border border-black/10"
-                                initialsClassName="text-sm"
-                              />
-                              <div className="min-w-0">
-                                <div className="truncate font-display text-base font-bold text-[#131f10] dark:text-[#ecf4e8]">
-                                  {entry.member.nama}
-                                </div>
-                                <div className="truncate text-xs text-[#52634c] dark:text-[#98ad90]">
-                                  {dayNum} {mName}
-                                  {ageLabel}
+                            <button
+                              type="button"
+                              onClick={() => onSelectMember(entry.member)}
+                              className="flex min-w-0 flex-1 cursor-pointer items-center justify-between gap-4 rounded-lg px-2 py-1 text-left transition-colors hover:bg-[#edf5e9]/70 focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-[#278500] dark:hover:bg-[#1a2b15]/80 dark:focus-visible:outline-[#6fd43a]"
+                            >
+                              <div className="flex min-w-0 items-center gap-3.5">
+                                <MemberAvatar
+                                  member={entry.member}
+                                  indexNumber={entry.originalIndex}
+                                  className="h-11 w-11 shrink-0 rounded-xl border border-black/10"
+                                  initialsClassName="text-sm"
+                                />
+                                <div className="min-w-0">
+                                  <div className="truncate font-display text-base font-bold text-[#131f10] dark:text-[#ecf4e8]">
+                                    {entry.member.nama}
+                                  </div>
+                                  <div className="truncate text-xs text-[#52634c] dark:text-[#98ad90]">
+                                    {dayNum} {mName}
+                                    {ageLabel}
+                                  </div>
                                 </div>
                               </div>
-                            </div>
 
-                            <span className="font-mono-num shrink-0 whitespace-nowrap text-xs font-bold tracking-wider text-[#278500] dark:text-[#6fd43a]">
-                              {formatDaysShort(entry.daysLeft)}
-                            </span>
-                          </button>
+                              <span className="font-mono-num shrink-0 whitespace-nowrap text-xs font-bold tracking-wider text-[#278500] dark:text-[#6fd43a]">
+                                {formatDaysShort(entry.daysLeft)}
+                              </span>
+                            </button>
+                            <BirthdayCalendarMenu member={entry.member} date={entry.date} lang={lang} />
+                          </div>
                         );
                       })}
                     </div>
@@ -392,42 +398,47 @@ export function BirthdayCountdown({
                     const RowTag = onSelectMember ? 'button' : 'div';
 
                     return (
-                      <RowTag
+                      <div
                         key={entry.member.nama}
-                        {...(onSelectMember
-                          ? {
-                              type: 'button' as const,
-                              onClick: () => onSelectMember(entry.member),
-                            }
-                          : {})}
-                        className={`flex w-full items-center justify-between gap-4 px-5 py-3.5 text-left transition-colors ${
-                          onSelectMember
-                            ? 'cursor-pointer hover:bg-[#edf5e9]/70 dark:hover:bg-[#1a2b15]/80'
-                            : ''
-                        }`}
+                        className="flex items-center gap-2 px-3 py-2.5 sm:px-5 sm:py-3.5"
                       >
-                        <div className="flex min-w-0 items-center gap-3.5">
-                          <MemberAvatar
-                            member={entry.member}
-                            indexNumber={entry.originalIndex}
-                            className="h-11 w-11 shrink-0 rounded-xl border border-black/10"
-                            initialsClassName="text-sm"
-                          />
-                          <div className="min-w-0">
-                            <div className="truncate font-display text-base font-bold text-[#131f10] dark:text-[#ecf4e8]">
-                              {entry.member.nama}
-                            </div>
-                            <div className="truncate text-xs text-[#52634c] dark:text-[#98ad90]">
-                              {dayNum} {mName}
-                              {ageLabel}
+                        <RowTag
+                          {...(onSelectMember
+                            ? {
+                                type: 'button' as const,
+                                onClick: () => onSelectMember(entry.member),
+                              }
+                            : {})}
+                          className={`flex min-w-0 flex-1 items-center justify-between gap-4 rounded-lg px-2 py-1 text-left transition-colors ${
+                            onSelectMember
+                              ? 'cursor-pointer hover:bg-[#edf5e9]/70 focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-[#278500] dark:hover:bg-[#1a2b15]/80 dark:focus-visible:outline-[#6fd43a]'
+                              : ''
+                          }`}
+                        >
+                          <div className="flex min-w-0 items-center gap-3.5">
+                            <MemberAvatar
+                              member={entry.member}
+                              indexNumber={entry.originalIndex}
+                              className="h-11 w-11 shrink-0 rounded-xl border border-black/10"
+                              initialsClassName="text-sm"
+                            />
+                            <div className="min-w-0">
+                              <div className="truncate font-display text-base font-bold text-[#131f10] dark:text-[#ecf4e8]">
+                                {entry.member.nama}
+                              </div>
+                              <div className="truncate text-xs text-[#52634c] dark:text-[#98ad90]">
+                                {dayNum} {mName}
+                                {ageLabel}
+                              </div>
                             </div>
                           </div>
-                        </div>
 
-                        <span className="font-mono-num shrink-0 whitespace-nowrap text-xs font-bold tracking-wider text-[#278500] dark:text-[#6fd43a]">
-                          {formatDaysShort(entry.daysLeft)}
-                        </span>
-                      </RowTag>
+                          <span className="font-mono-num shrink-0 whitespace-nowrap text-xs font-bold tracking-wider text-[#278500] dark:text-[#6fd43a]">
+                            {formatDaysShort(entry.daysLeft)}
+                          </span>
+                        </RowTag>
+                        <BirthdayCalendarMenu member={entry.member} date={entry.date} lang={lang} />
+                      </div>
                     );
                   })}
                 </div>

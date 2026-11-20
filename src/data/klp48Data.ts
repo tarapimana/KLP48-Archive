@@ -47,6 +47,8 @@ export interface MemberItem {
   tarikh_lahir_en?: string;
   tahun_lahir: string;
   gen: string;
+  birthplace?: string;
+  catchphrase?: string;
   status: string;
   statusCategory: MemberStatusCategory;
   nota_status: string;
@@ -292,17 +294,20 @@ export const VIDEOS: VideoItem[] = RAW_VIDEOS.map(([title, url, thumbnail]) => {
 });
 
 export const SCHEDULE_DATA: ScheduleRawItem[] = [
-  { tarikh_mula: "2026-11-01", tarikh_tamat: "", tajuk: "Mini Live Show", lokasi: "KLP48 Theatre, Lalaport BBCC", jenis: "show", eksklusif: "", nota: "" },
-  { tarikh_mula: "2026-11-01", tarikh_tamat: "", tajuk: "Pokemon Mezastar Festival", lokasi: "Wow Plaza, GF, Lalaport BBCC", jenis: "event", eksklusif: "", nota: "" },
-  { tarikh_mula: "2026-11-01", tarikh_tamat: "", tajuk: "Spook-tacle Halloween Weekend Meet & Greet", lokasi: "West Atrium Walkway, GF Lalaport BBCC", jenis: "event", eksklusif: "", nota: "" },
+  { tarikh_mula: "2026-11-01", tarikh_tamat: "", tajuk: "Mini Live Show", lokasi: "KLP48 Theatre, LaLaport BBCC Level 2", masa: "1:00 petang – 2:00 petang", masa_en: "1:00 PM – 2:00 PM", jenis: "show", eksklusif: "", nota: "", members: "Amanda, Devi, Hillary, Khalies, Salwa, Yi Shyan, Aisha, Diva, Maia, Mashiro, Sharleez & Shu Zhen", pautan: "https://www.instagram.com/p/DfEvkSviQhr/?bqrl=cHB6MTVtcHM1bGlt" },
+  { tarikh_mula: "2026-11-01", tarikh_tamat: "", tajuk: "Pokemon Mezastar Festival", lokasi: "Wow Plaza, GF, Lalaport BBCC", masa: "4:00 petang – 8:00 malam", masa_en: "4:00 PM – 8:00 PM", jenis: "event", eksklusif: "", nota: "", members: "Hana, Alice, Isabel, Joo & Tara", pautan: "https://www.instagram.com/p/De_iJ3PEu2J/?img_index=3&gwpx=MTBmdnNwbXQwanExcw==" },
+  { tarikh_mula: "2026-11-01", tarikh_tamat: "", tajuk: "Spook-tacle Halloween Weekend Meet & Greet", lokasi: "KLP48 M&G Venue, West Atrium Walkway, GF, LaLaport BBCC", masa: "5:00 petang – 6:00 petang", masa_en: "5:00 PM – 6:00 PM", jenis: "event", eksklusif: "", nota: "", nota_en: "", members: "Salwa, Kei, Maia & Yi Shyan", pautan: "https://www.instagram.com/p/De_abAKJWIy/?jplx=MTNnOTh4em5iamQ2cQ==" },
+  { tarikh_mula: "2026-11-01", tarikh_tamat: "", tajuk: "Meet & Creep: The Spooky Cheki", tajuk_en: "Meet & Creep: The Spooky Cheki", lokasi: "KLP48 Theatre, LaLaport BBCC Level 2", lokasi_en: "KLP48 Theatre, LaLaport BBCC Level 2", masa: "6:30 petang – 7:45 malam", masa_en: "6:30 PM – 7:45 PM", jenis: "event", eksklusif: "", nota: "", nota_en: "", members: "Kei, Salwa, Maia & Yi Shyan", pautan: "https://www.instagram.com/p/DfGxgVZJWyj/?gwpx=MW1leXEwdzQ1dzl5eQ==" },
   { tarikh_mula: "2026-11-05", tarikh_tamat: "", tajuk: "Discord Radio", lokasi: "Eksklusif Fan Club", lokasi_en: "Fan Club Exclusive", jenis: "event", eksklusif: "ya", nota: "" },
-  { tarikh_mula: "2026-11-05", tarikh_tamat: "2026-11-06", tajuk: "AEON MALL KL Midtown Grand Opening", lokasi: "AEON MALL KL Midtown", jenis: "event", eksklusif: "", nota: "" },
-  { tarikh_mula: "2026-11-07", tarikh_tamat: "", tajuk: "KLP Time: Talk Show", lokasi: "KLP48 Theatre, Lalaport BBCC", jenis: "show", eksklusif: "", nota: "" },
-  { tarikh_mula: "2026-11-07", tarikh_tamat: "2026-11-08", tajuk: "ACG Matsuri", lokasi: "Main Atrium, GF, LaLaport BBCC", jenis: "event", eksklusif: "", nota: "" },
-  { tarikh_mula: "2026-11-08", tarikh_tamat: "", tajuk: "Oshi Battle: Meet & Taiketsu!", lokasi: "KLP48 Theatre, Lalaport BBCC", jenis: "show", eksklusif: "", nota: "" },
+  { tarikh_mula: "2026-11-05", tarikh_tamat: "", tajuk: "AEON MALL KL Midtown Grand Opening", lokasi: "AEON MALL KL Midtown", masa: "6:00 petang – 6:15 petang", masa_en: "6:00 PM – 6:15 PM", jenis: "event", eksklusif: "", nota: "", members: "Hana, Isabel, Diva, Amanda, Devi & Salwa", pautan: "https://www.instagram.com/p/DfTaFcfj-ni/?jplx=MWFiMWpidWltOHZteg==" },
+  { tarikh_mula: "2026-11-06", tarikh_tamat: "", tajuk: "AEON MALL KL Midtown Grand Opening", lokasi: "AEON MALL KL Midtown", masa: "6:00 petang – 6:15 petang", masa_en: "6:00 PM – 6:15 PM", jenis: "event", eksklusif: "", nota: "", members: "Alice, Khalies, Mashiro, Yi Shyan, Ann Drea & Hillary", pautan: "https://www.instagram.com/p/DfTaFcfj-ni/?jplx=MWFiMWpidWltOHZteg==" },
+  { tarikh_mula: "2026-11-07", tarikh_tamat: "", tajuk: "KLP Time: Talk Show", lokasi: "KLP48 Theatre, LaLaport BBCC Level 2", lokasi_en: "KLP48 Theatre, LaLaport BBCC Level 2", masa: "18:00 – 19:00", masa_en: "6:00 PM – 7:00 PM", jenis: "show", eksklusif: "", nota: "", nota_en: "", members: "Ann Drea, Hillary, Khalies, Aisha, Alice, Kei, Maia, Mashiro, Shu Zhen & Tara", pautan: "https://www.instagram.com/p/DfW4CHJCaYc/?img_index=2" },
+  { tarikh_mula: "2026-11-07", tarikh_tamat: "", tajuk: "ACG Matsuri", lokasi: "Main Atrium, GF, LaLaport BBCC", lokasi_en: "Main Atrium, GF, LaLaport BBCC", masa: "3:30 petang – 4:00 petang", masa_en: "3:30 PM – 4:00 PM", jenis: "event", eksklusif: "", nota: "", members: "Hana, Isabel, Diva, Amanda, Devi & Salwa", pautan: "https://www.instagram.com/p/DezBNYNAchD/?hvrq=cjNiczNrZTZuNW1w" },
+  { tarikh_mula: "2026-11-08", tarikh_tamat: "", tajuk: "ACG Matsuri", lokasi: "Main Atrium, GF, LaLaport BBCC", lokasi_en: "Main Atrium, GF, LaLaport BBCC", masa: "6:00 petang – 6:30 petang", masa_en: "6:00 PM – 6:30 PM", jenis: "event", eksklusif: "", nota: "", members: "Tara, Mashiro, Aisha, Khalies, Ann Drea & Hillary", pautan: "https://www.instagram.com/p/De1ZnyZD0kq/?knvt=MW41anVpbjhqaXJydg==" },
+  { tarikh_mula: "2026-11-08", tarikh_tamat: "", tajuk: "Oshi Battle: Meet & Taiketsu!", lokasi: "KLP48 Theatre, LaLaport BBCC Level 2", lokasi_en: "KLP48 Theatre, LaLaport BBCC Level 2", masa: "12:00 tengah hari – 4:45 petang", masa_en: "12:00 PM – 4:45 PM", jenis: "show", eksklusif: "", nota: "", nota_en: "", members: "Salwa, Sharleez, Ann Drea, Aisha, Khalies, Hillary, Mashiro, Tara, Amanda, Kei, Maia, Hana, Shu Zhen, Diva, Alice, Devi & Isabel", pautan: "https://www.instagram.com/p/DfW4CHJCaYc/?img_index=4" },
   { tarikh_mula: "2026-11-11", tarikh_tamat: "", tajuk: "Discord Radio", lokasi: "Eksklusif Fan Club", lokasi_en: "Fan Club Exclusive", jenis: "event", eksklusif: "ya", nota: "" },
   { tarikh_mula: "2026-11-15", tarikh_tamat: "", tajuk: "Meet & Greet: Talk Session", lokasi: "KLP48 Theatre, LaLaport BBCC Level 2", lokasi_en: "KLP48 Theatre, LaLaport BBCC Level 2", masa: "12:00 tengah hari – 4:30 petang", masa_en: "12:00 PM – 4:30 PM", jenis: "event", eksklusif: "", nota: "", nota_en: "", members: "Aisha, Alice, Amanda, Ann Drea, Devi, Hana, Hillary, Isabel, Joo, Kei, Khalies, Maia, Mashiro, Salwa, Sharleez, Shu Zhen, Tara & Tiffany", pautan: "https://www.instagram.com/p/DfrsFv5ifbg/?img_index=1" },
-  { tarikh_mula: "2026-11-15", tarikh_tamat: "", tajuk: "Jaguh Rakan Muda Musim Ke-2 Final Live Show", lokasi: "MYNISS, Hextar World, Empire City", jenis: "show", eksklusif: "", nota: "Boleh ditonton secara langsung di Saluran Okey atau aplikasi RTM Klik.", nota_en: "Watch live on Saluran Okey or the RTM Klik app." },
+  { tarikh_mula: "2026-11-15", tarikh_tamat: "", tajuk: "Jaguh Rakan Muda Musim Ke-2 Final Live Show", lokasi: "Centre Court, Hextar World, Empire City", lokasi_en: "Centre Court, Hextar World, Empire City", masa: "9:00 malam – 10:30 malam", masa_en: "9:00 PM – 10:30 PM", jenis: "show", eksklusif: "", nota: "", nota_en: "", members: "Alice, Mashiro, Joo, Tara, Maia, Khalies, Amanda, Isabel, Devi, Yi Shyan, Hillary & Ann Drea", pautan: "https://www.instagram.com/p/DfrLO-cJBbG/?knvt=djVpc3VhMGduNmYy" },
   { tarikh_mula: "2026-11-21", tarikh_tamat: "", tajuk: "KLP Time: Devi’s Birthday Party", tajuk_en: "KLP Time: Devi’s Birthday Party", lokasi: "KLP48 Theatre, Lalaport BBCC Level 2", lokasi_en: "KLP48 Theatre, Lalaport BBCC Level 2", masa: "14:00 – 15:00", masa_en: "14:00 – 15:00", jenis: "show", eksklusif: "", nota: "", members: "Amanda, Ann Drea, Devi, Hillary, Khalies, Aisha, Diva, Hana, Isabel, Joo, Maia, Shu Zhen & Tara", pautan: "https://www.instagram.com/p/Df1qsjWiaWN/?img_index=1" },
   { tarikh_mula: "2026-11-21", tarikh_tamat: "", tajuk: "100 Hours Curry Opening Ceremony with KLP48", tajuk_en: "100 Hours Curry Opening Ceremony with KLP48", lokasi: "Lot B/0G/03, Courtyard Level, Block B, Plaza Mont Kiara", lokasi_en: "Lot B/0G/03, Courtyard Level, Block B, Plaza Mont Kiara", masa: "11:00 pagi – 1:00 petang", masa_en: "11:00 AM – 1:00 PM", jenis: "event", eksklusif: "", nota: "", members: "Yi Shyan, Salwa, Alice & Mashiro.", pautan: "https://www.instagram.com/p/DfsQDd4IpPq/?psln=dXgxeTIyaXk5ZXZl" },
   { tarikh_mula: "2026-11-21", tarikh_tamat: "", tajuk: "Fiesta Rakan Muda Kebangsaan 2026", tajuk_en: "Fiesta Rakan Muda Kebangsaan 2026", lokasi: "Level 4, Rooftop Garden, LaLaport BBCC", lokasi_en: "Level 4, Rooftop Garden, LaLaport BBCC", masa: "4:00 petang – 10:00 malam", masa_en: "4:00 PM – 10:00 PM", jenis: "show", eksklusif: "", nota: "", members: "Diva, Joo, Shu Zhen, Tara, Khalies, Hillary, Amanda & Aisha", pautan: "https://www.instagram.com/p/Df33B4YJBH8/" },
@@ -310,11 +315,68 @@ export const SCHEDULE_DATA: ScheduleRawItem[] = [
   { tarikh_mula: "2026-11-23", tarikh_tamat: "", tajuk: "Discord 1-on-1 Video Call (Generasi ke-1)", tajuk_en: "Discord 1-on-1 Video Call (1st Generation)", lokasi: "Eksklusif Fan Club Premium", lokasi_en: "Fan Club Premium Exclusive", jenis: "event", eksklusif: "ya", nota: "", members: "Amanda, Ann Drea, Devi, Hillary, Khalies, Salwa, Tiffany & Yi Shyan" },
   { tarikh_mula: "2026-11-24", tarikh_tamat: "", tajuk: "Discord 1-on-1 Video Call (Generasi ke-2)", tajuk_en: "Discord 1-on-1 Video Call (2nd Generation)", lokasi: "Eksklusif Fan Club Premium", lokasi_en: "Fan Club Premium Exclusive", jenis: "event", eksklusif: "ya", nota: "", members: "Aisha, Alice, Diva, Hana, Isabel, Joo, Kei, Maia, Mashiro, Sharleez, Shu Zhen & Tara" },
   { tarikh_mula: "2026-11-28", tarikh_tamat: "", tajuk: "KLP Time: Hillary Birthday Party", lokasi: "KLP48 Theatre, Lalaport BBCC", jenis: "show", eksklusif: "", nota: "" },
-  { tarikh_mula: "2026-11-28", tarikh_tamat: "2026-11-29", tajuk: "Universal Studios Japan Talk Show", lokasi: "Lalaport Main Atrium, GF", jenis: "show", eksklusif: "", nota: "" },
+  { tarikh_mula: "2026-11-28", tarikh_tamat: "2026-11-29", tajuk: "Osaka Talk Show Featuring KLP48", tajuk_en: "Osaka Talk Show Featuring KLP48", lokasi: "Lalaport Main Atrium, GF", masa: "2:00 petang", masa_en: "2:00 PM", jenis: "show", eksklusif: "", nota: "", members: "Devi & Yi Shyan", pautan: "https://www.instagram.com/p/DfreW-ikkUz/?img_index=5&dmpr=MWI5OW12dmQ0bjhiYQ==" },
   { tarikh_mula: "2026-11-29", tarikh_tamat: "", tajuk: "Mini Live Show", lokasi: "KLP48 Theatre, Lalaport BBCC", jenis: "show", eksklusif: "", nota: "" },
 ];
 
-export const MEMBERS_DATA: MemberItem[] = [
+const MEMBER_BIRTHPLACES: Record<string, string> = {
+  yi_shyan: "Perak, Malaysia",
+  yurina: "Kagawa Prefecture, Japan",
+  haruka: "Saitama Prefecture, Japan",
+  suzuha: "Hyogo Prefecture, Japan",
+  cocoa: "Hiroshima Prefecture, Japan",
+  devi: "Denpasar, Bali, Indonesia",
+  amanda: "Kuala Lumpur, Malaysia",
+  ann_drea: "Selangor, Malaysia",
+  hillary: "Hong Kong",
+  khalies: "Kuala Lumpur, Malaysia",
+  salwa: "Kuala Lumpur, Malaysia",
+  tiffany: "Sarawak, Malaysia",
+  lucine: "Kuala Lumpur, Malaysia",
+  maia: "Selangor, Malaysia",
+  mashiro: "Nara, Japan",
+  sharleez: "Kuala Lumpur, Malaysia",
+  shu_zhen: "Perak, Malaysia",
+  tara: "Selangor, Malaysia",
+  aisha: "Almaty, Kazakhstan",
+  alice: "Selangor, Malaysia",
+  cindy: "Tangerang Selatan, Indonesia",
+  diva: "Jawa Barat, Indonesia",
+  hana: "Jawa Tengah, Indonesia",
+  isabel: "Kuala Lumpur, Malaysia",
+  joo: "Sabah, Malaysia",
+  kei: "Selangor, Malaysia",
+};
+
+const MEMBER_CATCHPHRASES: Record<string, string> = {
+  devi: "Bersinar terang dan senantiasa menjadi cahaya bintang untuk korang semua, panggil saya Devi.",
+  amanda: "Si gadis idol yang mempunyai jiwa rocker! Hai semua saya Amanda.",
+  cocoa: "What's your favourite chocolate? (Cocoa!) Cintai saya didalam hati awak, Terima kasih!",
+  salwa: "Hai semua nama saya Salwa, You'll always meet me in your heart, Saya adalah happy vitamin kamu!",
+  hillary: "I rilly love you and you rilly love...?",
+  haruka: "Hai semua! I’m sunflower in KLP48. Where is my kuaci?. Hello my kuaci, I’m Ha-chan!",
+  khalies: "The world is lucky to have everyone and me! Hi everyone, I'm Khalies! Nama saya Khalies!",
+  lucine: "Shining on stage and bringing a luminous touch to you. Hello everyone, my name is Lucine!",
+  yi_shyan: "Hi everyone my name is Yi Shyan, Manis sepertimu simpan saya di dalam hatimu.",
+  ann_drea: "A N Squared D R E A thats my name, hello everybody im Ann Drea!",
+  yurina: "Hai semua. Nama saya Yurina Gyoten, panggil saya Yurina. Everyone say Bikkuri (Gyoten) I’m surprise, I make everyone smile.",
+  tiffany: "Knock, knock! (Who’s there?) It’s your one and only, Cha Cha Cha! (Tiffany.) Hello, my name is Tiffany!",
+  mashiro: "Hello everyone, I'm Mashiro, the pure white angel of KLP48. Please call me, Se-no, (Mashiro!)",
+  maia: "I spy with my little eye, Maia with an i!",
+  sharleez: "Hi all! I'll steal your heart and your fries. I'm a myth and a legend that everyone buys. I'm Princess Sharleez!",
+  aisha: "Shining bright! Hi, I'm Aisha!",
+  alice: "Tell me, who is your favorite Wonder Girl? (Alice!) And I'm here to bring you guys? (Wonder!) And the one who brings wonder is? (Alice!)",
+  cindy: "Cute, cheerful, full power. Hi everyone, call me Cindy!",
+  diva: "Hi hi (Hello!) Shy like a cat, sweet like candy. I'm gonna twinkle twinkle on the stage because I'm? (Diva!)",
+  hana: "Tut tut, dancing and singing is my hobby, but you all is my lovely. Shine shine, it's me ha ha ha (Hana!)",
+  isabel: "Saya di sini untuk mengembalikan senyuman awak. Hai semua, I'm Isabel!",
+  joo: "Manis macam jus, energy takkan lose. Hi semua, it's Joo!",
+  shu_zhen: "Seperti harta karun dasar laut, sayalah mutiara di hatimu!",
+  tara: "Hello everyone, my name is Tara! Just like a shooting sTar-a! And whenever you look up at the night sky, don't forget to remember me, the cutest shooting sTar-a!",
+  kei: "A playful jester whose sweetness will give you a Keeiivity. Hello everyone, Kei is here!",
+};
+
+export const MEMBERS_DATA: MemberItem[] = ([
   { id: "yi_shyan", nama: "Yi Shyan", nama_penuh: "Foo Yi Shyan", tarikh_lahir: "28 Jun", tarikh_lahir_en: "28 Jun", tahun_lahir: "2004", gen: "1", status: "aktif", statusCategory: "active", nota_status: "", gambar: "/images/members/Yi_Shyan.jpg", x: "Yishyan_klp48", instagram: "yishyan_klp48", tiktok: "https.shyan" },
   { id: "yurina", nama: "Yurina", nama_penuh: "Yurina Gyoten", tarikh_lahir: "14 Mac", tarikh_lahir_en: "14 Mar", tahun_lahir: "1999", gen: "1", status: "graduated", statusCategory: "graduated", nota_status: "Kembali ke AKB48 (28 Feb 2026)", nota_status_en: "Returned to AKB48 (28 Feb 2026)", gambar: "/images/members/Yurina.png", x: "tenten_yurina", instagram: "yurina.0314", tiktok: "yurina_gyoten0314" },
   { id: "haruka", nama: "Haruka", nama_penuh: "Haruka Kurosu", tarikh_lahir: "28 Feb", tarikh_lahir_en: "28 Feb", tahun_lahir: "2001", gen: "1", status: "graduated", statusCategory: "graduated", nota_status: "Kembali ke AKB48 (28 Feb 2026)", nota_status_en: "Returned to AKB48 (28 Feb 2026)", gambar: "/images/members/Haruka.png", x: "kurooosu_48_16", instagram: "hachan_haruka", tiktok: "haachan_xxx" },
@@ -341,7 +403,11 @@ export const MEMBERS_DATA: MemberItem[] = [
   { id: "isabel", nama: "Isabel", nama_penuh: "Wee Xi Ting", tarikh_lahir: "11 Sep", tarikh_lahir_en: "11 Sep", tahun_lahir: "2008", gen: "2", status: "aktif", statusCategory: "active", nota_status: "", gambar: "/images/members/Isabel.jpg", x: "isabel_klp48", instagram: "isabel.klp48", tiktok: "isabel.klp48" },
   { id: "joo", nama: "Joo", nama_penuh: "Jocelyna Marcelly", tarikh_lahir: "27 Nov", tarikh_lahir_en: "27 Nov", tahun_lahir: "2005", gen: "2", status: "aktif", statusCategory: "active", nota_status: "", gambar: "/images/members/Joo.jpg", x: "jocelyna_klp48", instagram: "jocelyna.klp48", tiktok: "jocelyna.klp48" },
   { id: "kei", nama: "Kei", nama_penuh: "Kei Annisa Adnan", tarikh_lahir: "16 Apr", tarikh_lahir_en: "16 Apr", tahun_lahir: "2009", gen: "2", status: "aktif", statusCategory: "active", nota_status: "", gambar: "/images/members/Kei.jpg", x: "kei_klp48", instagram: "kei.klp48", tiktok: "kei.klp48" },
-];
+] satisfies MemberItem[]).map((member) => ({
+  ...member,
+  birthplace: MEMBER_BIRTHPLACES[member.id] ?? "",
+  catchphrase: MEMBER_CATCHPHRASES[member.id],
+}));
 
 export const NEWS_DATA: NewsItem[] = [
   { tajuk: "Announcement KLP48 at Nihon Live, Nihon Matsuri", tarikh: "2026.10.24", kategori: "News", pautan: "https://klp48.my/news/detail/48" },
@@ -484,6 +550,23 @@ export function parseEventMemberNames(members?: string): string[] {
     });
 }
 
+function getScheduleTimeMinutes(value: string): number {
+  const normalized = value
+    .replace(/\btengah\s+hari\b/gi, 'PM')
+    .replace(/\bpagi\b/gi, 'AM')
+    .replace(/\b(?:petang|malam)\b/gi, 'PM');
+  const match = normalized.match(/\b(\d{1,2})(?::([0-5]\d))?\s*(AM|PM)?\b/i);
+
+  if (!match) return Number.POSITIVE_INFINITY;
+
+  let hour = Number(match[1]);
+  const minute = Number(match[2] ?? 0);
+  const meridiem = match[3]?.toUpperCase();
+  if (meridiem) hour = (hour % 12) + (meridiem === 'PM' ? 12 : 0);
+
+  return hour * 60 + minute;
+}
+
 export function parseScheduleItems(items: ScheduleRawItem[]): ParsedEvent[] {
   return items.map((item, idx): ParsedEvent => {
     const startDate = parseIsoDate(item.tarikh_mula);
@@ -509,7 +592,14 @@ export function parseScheduleItems(items: ScheduleRawItem[]): ParsedEvent[] {
     };
   })
     .filter((ev) => !Number.isNaN(ev.startDate.getTime()))
-    .sort((a, b) => a.startDate.getTime() - b.startDate.getTime());
+    .sort((a, b) => {
+      const dateDifference = a.startDate.getTime() - b.startDate.getTime();
+      if (dateDifference !== 0) return dateDifference;
+
+      const timeA = getScheduleTimeMinutes(a.timeEn || a.time);
+      const timeB = getScheduleTimeMinutes(b.timeEn || b.time);
+      return timeA === timeB ? 0 : timeA - timeB;
+    });
 }
 
 export function getParsedEvents(): ParsedEvent[] {

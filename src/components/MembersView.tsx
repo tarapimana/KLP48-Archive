@@ -137,9 +137,11 @@ export function MembersView({ lang }: MembersViewProps) {
                 ? member.tarikh_lahir_en
                 : member.tarikh_lahir;
             const statusNote =
-              lang === 'en' && member.nota_status_en
-                ? member.nota_status_en
-                : member.nota_status;
+              member.statusCategory === 'active'
+                ? lang === 'en' && member.nota_status_en
+                  ? member.nota_status_en
+                  : member.nota_status
+                : '';
 
             const socials = [
               { label: 'Instagram', handle: member.instagram, base: 'https://www.instagram.com/' },
@@ -181,9 +183,9 @@ export function MembersView({ lang }: MembersViewProps) {
                     </span>
                   </div>
 
-                  <p className="mt-0.5 truncate text-xs text-[#52634c] dark:text-[#98ad90]">
+                  <p className="mt-0.5 break-words text-xs leading-relaxed text-[#52634c] dark:text-[#98ad90]">
                     {member.nama_penuh}
-                    {birthDate ? ` · ${birthDate}` : ''}
+                    {birthDate && <span className="whitespace-nowrap"> · {birthDate}</span>}
                   </p>
 
                   {statusNote && (

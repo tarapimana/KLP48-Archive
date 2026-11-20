@@ -1,0 +1,26 @@
+{
+  "name": "klp48-social-tracking-functions",
+  "private": true,
+  "version": "1.0.0",
+  "main": "lib/index.js",
+  "type": "commonjs",
+  "engines": {
+    "node": "22"
+  },
+  "scripts": {
+    "build": "tsc --project tsconfig.json && esbuild src/index.ts src/adminAuthorization.ts src/firebaseAdmin.ts src/providerSecrets.ts src/socialTrackingValidation.ts src/socialCredentialValidation.ts src/credentialStore.ts src/credentialBrokerContract.ts src/credentialBroker.ts src/credentialBrokerEndpoint.ts src/socialObservationRepository.ts --bundle --platform=node --target=node22 --format=cjs --external:firebase-admin --external:firebase-functions --outdir=lib",
+    "lint": "tsc --noEmit --project tsconfig.json && tsc --noEmit --project tsconfig.test.json",
+    "test": "tsx --test test/*.test.ts",
+    "emulators": "firebase emulators:start --only auth,firestore,functions --project demo-klp48-social"
+  },
+  "dependencies": {
+    "firebase-admin": "^14.5.1",
+    "firebase-functions": "^7.4.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.14.0",
+    "esbuild": "^0.28.0",
+    "tsx": "^4.21.0",
+    "typescript": "^7.0.2"
+  }
+}

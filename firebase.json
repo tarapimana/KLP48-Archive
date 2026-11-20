@@ -2,7 +2,46 @@
   "firestore": {
     "databaseId": "ai-studio-arkibklp48-f3c5dd98-ac70-4d70-b779-c307d3b910a6",
     "rules": "firestore.rules",
+    "indexes": "firestore.indexes.json",
     "edition": "ENTERPRISE",
     "dataAccessMode": "FIRESTORE_NATIVE"
+  },
+  "functions": [
+    {
+      "source": "functions",
+      "codebase": "social-tracking",
+      "runtime": "nodejs22",
+      "ignore": [
+        "node_modules",
+        ".git",
+        "firebase-debug.log",
+        "firebase-debug.*.log",
+        "test",
+        "scripts",
+        "src",
+        "tsconfig.json",
+        "tsconfig.test.json"
+      ],
+      "predeploy": [
+        "node \"$RESOURCE_DIR/scripts/verify-deploy-target.mjs\"",
+        "npm --prefix \"$RESOURCE_DIR\" run build"
+      ]
+    }
+  ],
+  "emulators": {
+    "auth": {
+      "port": 9099
+    },
+    "firestore": {
+      "port": 8080
+    },
+    "functions": {
+      "port": 5001
+    },
+    "ui": {
+      "enabled": true,
+      "port": 4000
+    },
+    "singleProjectMode": false
   }
 }

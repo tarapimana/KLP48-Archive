@@ -1,0 +1,6 @@
+{
+  "projects": {
+    "default": "demo-klp48-social",
+    "production": "gen-lang-client-0052986878"
+  }
+}

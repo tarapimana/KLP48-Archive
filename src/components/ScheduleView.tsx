@@ -1,7 +1,9 @@
-import { ArrowRight, Check, Clock, ExternalLink, MapPin, UsersRound } from 'lucide-react';
-import { useMemo, useState } from 'react';
+import { ArrowRight, Check, Clock, MapPin, MoreVertical, UsersRound } from 'lucide-react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useScheduleEvents } from '../context/useScheduleEvents';
 import { MEMBERS_DATA, MemberItem, parseEventMemberNames } from '../data/klp48Data';
+import { formatScheduleTime } from '../lib/scheduleTime';
+import { downloadScheduleEventCalendar } from '../lib/scheduleCalendar';
 import { ScheduleCsvImporter } from './ScheduleCsvImporter';
 import { MemberAvatar } from './MemberAvatar';
 import { MemberModal } from './MemberModal';
@@ -47,10 +49,43 @@ export function ScheduleView({ lang }: ScheduleViewProps) {
   const [month, setMonth] = useState<number>(initialPeriod.month);
   const [year, setYear] = useState<number>(initialPeriod.year);
   const [typeFilter, setTypeFilter] = useState<ScheduleFilter>('all');
+  const [selectedMembers, setSelectedMembers] = useState<string[]>([]);
+  const [memberSearch, setMemberSearch] = useState('');
   const [selectedMember, setSelectedMember] = useState<{
     member: MemberItem;
     index: number;
   } | null>(null);
+  const [openEventMenuId, setOpenEventMenuId] = useState<string | null>(null);
+  const eventMenuRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (!openEventMenuId) return;
+
+    const closeOnOutsideClick = (event: PointerEvent) => {
+      if (!eventMenuRef.current?.contains(event.target as Node)) {
+        setOpenEventMenuId(null);
+      }
+    };
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setOpenEventMenuId(null);
+        eventMenuRef.current
+          ?.querySelector<HTMLButtonElement>('[data-event-menu-trigger]')
+          ?.focus();
+      }
+    };
+
+    document.addEventListener('pointerdown', closeOnOutsideClick);
+    document.addEventListener('keydown', closeOnEscape);
+    eventMenuRef.current
+      ?.querySelector<HTMLElement>('[data-event-menu-item]')
+      ?.focus();
+
+    return () => {
+      document.removeEventListener('pointerdown', closeOnOutsideClick);
+      document.removeEventListener('keydown', closeOnEscape);
+    };
+  }, [openEventMenuId]);
 
   const months = lang === 'en' ? MONTHS_EN : MONTHS_MS;
   const shortMonths = lang === 'en' ? MONTHS_SHORT_EN : MONTHS_SHORT_MS;
@@ -62,14 +97,39 @@ export function ScheduleView({ lang }: ScheduleViewProps) {
     return Array.from(set).sort((a, b) => a - b);
   }, [allEvents, year]);
 
+  const availableMembers = useMemo(() => {
+    const names = new Map<string, string>();
+    allEvents.forEach((ev) => {
+      parseEventMemberNames(ev.members).forEach((name) => {
+        names.set(name.toLocaleLowerCase('en'), name);
+      });
+    });
+    return Array.from(names.values()).sort((a, b) =>
+      a.localeCompare(b, 'en', { sensitivity: 'base' })
+    );
+  }, [allEvents]);
+
+  const visibleMembers = useMemo(() => {
+    const query = memberSearch.trim().toLocaleLowerCase('en');
+    return query
+      ? availableMembers.filter((name) => name.toLocaleLowerCase('en').includes(query))
+      : availableMembers;
+  }, [availableMembers, memberSearch]);
+
+  const selectedMemberNames = useMemo(() => new Set(selectedMembers), [selectedMembers]);
+
   const filteredEvents = useMemo(() => {
     return allEvents.filter(
       (ev) =>
         ev.startDate.getMonth() + 1 === month &&
         ev.startDate.getFullYear() === year &&
-        (typeFilter === 'all' || ev.type === typeFilter)
+        (typeFilter === 'all' || ev.type === typeFilter) &&
+        (selectedMemberNames.size === 0 ||
+          parseEventMemberNames(ev.members).some((name) =>
+            selectedMemberNames.has(name.toLocaleLowerCase('en'))
+          ))
     );
-  }, [allEvents, month, year, typeFilter]);
+  }, [allEvents, month, year, typeFilter, selectedMemberNames]);
 
   const firstUpcomingIndex = useMemo(() => {
     return filteredEvents.findIndex((ev) => {
@@ -145,6 +205,80 @@ export function ScheduleView({ lang }: ScheduleViewProps) {
           </div>
         </div>
 
+        <div className="relative z-10">
+          <span className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-[#3f503a] dark:text-[#c7d7c0]">
+            {t.j_member_filter}
+          </span>
+          <details className="group relative">
+            <summary className="flex min-h-[42px] min-w-[190px] cursor-pointer list-none items-center justify-between gap-3 rounded-lg border border-[#dce6d7] bg-white px-3 py-2 text-sm font-medium text-[#131f10] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#278500] [&::-webkit-details-marker]:hidden dark:border-[#24371f] dark:bg-[#142111] dark:text-[#ecf4e8] dark:focus-visible:outline-[#6fd43a]">
+              <span>{t.j_member_filter}</span>
+              <span className="text-xs text-[#52634c] dark:text-[#b5c7ae]">
+                {selectedMembers.length
+                  ? t.j_member_selected.replace('%n', String(selectedMembers.length))
+                  : t.j_member_all}
+              </span>
+            </summary>
+            <div className="absolute left-0 top-full mt-2 w-72 max-w-[calc(100vw-2rem)] rounded-xl border border-[#dce6d7] bg-white p-2 shadow-xl dark:border-[#2b4523] dark:bg-[#142111]">
+              <div className="flex items-center justify-between gap-3 px-2 py-1.5">
+                <span className="text-xs font-semibold text-[#52634c] dark:text-[#b5c7ae]">
+                  {t.j_member_filter}
+                </span>
+                {selectedMembers.length > 0 && (
+                  <button
+                    type="button"
+                    onClick={() => setSelectedMembers([])}
+                    className="min-h-9 rounded px-2 text-xs font-semibold text-[#278500] hover:bg-[#edf5e9] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#278500] dark:text-[#7ce043] dark:hover:bg-[#1d3314] dark:focus-visible:outline-[#6fd43a]"
+                  >
+                    {t.j_member_clear}
+                  </button>
+                )}
+              </div>
+              <label htmlFor="schedule-member-search" className="sr-only">
+                {t.j_member_search}
+              </label>
+              <input
+                id="schedule-member-search"
+                type="search"
+                value={memberSearch}
+                onChange={(event) => setMemberSearch(event.target.value)}
+                placeholder={t.j_member_search}
+                className="min-h-10 w-full rounded-lg border border-[#dce6d7] bg-white px-3 text-sm text-[#131f10] placeholder:text-[#72816d] focus:border-[#278500] focus:outline-none dark:border-[#2b4523] dark:bg-[#101c0d] dark:text-[#ecf4e8] dark:placeholder:text-[#8ea184] dark:focus:border-[#6fd43a]"
+              />
+              <div className="mt-1 max-h-56 overflow-y-auto">
+                {visibleMembers.length > 0 ? (
+                  visibleMembers.map((name) => {
+                    const key = name.toLocaleLowerCase('en');
+                    return (
+                      <label
+                        key={key}
+                        className="flex min-h-10 cursor-pointer items-center gap-2.5 rounded-lg px-2 text-sm text-[#263421] hover:bg-[#edf5e9] dark:text-[#e2eee0] dark:hover:bg-[#1d3314]"
+                      >
+                        <input
+                          type="checkbox"
+                          checked={selectedMemberNames.has(key)}
+                          onChange={() =>
+                            setSelectedMembers((current) =>
+                              current.includes(key)
+                                ? current.filter((member) => member !== key)
+                                : [...current, key]
+                            )
+                          }
+                          className="size-4 accent-[#278500] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#278500] dark:accent-[#6fd43a]"
+                        />
+                        <span>{name}</span>
+                      </label>
+                    );
+                  })
+                ) : (
+                  <p className="px-2 py-3 text-sm text-[#52634c] dark:text-[#b5c7ae]">
+                    {t.j_member_no_results}
+                  </p>
+                )}
+              </div>
+            </div>
+          </details>
+        </div>
+
         <div>
           <span className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-[#3f503a] dark:text-[#c7d7c0]">
             {t.j_t}
@@ -215,8 +349,8 @@ export function ScheduleView({ lang }: ScheduleViewProps) {
             return (
               <article
                 key={ev.id}
-                className={`rounded-2xl border p-5 backdrop-blur-md transition-colors ${
-                  isNext
+                className={`relative rounded-2xl border p-5 backdrop-blur-md transition-colors ${
+                  openEventMenuId === ev.id ? 'z-20 ' : ''}${isNext
                     ? 'border-[#278500] bg-white shadow-sm dark:border-[#66c91a] dark:bg-[#11200d]'
                     : isPast
                     ? 'border-[#dce6d7] bg-white/92 dark:border-[#24371f] dark:bg-[#0e180b]/92'
@@ -263,45 +397,102 @@ export function ScheduleView({ lang }: ScheduleViewProps) {
 
                     {/* Title, Category & Quick Summary */}
                     <div className="min-w-0 flex-1">
-                      <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs">
-                        <span className="font-bold text-[#278500] dark:text-[#7ce043]">
-                          {ev.type === 'show' ? t.t_show : t.t_event}
-                        </span>
-                        {ev.exclusive && (
-                          <>
-                            <span aria-hidden="true" className="text-[#8da087]">·</span>
-                            <span className="font-bold text-[#131f10] dark:text-white">
-                              {t.exclusive}
-                            </span>
-                          </>
-                        )}
-                        {isBirthdayEvent && (
-                          <>
-                            <span aria-hidden="true" className="text-[#8da087]">·</span>
-                            <span className="font-bold text-amber-700 dark:text-amber-300">
-                              {t.birthday_tag}
-                            </span>
-                          </>
-                        )}
-                        {isNext && (
-                          <>
-                            <span aria-hidden="true" className="text-[#8da087]">·</span>
+                      <div className="flex items-start justify-between gap-2">
+                        <div className="min-w-0 flex-1">
+                          <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs">
                             <span className="font-bold text-[#278500] dark:text-[#7ce043]">
-                              {t.upcoming_badge}
+                              {ev.type === 'show' ? t.t_show : t.t_event}
                             </span>
-                          </>
-                        )}
-                      </div>
+                            {ev.exclusive && (
+                              <>
+                                <span aria-hidden="true" className="text-[#8da087]">·</span>
+                                <span className="font-bold text-[#131f10] dark:text-white">
+                                  {t.exclusive}
+                                </span>
+                              </>
+                            )}
+                            {isBirthdayEvent && (
+                              <>
+                                <span aria-hidden="true" className="text-[#8da087]">·</span>
+                                <span className="font-bold text-amber-700 dark:text-amber-300">
+                                  {t.birthday_tag}
+                                </span>
+                              </>
+                            )}
+                            {isNext && (
+                              <>
+                                <span aria-hidden="true" className="text-[#8da087]">·</span>
+                                <span className="font-bold text-[#278500] dark:text-[#7ce043]">
+                                  {t.upcoming_badge}
+                                </span>
+                              </>
+                            )}
+                          </div>
 
-                      <h2
-                        className={`font-display mt-1 text-base font-bold leading-snug sm:text-lg ${
-                          isPast
-                            ? 'text-[#263421] dark:text-[#e2eee0]'
-                            : 'text-[#131f10] dark:text-white'
-                        }`}
-                      >
-                        {title}
-                      </h2>
+                          <h2
+                            className={`font-display mt-1 text-base font-bold leading-snug sm:text-lg ${
+                              isPast
+                                ? 'text-[#263421] dark:text-[#e2eee0]'
+                                : 'text-[#131f10] dark:text-white'
+                            }`}
+                          >
+                            {title}
+                          </h2>
+                        </div>
+                        <div
+                          ref={openEventMenuId === ev.id ? eventMenuRef : null}
+                          className="relative z-10 shrink-0"
+                        >
+                          <button
+                            type="button"
+                            data-event-menu-trigger
+                            aria-label={`${t.j_more_options}: ${title}`}
+                            aria-expanded={openEventMenuId === ev.id}
+                            aria-controls={
+                              openEventMenuId === ev.id ? `event-actions-${ev.id}` : undefined
+                            }
+                            onClick={() =>
+                              setOpenEventMenuId((currentId) =>
+                                currentId === ev.id ? null : ev.id
+                              )
+                            }
+                            className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[#dce6d7] bg-white/80 text-[#278500] transition-colors hover:border-[#278500] hover:bg-[#edf5e9] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#278500] dark:border-[#2b4523] dark:bg-[#142111] dark:text-[#7ce043] dark:hover:border-[#6fd43a] dark:hover:bg-[#1d3314] dark:focus-visible:outline-[#6fd43a]"
+                          >
+                            <MoreVertical className="h-4 w-4" aria-hidden="true" />
+                          </button>
+                          {openEventMenuId === ev.id && (
+                            <div
+                              id={`event-actions-${ev.id}`}
+                              role="group"
+                              aria-label={t.j_more_options}
+                              className="absolute right-0 top-full z-30 mt-2 w-48 rounded-xl border border-[#dce6d7] bg-white p-1 shadow-xl dark:border-[#2b4523] dark:bg-[#142111]"
+                            >
+                              <button
+                                type="button"
+                                data-event-menu-item
+                                onClick={() => {
+                                  downloadScheduleEventCalendar(ev, { title, venue, notes });
+                                  setOpenEventMenuId(null);
+                                }}
+                                className="flex min-h-11 w-full items-center rounded-lg px-3 text-left text-sm font-semibold text-[#278500] transition-colors hover:bg-[#edf5e9] focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-[#278500] dark:text-[#7ce043] dark:hover:bg-[#1d3314] dark:focus-visible:outline-[#6fd43a]"
+                              >
+                                {t.j_add_calendar}
+                              </button>
+                              {ev.link && (
+                                <a
+                                  href={ev.link}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  onClick={() => setOpenEventMenuId(null)}
+                                  className="flex min-h-11 items-center rounded-lg px-3 text-sm font-semibold text-[#278500] transition-colors hover:bg-[#edf5e9] focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-[#278500] dark:text-[#7ce043] dark:hover:bg-[#1d3314] dark:focus-visible:outline-[#6fd43a]"
+                                >
+                                  {t.j_link}
+                                </a>
+                              )}
+                            </div>
+                          )}
+                        </div>
+                      </div>
 
                       <div className="mt-2 space-y-1 text-xs leading-relaxed text-[#3f503a] sm:text-sm dark:text-[#c7d7c0]">
                         <div className="flex items-start gap-1.5">
@@ -317,7 +508,7 @@ export function ScheduleView({ lang }: ScheduleViewProps) {
                               className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#278500] dark:text-[#7ce043]"
                               aria-hidden="true"
                             />
-                            <span className="font-mono-num">{time}</span>
+                            <span className="font-mono-num">{formatScheduleTime(time)}</span>
                           </div>
                         )}
                         {members && (
@@ -361,17 +552,6 @@ export function ScheduleView({ lang }: ScheduleViewProps) {
                           </div>
                         )}
                         {notes && <p className="leading-relaxed">{notes}</p>}
-                        {ev.link && (
-                          <a
-                            href={ev.link}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="inline-flex min-h-11 items-center gap-1.5 font-bold text-[#278500] hover:underline dark:text-[#7ce043]"
-                          >
-                            <ExternalLink className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
-                            <span>{t.j_link}</span>
-                          </a>
-                        )}
                       </div>
                     </div>
                   </div>
@@ -385,7 +565,7 @@ export function ScheduleView({ lang }: ScheduleViewProps) {
         </div>
       ) : (
         <div className="rounded-xl border border-[#dce6d7] bg-white p-8 text-center text-sm text-[#3f503a] dark:border-[#24371f] dark:bg-[#142111] dark:text-[#c7d7c0]">
-          {t.noevents}
+          {selectedMembers.length > 0 ? t.j_member_no_events : t.noevents}
         </div>
       )}
       <MemberModal
