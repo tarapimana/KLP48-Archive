@@ -102,7 +102,7 @@ export function VideosView({ lang, onPlayVideo }: VideosViewProps) {
         </div>
       </header>
 
-      <div className="mb-8 flex flex-wrap items-center justify-between gap-3 border-b border-[#dce6d7] pb-6 dark:border-[#24371f]">
+      <div className="mb-6 flex flex-wrap items-center justify-between gap-3 border-b border-[#dce6d7] pb-5 dark:border-[#24371f]">
         <div
           className="inline-flex rounded-lg border border-[#dce6d7] bg-white p-1 dark:border-[#24371f] dark:bg-[#142111]"
           role="group"

@@ -134,7 +134,7 @@ export default function App() {
                   onToggleTheme={toggleTheme}
                 />
 
-                <main className="mx-auto w-full max-w-6xl flex-1 px-4 pb-8 sm:px-6">
+                <main className="mx-auto w-full max-w-6xl flex-1 px-4 pb-4 sm:px-6">
                   <UtilityBar
                     lang={lang}
                     onChangeLang={setLang}

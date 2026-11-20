@@ -18,7 +18,7 @@ export function BirthdaysView({ lang }: BirthdaysViewProps) {
 
   return (
     <div>
-      <header className="mb-8">
+      <header className="mb-6">
         <h1 className="font-display text-3xl font-extrabold tracking-tight text-[#131f10] sm:text-4xl dark:text-[#ecf4e8]">
           {t.n_bday}
         </h1>

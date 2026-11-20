@@ -59,7 +59,7 @@ export function MembersView({ lang }: MembersViewProps) {
       </header>
 
       {/* Search & Filter Toolbar */}
-      <div className="mb-8 flex flex-wrap items-center justify-between gap-3 border-b border-[#dce6d7] pb-6 dark:border-[#24371f]">
+      <div className="mb-6 flex flex-wrap items-center justify-between gap-3 border-b border-[#dce6d7] pb-5 dark:border-[#24371f]">
         <div className="relative w-full sm:max-w-xs">
           <Search
             className="pointer-events-none absolute top-1/2 left-3.5 h-4 w-4 -translate-y-1/2 text-[#52634c] dark:text-[#98ad90]"

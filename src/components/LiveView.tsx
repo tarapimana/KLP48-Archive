@@ -124,13 +124,13 @@ export function LiveView({ lang, onPlayVideo }: LiveViewProps) {
   }, [platformFilter, verifiedActiveLiveStreams]);
 
   return (
-    <div className="space-y-10">
+    <div className="space-y-8">
       <section className="relative isolate overflow-hidden rounded-[28px] border border-[#dce6d7] bg-white/[0.92] px-5 py-6 text-[#131f10] shadow-[0_24px_80px_rgba(10,20,7,0.12)] backdrop-blur-md sm:px-8 sm:py-8 dark:border-[#24371f] dark:bg-[#0e180b]/90 dark:text-[#ecf4e8] dark:shadow-[0_24px_80px_rgba(0,0,0,0.28)]">
         <div
           aria-hidden="true"
           className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(111,212,58,0.1),transparent_38%)]"
         />
-        <div className="relative space-y-8">
+        <div className="relative space-y-6">
           {/* Main Header */}
           <div className="space-y-5">
             <div className="flex flex-wrap items-center justify-between gap-3">
