@@ -31,6 +31,8 @@ const SORTER_GENERATIONS = Array.from(new Set(SORTER_MEMBERS.map((member) => mem
   (first, second) => Number(first) - Number(second),
 );
 
+type OshiStatusFilter = 'all' | MemberItem['statusCategory'];
+
 const MEMBER_INDEX_BY_ID = new Map(MEMBERS_DATA.map((member, index) => [member.id, index]));
 
 function getGenerationLabel(member: MemberItem, lang: Lang) {
@@ -222,6 +224,7 @@ export function OshiSorterView({ lang }: OshiSorterViewProps) {
   const [session, setSession] = useState<SortSession | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [generationFilter, setGenerationFilter] = useState('all');
+  const [statusFilter, setStatusFilter] = useState<OshiStatusFilter>('all');
   const [selectedMemberIds, setSelectedMemberIds] = useState<Set<string>>(
     () => new Set(SORTER_MEMBERS.map((member) => member.id)),
   );
@@ -229,11 +232,12 @@ export function OshiSorterView({ lang }: OshiSorterViewProps) {
   const normalizedSearch = searchTerm.trim().toLocaleLowerCase();
   const filteredMembers = SORTER_MEMBERS.filter((member) => {
     const matchesGeneration = generationFilter === 'all' || member.gen === generationFilter;
+    const matchesStatus = statusFilter === 'all' || member.statusCategory === statusFilter;
     const matchesSearch =
       !normalizedSearch ||
       member.nama.toLocaleLowerCase().includes(normalizedSearch) ||
       member.nama_penuh.toLocaleLowerCase().includes(normalizedSearch);
-    return matchesGeneration && matchesSearch;
+    return matchesGeneration && matchesStatus && matchesSearch;
   });
 
   const toggleMember = (memberId: string) => {
@@ -245,15 +249,26 @@ export function OshiSorterView({ lang }: OshiSorterViewProps) {
     });
   };
 
-  const selectGeneration = (generation: string) => {
+  const applyMemberFilters = (generation: string, status: OshiStatusFilter) => {
     setGenerationFilter(generation);
+    setStatusFilter(status);
     setSelectedMemberIds(
       new Set(
-        SORTER_MEMBERS.filter((member) => generation === 'all' || member.gen === generation).map(
-          (member) => member.id,
-        ),
+        SORTER_MEMBERS.filter(
+          (member) =>
+            (generation === 'all' || member.gen === generation) &&
+            (status === 'all' || member.statusCategory === status),
+        ).map((member) => member.id),
       ),
     );
+  };
+
+  const selectGeneration = (generation: string) => {
+    applyMemberFilters(generation, statusFilter);
+  };
+
+  const selectStatus = (status: OshiStatusFilter) => {
+    applyMemberFilters(generationFilter, status);
   };
 
   const setVisibleMembersSelected = (selected: boolean) => {
@@ -288,6 +303,7 @@ export function OshiSorterView({ lang }: OshiSorterViewProps) {
     setSession(null);
     setSearchTerm('');
     setGenerationFilter('all');
+    setStatusFilter('all');
   };
 
   const chooseMember = (preferCurrent: boolean) => {
@@ -490,6 +506,34 @@ export function OshiSorterView({ lang }: OshiSorterViewProps) {
                   );
                 })}
               </div>
+            </div>
+
+            <div className="mt-3 flex flex-wrap gap-2" role="group" aria-label={t.oshi_status_filter}>
+              {(
+                [
+                  { value: 'all', label: t.oshi_all_statuses },
+                  { value: 'active', label: t.f_aktif },
+                  { value: 'non-active', label: t.f_non },
+                  { value: 'graduated', label: t.f_grad },
+                ] as const
+              ).map(({ value, label }) => {
+                const isActive = statusFilter === value;
+                return (
+                  <button
+                    key={value}
+                    type="button"
+                    aria-pressed={isActive}
+                    onClick={() => selectStatus(value)}
+                    className={`min-h-9 rounded-lg px-3 text-xs font-bold transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#278500] dark:focus-visible:outline-[#6fd43a] ${
+                      isActive
+                        ? 'bg-[#278500] text-white dark:bg-[#6fd43a] dark:text-[#0a1407]'
+                        : 'border border-[#dce6d7] bg-white text-[#52634c] hover:bg-[#f2f8ef] dark:border-[#34472d] dark:bg-[#152112] dark:text-[#bfd0b6] dark:hover:bg-[#1d2d17]'
+                    }`}
+                  >
+                    {label}
+                  </button>
+                );
+              })}
             </div>
 
             <div className="mt-4 flex flex-wrap items-center justify-between gap-2 border-t border-[#e4ece0] pt-3 dark:border-[#263820]">
