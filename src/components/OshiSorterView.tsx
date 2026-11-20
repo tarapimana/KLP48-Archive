@@ -424,7 +424,7 @@ export function OshiSorterView({ lang }: OshiSorterViewProps) {
     <section className="mx-auto w-full max-w-6xl px-4 py-5 sm:px-6 sm:py-8" aria-labelledby="oshi-sorter-title">
       {!session && (
         <div className="space-y-4">
-          <header className="overflow-hidden rounded-2xl border border-[#24371f] bg-[#111b0e] p-5 text-[#ecf4e8] shadow-[0_12px_30px_rgba(10,20,7,0.16)] sm:p-7">
+          <header className="overflow-hidden rounded-2xl border border-[#24371f] bg-[#111b0e] p-5 text-white shadow-[0_12px_30px_rgba(10,20,7,0.16)] sm:p-7">
             <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
               <div className="max-w-2xl">
                 <p className="mb-2 text-xs font-bold uppercase tracking-[0.18em] text-[#8be05a]">
@@ -433,13 +433,13 @@ export function OshiSorterView({ lang }: OshiSorterViewProps) {
                 <h1 id="oshi-sorter-title" className="text-3xl font-bold tracking-tight sm:text-4xl">
                   {t.oshi_title}
                 </h1>
-                <p className="mt-2 text-sm leading-6 text-[#bfd0b6] sm:text-base">
+                <p className="mt-2 text-sm leading-6 text-white sm:text-base">
                   {t.oshi_setup_sub}
                 </p>
               </div>
               <div className="flex items-center gap-3 self-start rounded-xl border border-white/10 bg-white/[0.06] px-3 py-2 sm:self-auto">
                 <span className="text-2xl font-black leading-none text-[#8be05a]">{selectedMembers.length}</span>
-                <span className="text-xs font-semibold leading-tight text-[#bfd0b6]">
+                <span className="text-xs font-semibold leading-tight text-white">
                   {t.oshi_selected_members.replace('%n', String(selectedMembers.length))}
                   <span className="mt-0.5 block text-[10px] opacity-75">/ {SORTER_MEMBERS.length} {t.oshi_member_count.replace('%n', '').trim()}</span>
                 </span>

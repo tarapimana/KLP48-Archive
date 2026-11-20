@@ -469,7 +469,6 @@ export const NEWS_DATA: NewsItem[] = [
   { tajuk: "Start of 1 on 1 TALK applications", tarikh: "2026.09.08", kategori: "Fanclub", pautan: "https://klp48.my/news/detail/46" },
   { tajuk: "Discord Radio Talk Info", tarikh: "2026.09.01", kategori: "Fanclub", pautan: "https://klp48.my/news/detail/45" },
   { tajuk: "PENGUMUMAN RASMI Pelantikan Penerbit Baharu [BM]", tarikh: "2026.08.12", kategori: "News", pautan: "https://klp48.my/news/detail/44" },
-  { tajuk: "OFFICIAL ANNOUNCEMENT Appointment of New Producer [EN]", tarikh: "2026.08.12", kategori: "News", pautan: "https://klp48.my/news/detail/43" },
   { tajuk: "[Official Announcement Regarding Cindy Hiatus]", tarikh: "2026.08.11", kategori: "News", pautan: "https://klp48.my/news/detail/42" },
   { tajuk: "Discord radio talk info", tarikh: "2026.08.04", kategori: "Fanclub", pautan: "https://klp48.my/news/detail/41" },
   { tajuk: "OFFICIAL STATEMENT - CLARIFICATION REGARDING THE LOGO OF \"AKT38\"", tarikh: "2026.07.07", kategori: "News", pautan: "https://klp48.my/news/detail/40" },
