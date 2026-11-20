@@ -54,7 +54,7 @@ export function Header({
             e.preventDefault();
             handleNav('home');
           }}
-          className="font-logo shrink-0 whitespace-nowrap text-xl font-light tracking-[0.02em] text-[#131f10] transition-colors focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#278500] dark:text-[#ecf4e8] dark:focus-visible:outline-[#6fd43a]"
+          className="font-logo shrink-0 whitespace-nowrap text-xl font-bold tracking-[0.02em] text-[#131f10] transition-colors focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#278500] dark:text-[#ecf4e8] dark:focus-visible:outline-[#6fd43a]"
         >
           Arkib <span className="text-[#278500] dark:text-[#6fd43a]">KLP48</span>
         </a>

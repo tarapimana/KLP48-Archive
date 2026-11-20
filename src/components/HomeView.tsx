@@ -1,5 +1,5 @@
-import { ArrowRight, Clock, MapPin, Music, Play, UsersRound } from 'lucide-react';
-import { useState } from 'react';
+import { ArrowRight, Clock, MapPin, MoreVertical, Music, Play, UsersRound } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
 import {
   getMemberCategory,
   MemberItem,
@@ -24,6 +24,7 @@ import {
   WEEKDAYS_MS,
 } from '../i18n/translations';
 import { formatScheduleTime } from '../lib/scheduleTime';
+import { downloadScheduleEventCalendar } from '../lib/scheduleCalendar';
 import { BirthdayCountdown } from './BirthdayCountdown';
 import { MemberAvatar } from './MemberAvatar';
 import { MemberModal } from './MemberModal';
@@ -50,6 +51,39 @@ export function HomeView({ lang, onNavigate, onPlayVideo }: HomeViewProps) {
   const now = new Date();
   const [selectedMember, setSelectedMember] = useState<MemberItem | null>(null);
   const [selectedNews, setSelectedNews] = useState<NewsItem | null>(null);
+  const [openEventMenuId, setOpenEventMenuId] = useState<string | null>(null);
+  const eventMenuRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (!openEventMenuId) return;
+
+    const closeOnOutsideClick = (event: PointerEvent) => {
+      if (!eventMenuRef.current?.contains(event.target as Node)) {
+        setOpenEventMenuId(null);
+      }
+    };
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        const trigger = eventMenuRef.current?.querySelector<HTMLButtonElement>(
+          '[data-event-menu-trigger]'
+        );
+        setOpenEventMenuId(null);
+        trigger?.focus();
+      }
+    };
+
+    document.addEventListener('pointerdown', closeOnOutsideClick);
+    document.addEventListener('keydown', closeOnEscape);
+    eventMenuRef.current
+      ?.querySelector<HTMLElement>('[data-event-menu-item]')
+      ?.focus();
+
+    return () => {
+      document.removeEventListener('pointerdown', closeOnOutsideClick);
+      document.removeEventListener('keydown', closeOnEscape);
+    };
+  }, [openEventMenuId]);
+
   const selectedMemberIdx = selectedMember
     ? MEMBERS_DATA.findIndex((m) => m.nama === selectedMember.nama)
     : 0;
@@ -98,7 +132,7 @@ export function HomeView({ lang, onNavigate, onPlayVideo }: HomeViewProps) {
               <span>{t.h_eb}</span>
             </div>
 
-            <h1 className="font-logo mt-3 text-balance text-5xl font-light tracking-[0.01em] text-[#131f10] sm:text-6xl dark:text-white">
+            <h1 className="font-logo mt-3 text-balance text-5xl font-bold tracking-[0.01em] text-[#131f10] sm:text-6xl dark:text-white">
               Arkib <span className="text-[#278500] dark:text-[#66c91a]">KLP48</span>
             </h1>
 
@@ -407,24 +441,51 @@ export function HomeView({ lang, onNavigate, onPlayVideo }: HomeViewProps) {
                   return (
                     <article
                       key={ev.id}
-                      className={`rounded-2xl border p-5 backdrop-blur-md transition-colors ${
+                      className={`${
+                        index === 0
+                          ? 'min-h-[18.375rem] rounded-2xl border p-4 sm:p-5'
+                          : 'rounded-2xl border p-5'
+                      } relative backdrop-blur-md transition-colors ${
                         index === 0
                           ? 'border-[#278500] bg-white shadow-sm dark:border-[#66c91a] dark:bg-[#11200d]'
                           : 'border-[#c8dcc0] bg-white/96 dark:border-[#2b4523] dark:bg-[#101c0d]/95'
                       }`}
                     >
-                      <div className="flex items-start gap-4">
-                        <div className="flex min-w-0 flex-1 items-start gap-4">
+                      <div
+                        className={
+                          index === 0
+                            ? 'flex items-start gap-2.5 sm:gap-3'
+                            : 'flex items-start gap-4'
+                        }
+                      >
+                        <div
+                          className={
+                            index === 0
+                              ? 'flex min-w-0 flex-1 items-start gap-2.5 sm:gap-3'
+                              : 'flex min-w-0 flex-1 items-start gap-4'
+                          }
+                        >
                           <time
                             dateTime={dateTime}
                             aria-label={formatEventDateRange(ev.startDate, ev.endDate)}
-                            className="flex shrink-0 flex-col items-start border-r border-[#e3ecde] pr-4 dark:border-[#24371f]"
+                            className={
+                              index === 0
+                                ? 'flex shrink-0 flex-col items-start border-r border-[#e3ecde] pr-2.5 dark:border-[#24371f] sm:pr-3'
+                                : 'flex shrink-0 flex-col items-start border-r border-[#e3ecde] pr-4 dark:border-[#24371f]'
+                            }
                           >
                             <span
                               className={`font-mono-num font-extrabold leading-none tracking-tight ${
-                                isRange ? 'text-xl sm:text-2xl' : 'text-2xl sm:text-3xl'
+                                index === 0
+                                  ? 'inline-flex items-center gap-0.5 text-2xl sm:text-3xl'
+                                  : isRange
+                                    ? 'text-xl sm:text-2xl'
+                                    : 'text-2xl sm:text-3xl'
                               } text-[#278500] dark:text-[#7ce043]`}
                             >
+                              {index === 0 && (
+                                <ArrowRight className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
+                              )}
                               {dateNumber}
                             </span>
                             <span className="font-mono-num mt-1.5 text-[11px] font-semibold leading-snug text-[#4d5e47] dark:text-[#c7d7c0]">
@@ -473,7 +534,9 @@ export function HomeView({ lang, onNavigate, onPlayVideo }: HomeViewProps) {
                                   e.preventDefault();
                                   onNavigate('jadwal');
                                 }}
-                                className="inline-block min-h-11 align-middle transition-colors hover:text-[#278500] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#278500] dark:hover:text-[#6fd43a] dark:focus-visible:outline-[#6fd43a]"
+                                className={`inline-block min-h-11 align-middle transition-colors ${
+                                  index === 0 ? 'pr-11' : ''
+                                } hover:text-[#278500] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#278500] dark:hover:text-[#6fd43a] dark:focus-visible:outline-[#6fd43a]`}
                               >
                                 {title}
                               </a>
@@ -529,8 +592,7 @@ export function HomeView({ lang, onNavigate, onPlayVideo }: HomeViewProps) {
                               )}
                               {notes && <p className="leading-relaxed">{notes}</p>}
                             </div>
-
-                            {ev.link && (
+                            {index !== 0 && ev.link && (
                               <a
                                 href={ev.link}
                                 target="_blank"
@@ -542,6 +604,64 @@ export function HomeView({ lang, onNavigate, onPlayVideo }: HomeViewProps) {
                             )}
                           </div>
                         </div>
+
+                        {index === 0 && (
+                          <div
+                            ref={openEventMenuId === ev.id ? eventMenuRef : null}
+                            className="absolute right-3 top-3 z-10"
+                          >
+                            <button
+                              type="button"
+                              data-event-menu-trigger
+                              aria-label={`${t.j_more_options}: ${title}`}
+                              aria-expanded={openEventMenuId === ev.id}
+                              aria-controls={
+                                openEventMenuId === ev.id
+                                  ? `home-event-actions-${ev.id}`
+                                  : undefined
+                              }
+                              onClick={() =>
+                                setOpenEventMenuId((currentId) =>
+                                  currentId === ev.id ? null : ev.id
+                                )
+                              }
+                              className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-full border border-[#dce6d7] bg-white/80 text-[#278500] transition-colors hover:border-[#278500] hover:bg-[#edf5e9] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#278500] dark:border-[#2b4523] dark:bg-[#142111] dark:text-[#7ce043] dark:hover:border-[#6fd43a] dark:hover:bg-[#1d3314] dark:focus-visible:outline-[#6fd43a]"
+                            >
+                              <MoreVertical className="h-4 w-4" aria-hidden="true" />
+                            </button>
+                            {openEventMenuId === ev.id && (
+                              <div
+                                id={`home-event-actions-${ev.id}`}
+                                role="group"
+                                aria-label={t.j_more_options}
+                                className="absolute right-0 top-full z-30 mt-2 w-48 rounded-xl border border-[#dce6d7] bg-white p-1 shadow-xl dark:border-[#2b4523] dark:bg-[#142111]"
+                              >
+                                <button
+                                  type="button"
+                                  data-event-menu-item
+                                  onClick={() => {
+                                    downloadScheduleEventCalendar(ev, { title, venue, notes });
+                                    setOpenEventMenuId(null);
+                                  }}
+                                  className="flex min-h-11 w-full items-center rounded-lg px-3 text-left text-sm font-semibold text-[#278500] transition-colors hover:bg-[#edf5e9] focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-[#278500] dark:text-[#7ce043] dark:hover:bg-[#1d3314] dark:focus-visible:outline-[#6fd43a]"
+                                >
+                                  {t.j_add_calendar}
+                                </button>
+                                {ev.link && (
+                                  <a
+                                    href={ev.link}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    onClick={() => setOpenEventMenuId(null)}
+                                    className="flex min-h-11 items-center rounded-lg px-3 text-sm font-semibold text-[#278500] transition-colors hover:bg-[#edf5e9] focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-[#278500] dark:text-[#7ce043] dark:hover:bg-[#1d3314] dark:focus-visible:outline-[#6fd43a]"
+                                  >
+                                    {t.j_link}
+                                  </a>
+                                )}
+                              </div>
+                            )}
+                          </div>
+                        )}
                       </div>
                     </article>
                   );
