@@ -392,7 +392,7 @@ export function HomeView({ lang, onNavigate, onPlayVideo }: HomeViewProps) {
         </div>
 
         {/* RIGHT COLUMN: Next Event Stack + Birthdays */}
-        <div className="space-y-7 lg:col-span-5">
+        <div className="min-w-0 space-y-7 lg:col-span-5">
           {/* Next Event Stack */}
           <section>
             <div className="mb-3.5 flex items-baseline justify-between gap-4">
@@ -441,38 +441,16 @@ export function HomeView({ lang, onNavigate, onPlayVideo }: HomeViewProps) {
                   return (
                     <article
                       key={ev.id}
-                      className={`${
-                        index === 0
-                          ? 'min-h-[18.375rem] rounded-2xl border p-4 sm:p-5'
-                          : 'rounded-2xl border p-5'
-                      } relative backdrop-blur-md transition-colors ${
-                        index === 0
-                          ? 'border-[#278500] bg-white shadow-sm dark:border-[#66c91a] dark:bg-[#11200d]'
-                          : 'border-[#c8dcc0] bg-white/96 dark:border-[#2b4523] dark:bg-[#101c0d]/95'
-                      }`}
+                      className={`relative rounded-2xl border p-4 backdrop-blur-md transition-colors sm:p-5 ${
+                        index === 0 ? 'min-h-[18.375rem]' : ''
+                      } border-[#278500] bg-white shadow-sm dark:border-[#66c91a] dark:bg-[#11200d]`}
                     >
-                      <div
-                        className={
-                          index === 0
-                            ? 'flex items-start gap-2.5 sm:gap-3'
-                            : 'flex items-start gap-4'
-                        }
-                      >
-                        <div
-                          className={
-                            index === 0
-                              ? 'flex min-w-0 flex-1 items-start gap-2.5 sm:gap-3'
-                              : 'flex min-w-0 flex-1 items-start gap-4'
-                          }
-                        >
+                      <div className="flex items-start gap-2.5 sm:gap-3">
+                        <div className="flex min-w-0 flex-1 items-start gap-2.5 sm:gap-3">
                           <time
                             dateTime={dateTime}
                             aria-label={formatEventDateRange(ev.startDate, ev.endDate)}
-                            className={
-                              index === 0
-                                ? 'flex shrink-0 flex-col items-start border-r border-[#e3ecde] pr-2.5 dark:border-[#24371f] sm:pr-3'
-                                : 'flex shrink-0 flex-col items-start border-r border-[#e3ecde] pr-4 dark:border-[#24371f]'
-                            }
+                            className="flex shrink-0 flex-col items-start border-r border-[#e3ecde] pr-2.5 dark:border-[#24371f] sm:pr-3"
                           >
                             <span
                               className={`font-mono-num font-extrabold leading-none tracking-tight ${
