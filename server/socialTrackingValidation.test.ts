@@ -6,8 +6,11 @@ import {
 } from '../src/types/socialTracking';
 import {
   parseSocialObservation,
+  parseSocialTrackingAccountOutcome,
   parseSocialTrackingConfig,
+  parseSocialTrackingLease,
   parseSocialTrackingLog,
+  parseSocialTrackingRun,
 } from './socialTrackingValidation';
 
 const capturedAt = AdminTimestamp.fromMillis(Date.UTC(2026, 0, 1));
@@ -20,6 +23,7 @@ function validObservation() {
     following: 140,
     totalLikes: 3400,
     videoCount: 18,
+    mediaCount: 24,
     capturedAt,
     collectionStatus: 'success',
   };
@@ -56,6 +60,7 @@ test('accepts valid public statistics and returns only the documented projection
     'collectionStatus',
     'followers',
     'following',
+    'mediaCount',
     'memberId',
     'platform',
     'totalLikes',
@@ -110,6 +115,7 @@ test('rejects negative and non-integer statistics', () => {
   assert.throws(() => parseSocialObservation({ ...validObservation(), followers: -1 }));
   assert.throws(() => parseSocialObservation({ ...validObservation(), following: 1.5 }));
   assert.throws(() => parseSocialObservation({ ...validObservation(), totalLikes: Number.MAX_SAFE_INTEGER + 1 }));
+  assert.throws(() => parseSocialObservation({ ...validObservation(), mediaCount: -1 }));
 });
 
 test('rejects non-canonical members and invalid platforms or collection statuses', () => {
@@ -125,6 +131,42 @@ test('accepts a subset of active members but rejects duplicates and inactive IDs
   assert.throws(() => parseSocialTrackingConfig(validConfig(['yi_shyan', 'yi_shyan'])));
   assert.throws(() => parseSocialTrackingConfig(validConfig(['cindy'])));
   assert.throws(() => parseSocialTrackingConfig({ ...validConfig(), secret: 'nope' }));
+});
+
+test('keeps the existing log parser as the run parser alias', () => {
+  assert.equal(parseSocialTrackingRun, parseSocialTrackingLog);
+  assert.equal(parseSocialTrackingRun(validLog()).runId, 'run-2026-01-01');
+});
+
+test('validates per-account outcomes and rejects unsafe fields or time ranges', () => {
+  const outcome = {
+    runId: 'run-2026-01-01',
+    memberId: 'yi_shyan',
+    platform: 'instagram',
+    status: 'partial',
+    attempts: 2,
+    startedAt: capturedAt,
+    finishedAt: capturedAt,
+    errorCode: 'RATE_LIMITED',
+  };
+  assert.deepEqual(parseSocialTrackingAccountOutcome(outcome), outcome);
+  assert.throws(() => parseSocialTrackingAccountOutcome({ ...outcome, providerResponse: { token: 'secret' } }));
+  assert.throws(() => parseSocialTrackingAccountOutcome({ ...outcome, status: 'running' }));
+  assert.throws(() => parseSocialTrackingAccountOutcome({ ...outcome, attempts: -1 }));
+  assert.throws(() => parseSocialTrackingAccountOutcome({ ...outcome, finishedAt: AdminTimestamp.fromMillis(Date.UTC(2025, 0, 1)) }));
+  assert.throws(() => parseSocialTrackingAccountOutcome({ ...outcome, errorCode: 'token-value' }));
+});
+
+test('validates collection leases and rejects unknown lease fields', () => {
+  const lease = {
+    ownerRunId: 'run-2026-01-01',
+    leaseExpiresAt: AdminTimestamp.fromMillis(Date.UTC(2026, 0, 1, 0, 10)),
+    updatedAt: capturedAt,
+  };
+  assert.deepEqual(parseSocialTrackingLease(lease), lease);
+  assert.throws(() => parseSocialTrackingLease({ ...lease, accessToken: 'secret' }));
+  assert.throws(() => parseSocialTrackingLease({ ...lease, ownerRunId: '' }));
+  assert.throws(() => parseSocialTrackingLease({ ...lease, leaseExpiresAt: 'later' }));
 });
 
 test('accepts only predefined tracking log error codes', () => {

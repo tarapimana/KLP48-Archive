@@ -4,6 +4,9 @@ export {
   parseSocialSnapshot,
   parseSocialTrackingConfig,
   parseSocialTrackingLog,
+  parseSocialTrackingRun,
+  parseSocialTrackingAccountOutcome,
+  parseSocialTrackingLease,
   isSocialMemberId,
   exactRecord,
 } from '../../server/socialTrackingValidation';

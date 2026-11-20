@@ -57,6 +57,7 @@ export interface SocialObservation {
   following?: number;
   totalLikes?: number;
   videoCount?: number;
+  mediaCount?: number;
   capturedAt: Timestamp;
   collectionStatus: SocialCollectionStatus;
 }
@@ -83,4 +84,25 @@ export interface SocialTrackingLog {
   accountsSucceeded: number;
   accountsFailed: number;
   errorCode?: SocialTrackingErrorCode;
+}
+
+export type SocialTrackingRun = SocialTrackingLog;
+
+export type SocialTrackingAccountOutcomeStatus = 'success' | 'partial' | 'failed' | 'skipped';
+
+export interface SocialTrackingAccountOutcome {
+  runId: string;
+  memberId: SocialMemberId;
+  platform: SocialPlatform;
+  status: SocialTrackingAccountOutcomeStatus;
+  attempts: number;
+  startedAt: Timestamp;
+  finishedAt: Timestamp;
+  errorCode?: SocialTrackingErrorCode;
+}
+
+export interface SocialTrackingLease {
+  ownerRunId: string;
+  leaseExpiresAt: Timestamp;
+  updatedAt: Timestamp;
 }

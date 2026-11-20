@@ -9,8 +9,11 @@ import type {
   SocialObservation,
   SocialPlatform,
   SocialSnapshot,
+  SocialTrackingAccountOutcome,
+  SocialTrackingAccountOutcomeStatus,
   SocialTrackingConfig,
   SocialTrackingErrorCode,
+  SocialTrackingLease,
   SocialTrackingLog,
   SocialTrackingRunStatus,
   SocialTrackingTrigger,
@@ -25,6 +28,14 @@ type ServerSocialTrackingLog = Omit<SocialTrackingLog, 'startedAt' | 'finishedAt
   startedAt: AdminTimestamp;
   finishedAt?: AdminTimestamp;
 };
+type ServerSocialTrackingAccountOutcome = Omit<SocialTrackingAccountOutcome, 'startedAt' | 'finishedAt'> & {
+  startedAt: AdminTimestamp;
+  finishedAt: AdminTimestamp;
+};
+type ServerSocialTrackingLease = Omit<SocialTrackingLease, 'leaseExpiresAt' | 'updatedAt'> & {
+  leaseExpiresAt: AdminTimestamp;
+  updatedAt: AdminTimestamp;
+};
 
 const ACTIVE_MEMBER_IDS = new Set<string>(CANONICAL_ACTIVE_MEMBER_IDS);
 const TRACKING_ERROR_CODES = new Set<string>(SOCIAL_TRACKING_ERROR_CODES);
@@ -38,6 +49,7 @@ const SOCIAL_OBSERVATION_FIELDS = [
   'following',
   'totalLikes',
   'videoCount',
+  'mediaCount',
   'capturedAt',
   'collectionStatus',
 ] as const;
@@ -75,6 +87,20 @@ const SOCIAL_TRACKING_LOG_REQUIRED_FIELDS = [
   'accountsSucceeded',
   'accountsFailed',
 ] as const;
+const SOCIAL_TRACKING_ACCOUNT_OUTCOME_FIELDS = [
+  'runId',
+  'memberId',
+  'platform',
+  'status',
+  'attempts',
+  'startedAt',
+  'finishedAt',
+  'errorCode',
+] as const;
+const SOCIAL_TRACKING_ACCOUNT_OUTCOME_REQUIRED_FIELDS = SOCIAL_TRACKING_ACCOUNT_OUTCOME_FIELDS.filter(
+  (field) => field !== 'errorCode',
+);
+const SOCIAL_TRACKING_LEASE_FIELDS = ['ownerRunId', 'leaseExpiresAt', 'updatedAt'] as const;
 
 function invalidData(): never {
   throw new TypeError('Invalid social tracking data');
@@ -140,14 +166,18 @@ function isTrackingRunStatus(value: unknown): value is SocialTrackingRunStatus {
   return value === 'running' || value === 'success' || value === 'partial' || value === 'failed';
 }
 
+function isTrackingAccountOutcomeStatus(value: unknown): value is SocialTrackingAccountOutcomeStatus {
+  return value === 'success' || value === 'partial' || value === 'failed' || value === 'skipped';
+}
+
 function isTrackingErrorCode(value: unknown): value is SocialTrackingErrorCode {
   return typeof value === 'string' && TRACKING_ERROR_CODES.has(value);
 }
 
 function addOptionalStatistic(
   record: Record<string, unknown>,
-  output: Partial<Pick<SocialObservation, 'following' | 'totalLikes' | 'videoCount'>>,
-  field: 'following' | 'totalLikes' | 'videoCount',
+  output: Partial<Pick<SocialObservation, 'following' | 'totalLikes' | 'videoCount' | 'mediaCount'>>,
+  field: 'following' | 'totalLikes' | 'videoCount' | 'mediaCount',
 ): void {
   if (!Object.hasOwn(record, field)) return;
   if (!isNonNegativeInteger(record[field])) return invalidData();
@@ -171,10 +201,11 @@ export function parseSocialObservation(value: unknown): ServerSocialObservation 
     return invalidData();
   }
 
-  const optionalStatistics: Partial<Pick<SocialObservation, 'following' | 'totalLikes' | 'videoCount'>> = {};
+  const optionalStatistics: Partial<Pick<SocialObservation, 'following' | 'totalLikes' | 'videoCount' | 'mediaCount'>> = {};
   addOptionalStatistic(record, optionalStatistics, 'following');
   addOptionalStatistic(record, optionalStatistics, 'totalLikes');
   addOptionalStatistic(record, optionalStatistics, 'videoCount');
+  addOptionalStatistic(record, optionalStatistics, 'mediaCount');
 
   return {
     memberId: record.memberId,
@@ -183,6 +214,7 @@ export function parseSocialObservation(value: unknown): ServerSocialObservation 
     ...(Object.hasOwn(record, 'following') ? { following: optionalStatistics.following } : {}),
     ...(Object.hasOwn(record, 'totalLikes') ? { totalLikes: optionalStatistics.totalLikes } : {}),
     ...(Object.hasOwn(record, 'videoCount') ? { videoCount: optionalStatistics.videoCount } : {}),
+    ...(Object.hasOwn(record, 'mediaCount') ? { mediaCount: optionalStatistics.mediaCount } : {}),
     capturedAt: record.capturedAt,
     collectionStatus: record.collectionStatus,
   };
@@ -258,5 +290,62 @@ export function parseSocialTrackingLog(value: unknown): ServerSocialTrackingLog 
     accountsSucceeded: record.accountsSucceeded,
     accountsFailed: record.accountsFailed,
     ...(Object.hasOwn(record, 'errorCode') ? { errorCode: record.errorCode as SocialTrackingErrorCode } : {}),
+  };
+}
+
+export const parseSocialTrackingRun = parseSocialTrackingLog;
+
+export function parseSocialTrackingAccountOutcome(value: unknown): ServerSocialTrackingAccountOutcome {
+  const record = exactRecord(
+    value,
+    SOCIAL_TRACKING_ACCOUNT_OUTCOME_FIELDS,
+    SOCIAL_TRACKING_ACCOUNT_OUTCOME_REQUIRED_FIELDS,
+  );
+
+  if (
+    typeof record.runId !== 'string' ||
+    record.runId.length === 0 ||
+    record.runId.length > 128 ||
+    !isSocialMemberId(record.memberId) ||
+    !isSocialPlatform(record.platform) ||
+    !isTrackingAccountOutcomeStatus(record.status) ||
+    !isNonNegativeInteger(record.attempts) ||
+    !isFirestoreTimestamp(record.startedAt) ||
+    !isFirestoreTimestamp(record.finishedAt) ||
+    record.finishedAt.toMillis() < record.startedAt.toMillis() ||
+    (Object.hasOwn(record, 'errorCode') && !isTrackingErrorCode(record.errorCode))
+  ) {
+    return invalidData();
+  }
+
+  return {
+    runId: record.runId,
+    memberId: record.memberId,
+    platform: record.platform,
+    status: record.status,
+    attempts: record.attempts,
+    startedAt: record.startedAt,
+    finishedAt: record.finishedAt,
+    ...(Object.hasOwn(record, 'errorCode') ? { errorCode: record.errorCode as SocialTrackingErrorCode } : {}),
+  };
+}
+
+export function parseSocialTrackingLease(value: unknown): ServerSocialTrackingLease {
+  const record = exactRecord(value, SOCIAL_TRACKING_LEASE_FIELDS, SOCIAL_TRACKING_LEASE_FIELDS);
+
+  if (
+    typeof record.ownerRunId !== 'string' ||
+    record.ownerRunId.length === 0 ||
+    record.ownerRunId.length > 128 ||
+    !isFirestoreTimestamp(record.leaseExpiresAt) ||
+    !isFirestoreTimestamp(record.updatedAt)
+  ) {
+    return invalidData();
+  }
+
+  return {
+    ownerRunId: record.ownerRunId,
+    leaseExpiresAt: record.leaseExpiresAt,
+    updatedAt: record.updatedAt,
   };
 }
