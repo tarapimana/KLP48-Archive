@@ -12,11 +12,12 @@ export function Footer({ lang, onNavigate }: FooterProps) {
   return (
     <footer className="mt-8 border-t border-[#dce6d7] bg-[#f6faf4] py-6 dark:border-[#24371f] dark:bg-[#0d160b]">
       <div className="mx-auto grid max-w-6xl grid-cols-1 items-center gap-5 px-4 sm:px-6 lg:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] lg:gap-6">
-        <div className="space-y-1 text-center lg:text-left">
+        <div className="space-y-2 text-center lg:text-left">
           <p className="font-logo text-base font-light tracking-[0.02em] text-[#131f10] dark:text-[#ecf4e8]">
             Arkib <span className="text-[#278500] dark:text-[#6fd43a]">KLP48</span>
           </p>
-          <p className="mx-auto max-w-lg text-xs text-[#52634c] sm:text-sm dark:text-[#98ad90] lg:mx-0">{t.footer}</p>
+          <p className="mx-auto max-w-lg text-xs leading-relaxed text-[#52634c] sm:text-sm dark:text-[#98ad90] lg:mx-0">{t.footer}</p>
+          <p className="mx-auto max-w-lg border-l-2 border-[#278500]/60 pl-2 text-left text-xs font-medium leading-relaxed text-[#52634c] sm:text-sm dark:border-[#6fd43a]/60 dark:text-[#98ad90] lg:mx-0">{t.footer_database_ownership}</p>
         </div>
 
         <nav aria-label="Footer navigation" className="flex flex-wrap items-center justify-center gap-x-3 gap-y-2 text-xs sm:gap-x-4 sm:text-sm">
