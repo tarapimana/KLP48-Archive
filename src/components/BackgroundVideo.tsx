@@ -56,6 +56,29 @@ export function BackgroundVideo({
     };
   }, []);
 
+  useEffect(() => {
+    const video = videoRef.current;
+    const audio = audioRef.current;
+    if (!video || !audio) return;
+
+    const syncAudioToVideo = () => {
+      if (audio.muted || audio.paused || !Number.isFinite(audio.duration)) return;
+
+      const targetTime = video.currentTime % audio.duration;
+      if (Math.abs(audio.currentTime - targetTime) > 0.35) {
+        audio.currentTime = targetTime;
+      }
+    };
+
+    video.addEventListener('timeupdate', syncAudioToVideo);
+    video.addEventListener('seeking', syncAudioToVideo);
+
+    return () => {
+      video.removeEventListener('timeupdate', syncAudioToVideo);
+      video.removeEventListener('seeking', syncAudioToVideo);
+    };
+  }, []);
+
   const enablePlayback = () => {
     manuallyEnabledRef.current = true;
     setManuallyEnabled(true);
@@ -67,18 +90,30 @@ export function BackgroundVideo({
 
   const toggleSound = () => {
     const audio = audioRef.current;
+    const video = videoRef.current;
     if (!audio) return;
 
     const nextMuted = !isMuted;
     audio.muted = nextMuted;
     setIsMuted(nextMuted);
 
-    if (!nextMuted) {
-      void audio.play().catch(() => {
-        audio.muted = true;
-        setIsMuted(true);
-      });
+    if (nextMuted) {
+      audio.pause();
+      return;
     }
+
+    if (video && Number.isFinite(video.currentTime)) {
+      const targetTime = Number.isFinite(audio.duration) && audio.duration > 0
+        ? video.currentTime % audio.duration
+        : video.currentTime;
+      audio.currentTime = targetTime;
+    }
+
+    void audio.play().catch(() => {
+      audio.pause();
+      audio.muted = true;
+      setIsMuted(true);
+    });
   };
 
   const t = TRANSLATIONS[lang];
@@ -89,7 +124,7 @@ export function BackgroundVideo({
       <audio
         ref={audioRef}
         src="/audio/klp48-background-music.m4a"
-        preload="none"
+        preload="metadata"
         muted={isMuted}
         loop
         aria-hidden="true"
