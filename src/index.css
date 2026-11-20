@@ -4,6 +4,7 @@
 @layer base {
   :root {
     --font-display: "Bricolage Grotesque", system-ui, -apple-system, sans-serif;
+    --font-logo: "Josefin Sans", system-ui, -apple-system, sans-serif;
     --font-sans: "Plus Jakarta Sans", system-ui, -apple-system, sans-serif;
     --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
   }
@@ -30,6 +31,10 @@
 
   h1, h2, h3, .font-display {
     font-family: var(--font-display);
+  }
+
+  .font-logo {
+    font-family: var(--font-logo);
   }
 
   .font-mono-num {

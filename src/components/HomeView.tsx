@@ -98,7 +98,7 @@ export function HomeView({ lang, onNavigate, onPlayVideo }: HomeViewProps) {
               <span>{t.h_eb}</span>
             </div>
 
-            <h1 className="font-display mt-3 text-balance text-5xl font-black tracking-tight text-[#131f10] sm:text-6xl dark:text-white">
+            <h1 className="font-logo mt-3 text-balance text-5xl font-light tracking-[0.01em] text-[#131f10] sm:text-6xl dark:text-white">
               Arkib <span className="text-[#278500] dark:text-[#66c91a]">KLP48</span>
             </h1>
 
