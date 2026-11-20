@@ -15,7 +15,7 @@ export function AdminAccessView({ lang }: AdminAccessViewProps) {
       <section className="w-full max-w-md rounded-3xl border border-[#dce6d7] bg-white p-6 shadow-[0_24px_80px_rgba(10,20,7,0.12)] dark:border-[#24371f] dark:bg-[#0e180b] dark:shadow-[0_24px_80px_rgba(0,0,0,0.28)] sm:p-8">
         <a
           href="/"
-          className="mb-8 inline-flex items-center gap-2 rounded-md text-sm font-semibold text-[#52634c] transition-colors hover:text-[#278500] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#278500] dark:text-[#98ad90] dark:hover:text-[#6fd43a] dark:focus-visible:outline-[#6fd43a]"
+          className="font-logo mb-8 inline-flex items-center gap-2 rounded-md text-sm font-light tracking-[0.02em] text-[#52634c] transition-colors hover:text-[#278500] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#278500] dark:text-[#98ad90] dark:hover:text-[#6fd43a] dark:focus-visible:outline-[#6fd43a]"
         >
           <ArrowLeft className="h-4 w-4" aria-hidden="true" />
           <span>Arkib KLP48</span>

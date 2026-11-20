@@ -3,9 +3,10 @@
 
 @layer base {
   :root {
-    --font-display: "Bricolage Grotesque", system-ui, -apple-system, sans-serif;
-    --font-sans: "Plus Jakarta Sans", system-ui, -apple-system, sans-serif;
-    --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+    --font-display: Calibri, "Segoe UI", Arial, sans-serif;
+    --font-logo: Calibri, "Segoe UI", Arial, sans-serif;
+    --font-sans: Calibri, "Segoe UI", Arial, sans-serif;
+    --font-mono: Calibri, "Segoe UI", Arial, sans-serif;
   }
 
   html {
@@ -30,6 +31,10 @@
 
   h1, h2, h3, .font-display {
     font-family: var(--font-display);
+  }
+
+  .font-logo {
+    font-family: var(--font-logo);
   }
 
   .font-mono-num {

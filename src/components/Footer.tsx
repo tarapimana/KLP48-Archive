@@ -14,7 +14,7 @@ export function Footer({ lang, onNavigate }: FooterProps) {
     <footer className="mt-20 border-t border-[#dce6d7] py-10 dark:border-[#24371f]">
       <div className="mx-auto flex max-w-6xl flex-col items-start justify-between gap-6 px-4 sm:flex-row sm:items-center sm:px-6">
         <div className="space-y-1">
-          <p className="font-display text-base font-bold text-[#131f10] dark:text-[#ecf4e8]">
+          <p className="font-logo text-base font-light tracking-[0.02em] text-[#131f10] dark:text-[#ecf4e8]">
             Arkib <span className="text-[#278500] dark:text-[#6fd43a]">KLP48</span>
           </p>
           <p className="max-w-lg text-sm text-[#52634c] dark:text-[#98ad90]">{t.footer}</p>
