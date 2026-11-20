@@ -459,7 +459,7 @@ Tempoh Permohonan: 10 September, 12:00 tengah hari – 17 September, 11:59 malam
     },
   },
   47: {
-    title: { ms: 'Pengumuman: KLP48 di Nihon Live, Nihon Matsuri' },
+    title: { ms: 'Amanda Menggantikan Devi di Nihon Live' },
     body: {
       ms: `Pengumuman
 KLP48 di Nihon Live, Nihon Matsuri
@@ -472,7 +472,7 @@ Pihak Pengurusan KLP48
     },
   },
   48: {
-    title: { ms: 'Pengumuman: KLP48 di Nihon Live, Nihon Matsuri' },
+    title: { ms: 'Alice Menggantikan Tara di Nihon Live' },
     body: {
       ms: `Pengumuman
 KLP48 di Nihon Live, Nihon Matsuri

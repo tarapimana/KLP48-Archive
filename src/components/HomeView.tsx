@@ -12,6 +12,7 @@ import {
   VideoItem,
   VIDEOS,
 } from '../data/klp48Data';
+import { getLocalizedNewsTitle } from '../data/newsArticleTranslations';
 import { useScheduleEvents } from '../context/useScheduleEvents';
 import {
   Lang,
@@ -256,7 +257,7 @@ export function HomeView({ lang, onNavigate, onPlayVideo }: HomeViewProps) {
                     </span>
                   </div>
                   <h3 className="mt-2 text-sm font-bold leading-snug text-[#131f10] transition-colors group-hover:text-[#278500] sm:text-base dark:text-white dark:group-hover:text-[#66c91a]">
-                    {item.tajuk}
+                    {getLocalizedNewsTitle(item.pautan, item.tajuk, lang)}
                   </h3>
                 </button>
               ))}

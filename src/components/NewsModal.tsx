@@ -29,7 +29,7 @@ function getNewsBodyBlocks(body: string): NewsBodyBlock[] {
   const normalizedBody = body
     .replace(/\r\n?/g, '\n')
     .replace(/\u00a0/g, ' ')
-    .replace(/([A-Za-z])(?=\d+[.)]\s+[A-Z])/g, '$1\n')
+    .replace(/([A-Za-z])(?=\d+[.)][ \t]+[A-Z])/g, '$1\n')
     .replace(/\s*(?:🗓️|🎙️)\s*/g, '\n');
   const lines = normalizedBody.split('\n').map((line) => line.trim()).filter(Boolean);
   const blocks: NewsBodyBlock[] = [];

@@ -464,8 +464,8 @@ export const MEMBERS_DATA: MemberItem[] = ([
 }));
 
 export const NEWS_DATA: NewsItem[] = [
-  { tajuk: "Announcement KLP48 at Nihon Live, Nihon Matsuri", tarikh: "2026.10.24", kategori: "News", pautan: "https://klp48.my/news/detail/48" },
-  { tajuk: "Announcement KLP48 at Nihon Live, Nihon Matsuri", tarikh: "2026.10.22", kategori: "News", pautan: "https://klp48.my/news/detail/47" },
+  { tajuk: "Alice to Replace Tara at Nihon Live", tarikh: "2026.10.24", kategori: "News", pautan: "https://klp48.my/news/detail/48" },
+  { tajuk: "Amanda to Replace Devi at Nihon Live", tarikh: "2026.10.22", kategori: "News", pautan: "https://klp48.my/news/detail/47" },
   { tajuk: "Start of 1 on 1 TALK applications", tarikh: "2026.09.08", kategori: "Fanclub", pautan: "https://klp48.my/news/detail/46" },
   { tajuk: "Discord Radio Talk Info", tarikh: "2026.09.01", kategori: "Fanclub", pautan: "https://klp48.my/news/detail/45" },
   { tajuk: "PENGUMUMAN RASMI Pelantikan Penerbit Baharu [BM]", tarikh: "2026.08.12", kategori: "News", pautan: "https://klp48.my/news/detail/44" },
