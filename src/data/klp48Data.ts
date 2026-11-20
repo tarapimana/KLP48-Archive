@@ -550,6 +550,23 @@ export function parseEventMemberNames(members?: string): string[] {
     });
 }
 
+function getScheduleTimeMinutes(value: string): number {
+  const normalized = value
+    .replace(/\btengah\s+hari\b/gi, 'PM')
+    .replace(/\bpagi\b/gi, 'AM')
+    .replace(/\b(?:petang|malam)\b/gi, 'PM');
+  const match = normalized.match(/\b(\d{1,2})(?::([0-5]\d))?\s*(AM|PM)?\b/i);
+
+  if (!match) return Number.POSITIVE_INFINITY;
+
+  let hour = Number(match[1]);
+  const minute = Number(match[2] ?? 0);
+  const meridiem = match[3]?.toUpperCase();
+  if (meridiem) hour = (hour % 12) + (meridiem === 'PM' ? 12 : 0);
+
+  return hour * 60 + minute;
+}
+
 export function parseScheduleItems(items: ScheduleRawItem[]): ParsedEvent[] {
   return items.map((item, idx): ParsedEvent => {
     const startDate = parseIsoDate(item.tarikh_mula);
@@ -575,7 +592,14 @@ export function parseScheduleItems(items: ScheduleRawItem[]): ParsedEvent[] {
     };
   })
     .filter((ev) => !Number.isNaN(ev.startDate.getTime()))
-    .sort((a, b) => a.startDate.getTime() - b.startDate.getTime());
+    .sort((a, b) => {
+      const dateDifference = a.startDate.getTime() - b.startDate.getTime();
+      if (dateDifference !== 0) return dateDifference;
+
+      const timeA = getScheduleTimeMinutes(a.timeEn || a.time);
+      const timeB = getScheduleTimeMinutes(b.timeEn || b.time);
+      return timeA === timeB ? 0 : timeA - timeB;
+    });
 }
 
 export function getParsedEvents(): ParsedEvent[] {
