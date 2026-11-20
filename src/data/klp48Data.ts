@@ -266,6 +266,58 @@ const RAW_VIDEOS: Array<[string, string, string?]> = [
   ["KLP48 1st Generation Members Introduction", "https://www.youtube.com/watch?v=BFi92onrWDI"],
 ];
 
+// Upload dates were matched to the video IDs on KLP48's official videos page.
+const YOUTUBE_UPLOAD_DATES: Record<string, string> = {
+  "-L3sgYIx0g4": "2026-11-18",
+  "-P5BfkU5yQo": "2025-09-05",
+  "-Rcx1vTAncI": "2025-04-11",
+  "0-Hz9HgAhGY": "2025-08-12",
+  "BFi92onrWDI": "2024-07-27",
+  "C9M0jikyehE": "2026-08-14",
+  "CnC8-E4d62o": "2024-09-16",
+  "EDliuALaUm0": "2026-05-31",
+  "FAGf9VzkK7I": "2025-04-19",
+  "FlBBO6Iz-do": "2025-04-12",
+  "Hcvcbf1PsoI": "2025-04-11",
+  "HrLLMlcSIyQ": "2025-04-12",
+  "LtMtG7l3YEQ": "2026-05-14",
+  "NV-YXelftxw": "2025-06-26",
+  "OkJp0NQLbz8": "2025-07-25",
+  "PbhQ1oYK_lo": "2025-03-31",
+  "PnIXsIMy9to": "2025-04-22",
+  "Q2SoJb5PGs0": "2025-07-06",
+  "RlKbEa8pyHU": "2026-05-22",
+  "SOPPRaz01jg": "2025-03-31",
+  "TwhxG-Ek0qg": "2025-07-18",
+  "VW23eKf9eqY": "2026-08-20",
+  "WZ4dLkNjnyY": "2026-09-02",
+  "Ys9RQ79b2GU": "2025-11-21",
+  "Yvc21EpVdhs": "2025-08-28",
+  "aMoWXqkMjBs": "2025-04-11",
+  "bJq8w7sAQas": "2025-10-23",
+  "bKD-ctOWOvQ": "2026-11-06",
+  "cQEq-t0JT-s": "2025-08-29",
+  "eOwzd2fdbtU": "2025-04-11",
+  "feQ6ETgG2Ac": "2026-07-28",
+  "foIdCbntKL4": "2026-04-13",
+  "jnVycSYDv0k": "2025-07-06",
+  "kGNuC-Lt-R4": "2025-07-06",
+  "mcAN_q8zhww": "2024-08-17",
+  "mmqoKqBIMFA": "2025-04-12",
+  "o9CpUmbJKoo": "2026-10-31",
+  "opq1or96lTo": "2025-07-07",
+  "ptxiIdbQin8": "2025-08-22",
+  "pzQlhroXtfc": "2025-08-08",
+  "qxb0khjTLRU": "2024-08-17",
+  "r_6QO_T92BU": "2026-06-05",
+  "tdVm-OufUFU": "2025-07-27",
+  "u789_b-nq2Q": "2025-07-21",
+  "v1Qj2uiBSjA": "2026-05-30",
+  "widKxaKg7Rk": "2026-05-05",
+  "z9B3_P41qa4": "2025-07-28",
+  "zCfgyveDIQQ": "2026-04-19",
+};
+
 function tiktokTimestampIso(tiktokId?: string): string | undefined {
   if (!tiktokId) return undefined;
   try {
@@ -289,7 +341,9 @@ export const VIDEOS: VideoItem[] = RAW_VIDEOS.map(([title, url, thumbnail]) => {
     youtubeId: ytMatch ? ytMatch[1] : undefined,
     tiktokId,
     thumbnail,
-    publishedAt: tiktokTimestampIso(tiktokId),
+    publishedAt:
+      tiktokTimestampIso(tiktokId) ??
+      (ytMatch ? YOUTUBE_UPLOAD_DATES[ytMatch[1]] : undefined),
   };
 });
 
