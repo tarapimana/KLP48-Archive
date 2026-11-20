@@ -1,4 +1,4 @@
-import { ArrowRight, CalendarPlus, Check, Clock, MapPin, UsersRound } from 'lucide-react';
+import { ArrowRight, Check, Clock, MapPin, UsersRound } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { useScheduleEvents } from '../context/useScheduleEvents';
 import { MEMBERS_DATA, MemberItem, parseEventMemberNames } from '../data/klp48Data';
@@ -366,45 +366,59 @@ export function ScheduleView({ lang }: ScheduleViewProps) {
 
                     {/* Title, Category & Quick Summary */}
                     <div className="min-w-0 flex-1">
-                      <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs">
-                        <span className="font-bold text-[#278500] dark:text-[#7ce043]">
-                          {ev.type === 'show' ? t.t_show : t.t_event}
-                        </span>
-                        {ev.exclusive && (
-                          <>
-                            <span aria-hidden="true" className="text-[#8da087]">·</span>
-                            <span className="font-bold text-[#131f10] dark:text-white">
-                              {t.exclusive}
-                            </span>
-                          </>
-                        )}
-                        {isBirthdayEvent && (
-                          <>
-                            <span aria-hidden="true" className="text-[#8da087]">·</span>
-                            <span className="font-bold text-amber-700 dark:text-amber-300">
-                              {t.birthday_tag}
-                            </span>
-                          </>
-                        )}
-                        {isNext && (
-                          <>
-                            <span aria-hidden="true" className="text-[#8da087]">·</span>
+                      <div className="flex items-start justify-between gap-2">
+                        <div className="min-w-0 flex-1">
+                          <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs">
                             <span className="font-bold text-[#278500] dark:text-[#7ce043]">
-                              {t.upcoming_badge}
+                              {ev.type === 'show' ? t.t_show : t.t_event}
                             </span>
-                          </>
-                        )}
-                      </div>
+                            {ev.exclusive && (
+                              <>
+                                <span aria-hidden="true" className="text-[#8da087]">·</span>
+                                <span className="font-bold text-[#131f10] dark:text-white">
+                                  {t.exclusive}
+                                </span>
+                              </>
+                            )}
+                            {isBirthdayEvent && (
+                              <>
+                                <span aria-hidden="true" className="text-[#8da087]">·</span>
+                                <span className="font-bold text-amber-700 dark:text-amber-300">
+                                  {t.birthday_tag}
+                                </span>
+                              </>
+                            )}
+                            {isNext && (
+                              <>
+                                <span aria-hidden="true" className="text-[#8da087]">·</span>
+                                <span className="font-bold text-[#278500] dark:text-[#7ce043]">
+                                  {t.upcoming_badge}
+                                </span>
+                              </>
+                            )}
+                          </div>
 
-                      <h2
-                        className={`font-display mt-1 text-base font-bold leading-snug sm:text-lg ${
-                          isPast
-                            ? 'text-[#263421] dark:text-[#e2eee0]'
-                            : 'text-[#131f10] dark:text-white'
-                        }`}
-                      >
-                        {title}
-                      </h2>
+                          <h2
+                            className={`font-display mt-1 text-base font-bold leading-snug sm:text-lg ${
+                              isPast
+                                ? 'text-[#263421] dark:text-[#e2eee0]'
+                                : 'text-[#131f10] dark:text-white'
+                            }`}
+                          >
+                            {title}
+                          </h2>
+                        </div>
+                        <button
+                          type="button"
+                          aria-label={`${t.j_add_calendar}: ${title}`}
+                          onClick={() =>
+                            downloadScheduleEventCalendar(ev, { title, venue, notes })
+                          }
+                          className="inline-flex min-h-10 shrink-0 items-center whitespace-nowrap rounded-md px-1.5 text-[11px] font-bold text-[#278500] hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#278500] sm:text-xs dark:text-[#7ce043] dark:focus-visible:outline-[#6fd43a]"
+                        >
+                          {t.j_add_calendar}
+                        </button>
+                      </div>
 
                       <div className="mt-2 space-y-1 text-xs leading-relaxed text-[#3f503a] sm:text-sm dark:text-[#c7d7c0]">
                         <div className="flex items-start gap-1.5">
@@ -464,29 +478,16 @@ export function ScheduleView({ lang }: ScheduleViewProps) {
                           </div>
                         )}
                         {notes && <p className="leading-relaxed">{notes}</p>}
-                        <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
-                          {ev.link && (
-                            <a
-                              href={ev.link}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="inline-flex min-h-11 items-center gap-1.5 font-bold text-[#278500] hover:underline dark:text-[#7ce043]"
-                            >
-                              <span>{t.j_link}</span>
-                            </a>
-                          )}
-                          <button
-                            type="button"
-                            aria-label={`${t.j_add_calendar}: ${title}`}
-                            onClick={() =>
-                              downloadScheduleEventCalendar(ev, { title, venue, notes })
-                            }
-                            className="inline-flex min-h-11 items-center gap-1.5 font-bold text-[#278500] hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#278500] dark:text-[#7ce043] dark:focus-visible:outline-[#6fd43a]"
+                        {ev.link && (
+                          <a
+                            href={ev.link}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex min-h-11 items-center gap-1.5 font-bold text-[#278500] hover:underline dark:text-[#7ce043]"
                           >
-                            <CalendarPlus className="h-4 w-4" aria-hidden="true" />
-                            <span>{t.j_add_calendar}</span>
-                          </button>
-                        </div>
+                            <span>{t.j_link}</span>
+                          </a>
+                        )}
                       </div>
                     </div>
                   </div>
