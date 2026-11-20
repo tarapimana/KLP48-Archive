@@ -289,7 +289,7 @@ export function BirthdayCalendar({ lang, onSelectMember }: BirthdayCalendarProps
           return (
             <div
               key={dayNum}
-              className={`relative flex min-h-[68px] flex-col justify-between p-1.5 transition-colors sm:min-h-[88px] sm:p-2 ${cellBorders} ${
+              className={`relative flex min-h-[68px] flex-col justify-between p-1.5 transition-colors sm:min-h-[88px] sm:p-2 ${
                 isToday
                   ? 'bg-[#e3f2da]/75 ring-2 ring-inset ring-[#278500] dark:bg-[#193012]/90 dark:ring-[#66c91a]'
                   : hasBirthdays
@@ -323,6 +323,7 @@ export function BirthdayCalendar({ lang, onSelectMember }: BirthdayCalendarProps
                       key={entry.member.nama}
                       type="button"
                       onClick={() => onSelectMember(entry.member)}
+                      aria-label={`${entry.member.nama}, ${entry.day} ${shortMonths[viewMonth]}`}
                       title={`${entry.member.nama} (${entry.day} ${shortMonths[viewMonth]})`}
                       className="group flex w-full items-center gap-1.5 rounded-lg border border-[#c6dec0] bg-white/95 p-1 text-left transition-colors hover:border-[#278500] hover:bg-[#edf5e9] dark:border-[#2b4423] dark:bg-[#0e190b]/95 dark:hover:border-[#66c91a] dark:hover:bg-[#1a2b15]"
                     >

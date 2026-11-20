@@ -22,12 +22,13 @@ const VIDEOS_PER_PAGE = 18;
 export function VideosView({ lang, onPlayVideo }: VideosViewProps) {
   const t = TRANSLATIONS[lang];
   const [platform, setPlatform] = useState<VideoPlatformFilter>('all');
+  const [dateFilter, setDateFilter] = useState('all');
   const [query, setQuery] = useState('');
   const [page, setPage] = useState(1);
 
   useEffect(() => {
     setPage(1);
-  }, [platform, query]);
+  }, [dateFilter, platform, query]);
 
   const counts = useMemo(() => {
     const yt = VIDEOS.filter((v) => v.platform === 'youtube').length;
@@ -36,15 +37,36 @@ export function VideosView({ lang, onPlayVideo }: VideosViewProps) {
   }, []);
 
   const monthsShort = lang === 'en' ? MONTHS_SHORT_EN : MONTHS_SHORT_MS;
+  const dateFilterOptions = useMemo(() => {
+    const months = [
+      ...new Set(
+        VIDEOS.flatMap((video) =>
+          video.publishedAt ? [video.publishedAt.slice(0, 7)] : []
+        )
+      ),
+    ].sort((a, b) => b.localeCompare(a));
+    const locale = lang === 'en' ? 'en' : 'ms';
+
+    return months.map((month) => ({
+      value: month,
+      label: new Intl.DateTimeFormat(locale, {
+        month: 'long',
+        year: 'numeric',
+        timeZone: 'UTC',
+      }).format(new Date(`${month}-01T00:00:00Z`)),
+    }));
+  }, [lang]);
 
   const filteredVideos = useMemo(() => {
     const q = query.trim().toLowerCase();
     const list = VIDEOS.filter((v) => {
       const matchPlatform = platform === 'all' || v.platform === platform;
       const matchQuery = !q || v.title.toLowerCase().includes(q);
-      return matchPlatform && matchQuery;
+      const matchDate =
+        dateFilter === 'all' || v.publishedAt?.startsWith(dateFilter);
+      return matchPlatform && matchQuery && matchDate;
     });
-    if (platform === 'tiktok') {
+    if (platform === 'tiktok' || dateFilter !== 'all') {
       return [...list].sort((a, b) => {
         const ta = a.publishedAt ? new Date(a.publishedAt).getTime() : 0;
         const tb = b.publishedAt ? new Date(b.publishedAt).getTime() : 0;
@@ -52,7 +74,7 @@ export function VideosView({ lang, onPlayVideo }: VideosViewProps) {
       });
     }
     return list;
-  }, [platform, query]);
+  }, [dateFilter, platform, query]);
 
   const totalPages = Math.max(1, Math.ceil(filteredVideos.length / VIDEOS_PER_PAGE));
   const safePage = Math.min(page, totalPages);
@@ -102,32 +124,51 @@ export function VideosView({ lang, onPlayVideo }: VideosViewProps) {
         </div>
       </header>
 
-      <div className="mb-8 flex flex-wrap items-center justify-between gap-3 border-b border-[#dce6d7] pb-6 dark:border-[#24371f]">
-        <div
-          className="inline-flex rounded-lg border border-[#dce6d7] bg-white p-1 dark:border-[#24371f] dark:bg-[#142111]"
-          role="group"
-          aria-label="Filter videos by platform"
-        >
-          {(
-            [
-              { key: 'all', label: `${t.t_all} (${counts.all})` },
-              { key: 'youtube', label: `YouTube (${counts.youtube})` },
-              { key: 'tiktok', label: `TikTok (${counts.tiktok})` },
-            ] as Array<{ key: VideoPlatformFilter; label: string }>
-          ).map((tab) => (
-            <button
-              key={tab.key}
-              type="button"
-              onClick={() => setPlatform(tab.key)}
-              className={`font-mono-num min-h-[34px] whitespace-nowrap rounded-md px-3.5 text-xs font-semibold transition-colors ${
-                platform === tab.key
-                  ? 'bg-[#278500] text-white dark:bg-[#6fd43a] dark:text-[#0a1407]'
-                  : 'text-[#52634c] hover:text-[#131f10] dark:text-[#98ad90] dark:hover:text-[#ecf4e8]'
-              }`}
-            >
-              {tab.label}
-            </button>
-          ))}
+      <div className="mb-6 flex flex-wrap items-center justify-between gap-3 border-b border-[#dce6d7] pb-5 dark:border-[#24371f]">
+        <div className="flex flex-wrap items-center gap-2">
+          <div
+            className="inline-flex rounded-lg border border-[#dce6d7] bg-white p-1 dark:border-[#24371f] dark:bg-[#142111]"
+            role="group"
+            aria-label="Filter videos by platform"
+          >
+            {(
+              [
+                { key: 'all', label: `${t.t_all} (${counts.all})` },
+                { key: 'youtube', label: `YouTube (${counts.youtube})` },
+                { key: 'tiktok', label: `TikTok (${counts.tiktok})` },
+              ] as Array<{ key: VideoPlatformFilter; label: string }>
+            ).map((tab) => (
+              <button
+                key={tab.key}
+                type="button"
+                onClick={() => setPlatform(tab.key)}
+                className={`font-mono-num min-h-[34px] whitespace-nowrap rounded-md px-3.5 text-xs font-semibold transition-colors ${
+                  platform === tab.key
+                    ? 'bg-[#278500] text-white dark:bg-[#6fd43a] dark:text-[#0a1407]'
+                    : 'text-[#52634c] hover:text-[#131f10] dark:text-[#98ad90] dark:hover:text-[#ecf4e8]'
+                }`}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
+
+          <label className="sr-only" htmlFor="video-date-filter">
+            {t.v_date_filter}
+          </label>
+          <select
+            id="video-date-filter"
+            value={dateFilter}
+            onChange={(event) => setDateFilter(event.target.value)}
+            className="min-h-[42px] max-w-full rounded-lg border border-[#dce6d7] bg-white px-3 text-xs font-semibold text-[#131f10] focus:border-[#278500] focus:outline-none dark:border-[#24371f] dark:bg-[#142111] dark:text-[#ecf4e8] dark:focus:border-[#6fd43a]"
+          >
+            <option value="all">{t.v_date_all}</option>
+            {dateFilterOptions.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+          </select>
         </div>
 
         <div className="relative w-full sm:max-w-xs">
@@ -205,22 +246,15 @@ export function VideosView({ lang, onPlayVideo }: VideosViewProps) {
                     </h2>
                   </div>
 
-                  <div className="mt-4 flex items-center justify-between border-t border-[#dce6d7] pt-3 text-xs dark:border-[#24371f]">
-                    <button
-                      type="button"
-                      onClick={() => onPlayVideo(vid)}
-                      className="font-semibold text-[#131f10] hover:text-[#278500] dark:text-[#ecf4e8] dark:hover:text-[#6fd43a]"
-                    >
-                      {t.v_preview}
-                    </button>
-
+                  <div className="mt-4 flex items-center justify-end border-t border-[#dce6d7] pt-3 text-xs dark:border-[#24371f]">
                     <a
                       href={vid.url}
                       target="_blank"
                       rel="noopener noreferrer"
+                      aria-label={`${isYouTube ? t.v_open_yt : t.v_open_tt} (opens in a new tab)`}
                       className="inline-flex items-center gap-1 font-semibold text-[#278500] hover:underline dark:text-[#6fd43a]"
                     >
-                      <span>{isYouTube ? 'YouTube' : t.v_open_tt}</span>
+                      <span>{isYouTube ? t.v_open_yt : t.v_open_tt}</span>
                       <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
                     </a>
                   </div>

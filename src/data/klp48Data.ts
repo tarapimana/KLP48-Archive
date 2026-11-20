@@ -1,4 +1,4 @@
-export type RouteKey = 'home' | 'live' | 'jadwal' | 'member' | 'berita' | 'bday' | 'video';
+export type RouteKey = 'home' | 'live' | 'jadwal' | 'member' | 'berita' | 'bday' | 'video' | 'oshi';
 
 export interface ReleaseItem {
   title: string;
@@ -266,6 +266,58 @@ const RAW_VIDEOS: Array<[string, string, string?]> = [
   ["KLP48 1st Generation Members Introduction", "https://www.youtube.com/watch?v=BFi92onrWDI"],
 ];
 
+// Upload dates were matched to the video IDs on KLP48's official videos page.
+const YOUTUBE_UPLOAD_DATES: Record<string, string> = {
+  "-L3sgYIx0g4": "2026-11-18",
+  "-P5BfkU5yQo": "2025-09-05",
+  "-Rcx1vTAncI": "2025-04-11",
+  "0-Hz9HgAhGY": "2025-08-12",
+  "BFi92onrWDI": "2024-07-27",
+  "C9M0jikyehE": "2026-08-14",
+  "CnC8-E4d62o": "2024-09-16",
+  "EDliuALaUm0": "2026-05-31",
+  "FAGf9VzkK7I": "2025-04-19",
+  "FlBBO6Iz-do": "2025-04-12",
+  "Hcvcbf1PsoI": "2025-04-11",
+  "HrLLMlcSIyQ": "2025-04-12",
+  "LtMtG7l3YEQ": "2026-05-14",
+  "NV-YXelftxw": "2025-06-26",
+  "OkJp0NQLbz8": "2025-07-25",
+  "PbhQ1oYK_lo": "2025-03-31",
+  "PnIXsIMy9to": "2025-04-22",
+  "Q2SoJb5PGs0": "2025-07-06",
+  "RlKbEa8pyHU": "2026-05-22",
+  "SOPPRaz01jg": "2025-03-31",
+  "TwhxG-Ek0qg": "2025-07-18",
+  "VW23eKf9eqY": "2026-08-20",
+  "WZ4dLkNjnyY": "2026-09-02",
+  "Ys9RQ79b2GU": "2025-11-21",
+  "Yvc21EpVdhs": "2025-08-28",
+  "aMoWXqkMjBs": "2025-04-11",
+  "bJq8w7sAQas": "2025-10-23",
+  "bKD-ctOWOvQ": "2026-11-06",
+  "cQEq-t0JT-s": "2025-08-29",
+  "eOwzd2fdbtU": "2025-04-11",
+  "feQ6ETgG2Ac": "2026-07-28",
+  "foIdCbntKL4": "2026-04-13",
+  "jnVycSYDv0k": "2025-07-06",
+  "kGNuC-Lt-R4": "2025-07-06",
+  "mcAN_q8zhww": "2024-08-17",
+  "mmqoKqBIMFA": "2025-04-12",
+  "o9CpUmbJKoo": "2026-10-31",
+  "opq1or96lTo": "2025-07-07",
+  "ptxiIdbQin8": "2025-08-22",
+  "pzQlhroXtfc": "2025-08-08",
+  "qxb0khjTLRU": "2024-08-17",
+  "r_6QO_T92BU": "2026-06-05",
+  "tdVm-OufUFU": "2025-07-27",
+  "u789_b-nq2Q": "2025-07-21",
+  "v1Qj2uiBSjA": "2026-05-30",
+  "widKxaKg7Rk": "2026-05-05",
+  "z9B3_P41qa4": "2025-07-28",
+  "zCfgyveDIQQ": "2026-04-19",
+};
+
 function tiktokTimestampIso(tiktokId?: string): string | undefined {
   if (!tiktokId) return undefined;
   try {
@@ -289,7 +341,9 @@ export const VIDEOS: VideoItem[] = RAW_VIDEOS.map(([title, url, thumbnail]) => {
     youtubeId: ytMatch ? ytMatch[1] : undefined,
     tiktokId,
     thumbnail,
-    publishedAt: tiktokTimestampIso(tiktokId),
+    publishedAt:
+      tiktokTimestampIso(tiktokId) ??
+      (ytMatch ? YOUTUBE_UPLOAD_DATES[ytMatch[1]] : undefined),
   };
 });
 
@@ -310,7 +364,7 @@ export const SCHEDULE_DATA: ScheduleRawItem[] = [
   { tarikh_mula: "2026-11-15", tarikh_tamat: "", tajuk: "Jaguh Rakan Muda Musim Ke-2 Final Live Show", lokasi: "Centre Court, Hextar World, Empire City", lokasi_en: "Centre Court, Hextar World, Empire City", masa: "9:00 malam – 10:30 malam", masa_en: "9:00 PM – 10:30 PM", jenis: "show", eksklusif: "", nota: "", nota_en: "", members: "Alice, Mashiro, Joo, Tara, Maia, Khalies, Amanda, Isabel, Devi, Yi Shyan, Hillary & Ann Drea", pautan: "https://www.instagram.com/p/DfrLO-cJBbG/?knvt=djVpc3VhMGduNmYy" },
   { tarikh_mula: "2026-11-21", tarikh_tamat: "", tajuk: "KLP Time: Devi’s Birthday Party", tajuk_en: "KLP Time: Devi’s Birthday Party", lokasi: "KLP48 Theatre, Lalaport BBCC Level 2", lokasi_en: "KLP48 Theatre, Lalaport BBCC Level 2", masa: "14:00 – 15:00", masa_en: "14:00 – 15:00", jenis: "show", eksklusif: "", nota: "", members: "Amanda, Ann Drea, Devi, Hillary, Khalies, Aisha, Diva, Hana, Isabel, Joo, Maia, Shu Zhen & Tara", pautan: "https://www.instagram.com/p/Df1qsjWiaWN/?img_index=1" },
   { tarikh_mula: "2026-11-21", tarikh_tamat: "", tajuk: "100 Hours Curry Opening Ceremony with KLP48", tajuk_en: "100 Hours Curry Opening Ceremony with KLP48", lokasi: "Lot B/0G/03, Courtyard Level, Block B, Plaza Mont Kiara", lokasi_en: "Lot B/0G/03, Courtyard Level, Block B, Plaza Mont Kiara", masa: "11:00 pagi – 1:00 petang", masa_en: "11:00 AM – 1:00 PM", jenis: "event", eksklusif: "", nota: "", members: "Yi Shyan, Salwa, Alice & Mashiro.", pautan: "https://www.instagram.com/p/DfsQDd4IpPq/?psln=dXgxeTIyaXk5ZXZl" },
-  { tarikh_mula: "2026-11-21", tarikh_tamat: "", tajuk: "Fiesta Rakan Muda Kebangsaan 2026", tajuk_en: "Fiesta Rakan Muda Kebangsaan 2026", lokasi: "Level 4, Rooftop Garden, LaLaport BBCC", lokasi_en: "Level 4, Rooftop Garden, LaLaport BBCC", masa: "4:00 petang – 10:00 malam", masa_en: "4:00 PM – 10:00 PM", jenis: "show", eksklusif: "", nota: "", members: "Diva, Joo, Shu Zhen, Tara, Khalies, Hillary, Amanda & Aisha", pautan: "https://www.instagram.com/p/Df33B4YJBH8/" },
+  { tarikh_mula: "2026-11-21", tarikh_tamat: "", tajuk: "Fiesta Rakan Muda Kebangsaan 2026", tajuk_en: "Fiesta Rakan Muda Kebangsaan 2026", lokasi: "Level 4, Rooftop Garden, LaLaport BBCC", lokasi_en: "Level 4, Rooftop Garden, LaLaport BBCC", masa: "7:45 malam – 10:00 malam", masa_en: "7:45 PM – 10:00 PM", jenis: "show", eksklusif: "", nota: "", members: "Diva, Joo, Shu Zhen, Tara, Khalies, Hillary, Amanda & Aisha", pautan: "https://www.instagram.com/p/Df33B4YJBH8/" },
   { tarikh_mula: "2026-11-22", tarikh_tamat: "", tajuk: "KLP Time: Variety Show", tajuk_en: "KLP Time: Variety Show", lokasi: "KLP48 Theatre, Lalaport BBCC Level 2", lokasi_en: "KLP48 Theatre, Lalaport BBCC Level 2", masa: "15:00 – 16:00", masa_en: "15:00 – 16:00", jenis: "show", eksklusif: "", nota: "", nota_en: "", members: "Khalies, Salwa, Aisha, Alice, Diva, Hana, Isabel, Joo, Maia, Mashiro, Shu Zhen", pautan: "https://www.instagram.com/p/Df60RcoCRtw/?img_index=1" },
   { tarikh_mula: "2026-11-23", tarikh_tamat: "", tajuk: "Discord 1-on-1 Video Call (Generasi ke-1)", tajuk_en: "Discord 1-on-1 Video Call (1st Generation)", lokasi: "Eksklusif Fan Club Premium", lokasi_en: "Fan Club Premium Exclusive", jenis: "event", eksklusif: "ya", nota: "", members: "Amanda, Ann Drea, Devi, Hillary, Khalies, Salwa, Tiffany & Yi Shyan" },
   { tarikh_mula: "2026-11-24", tarikh_tamat: "", tajuk: "Discord 1-on-1 Video Call (Generasi ke-2)", tajuk_en: "Discord 1-on-1 Video Call (2nd Generation)", lokasi: "Eksklusif Fan Club Premium", lokasi_en: "Fan Club Premium Exclusive", jenis: "event", eksklusif: "ya", nota: "", members: "Aisha, Alice, Diva, Hana, Isabel, Joo, Kei, Maia, Mashiro, Sharleez, Shu Zhen & Tara" },
@@ -410,12 +464,11 @@ export const MEMBERS_DATA: MemberItem[] = ([
 }));
 
 export const NEWS_DATA: NewsItem[] = [
-  { tajuk: "Announcement KLP48 at Nihon Live, Nihon Matsuri", tarikh: "2026.10.24", kategori: "News", pautan: "https://klp48.my/news/detail/48" },
-  { tajuk: "Announcement KLP48 at Nihon Live, Nihon Matsuri", tarikh: "2026.10.22", kategori: "News", pautan: "https://klp48.my/news/detail/47" },
+  { tajuk: "Alice to Replace Tara at Nihon Live", tarikh: "2026.10.24", kategori: "News", pautan: "https://klp48.my/news/detail/48" },
+  { tajuk: "Amanda to Replace Devi at Nihon Live", tarikh: "2026.10.22", kategori: "News", pautan: "https://klp48.my/news/detail/47" },
   { tajuk: "Start of 1 on 1 TALK applications", tarikh: "2026.09.08", kategori: "Fanclub", pautan: "https://klp48.my/news/detail/46" },
   { tajuk: "Discord Radio Talk Info", tarikh: "2026.09.01", kategori: "Fanclub", pautan: "https://klp48.my/news/detail/45" },
   { tajuk: "PENGUMUMAN RASMI Pelantikan Penerbit Baharu [BM]", tarikh: "2026.08.12", kategori: "News", pautan: "https://klp48.my/news/detail/44" },
-  { tajuk: "OFFICIAL ANNOUNCEMENT Appointment of New Producer [EN]", tarikh: "2026.08.12", kategori: "News", pautan: "https://klp48.my/news/detail/43" },
   { tajuk: "[Official Announcement Regarding Cindy Hiatus]", tarikh: "2026.08.11", kategori: "News", pautan: "https://klp48.my/news/detail/42" },
   { tajuk: "Discord radio talk info", tarikh: "2026.08.04", kategori: "Fanclub", pautan: "https://klp48.my/news/detail/41" },
   { tajuk: "OFFICIAL STATEMENT - CLARIFICATION REGARDING THE LOGO OF \"AKT38\"", tarikh: "2026.07.07", kategori: "News", pautan: "https://klp48.my/news/detail/40" },

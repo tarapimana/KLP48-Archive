@@ -148,7 +148,7 @@ export function ScheduleView({ lang }: ScheduleViewProps) {
 
   return (
     <div>
-      <header className="mb-8">
+      <header className="mb-6">
         <h1 className="font-display text-3xl font-extrabold tracking-tight text-[#131f10] sm:text-4xl dark:text-[#ecf4e8]">
           {t.n_jadwal}
         </h1>
@@ -160,7 +160,7 @@ export function ScheduleView({ lang }: ScheduleViewProps) {
       <ScheduleCsvImporter lang={lang} />
 
       {/* Filter Toolbar */}
-      <div className="mb-8 flex flex-wrap items-end justify-between gap-4 border-b border-[#dce6d7] pb-6 dark:border-[#24371f]">
+      <div className="mb-6 flex flex-wrap items-end justify-between gap-4 border-b border-[#dce6d7] pb-5 dark:border-[#24371f]">
         <div className="flex flex-wrap gap-4">
           <div>
             <label
@@ -339,6 +339,11 @@ export function ScheduleView({ lang }: ScheduleViewProps) {
             const notes = lang === 'en' && ev.notesEn ? ev.notesEn : ev.notes;
             const members = ev.members || '';
             const participants = parseEventMemberNames(members)
+              .filter(
+                (name) =>
+                  selectedMemberNames.size === 0 ||
+                  selectedMemberNames.has(name.toLocaleLowerCase('en'))
+              )
               .sort((a, b) => a.localeCompare(b, 'en', { sensitivity: 'base' }))
               .map((name) => ({
                 name,

@@ -14,6 +14,7 @@ import { HomeView } from './components/HomeView';
 import { LiveView } from './components/LiveView';
 import { MembersView } from './components/MembersView';
 import { NewsView } from './components/NewsView';
+import { OshiSorterView } from './components/OshiSorterView';
 import { ScheduleView } from './components/ScheduleView';
 import { UtilityBar } from './components/UtilityBar';
 import { VideoModal } from './components/VideoModal';
@@ -31,6 +32,7 @@ const VALID_ROUTES: RouteKey[] = [
   'berita',
   'bday',
   'video',
+  'oshi',
 ];
 
 function getRouteFromHash(): RouteKey {
@@ -63,6 +65,7 @@ export default function App() {
   const [route, setRoute] = useState<RouteKey>(getRouteFromHash);
   const [lang, setLang] = useState<Lang>(getInitialLang);
   const [theme, setTheme] = useState<'light' | 'dark'>(getInitialTheme);
+  const [isVideoOnly, setIsVideoOnly] = useState(false);
   const [activeVideo, setActiveVideo] = useState<VideoItem | null>(null);
 
   useEffect(() => {
@@ -118,57 +121,69 @@ export default function App() {
           ) : (
             <>
               {/* Whole-page Video Background */}
-              <BackgroundVideo lang={lang} />
-              <div
-                aria-hidden="true"
-                className="pointer-events-none fixed inset-0 z-0 bg-[#f6faf4]/82 transition-colors duration-150 dark:bg-[#0a1407]/72"
+              <BackgroundVideo
+                lang={lang}
+                isVideoOnly={isVideoOnly}
+                onToggleVideoOnly={() => setIsVideoOnly((current) => !current)}
               />
-
-              <div className="relative z-10 flex min-h-screen flex-col">
-                <Header
-                  route={route}
-                  onNavigate={navigate}
-                  lang={lang}
-                  onToggleLang={toggleLang}
-                  theme={theme}
-                  onToggleTheme={toggleTheme}
+              {!isVideoOnly && (
+                <div
+                  aria-hidden="true"
+                  className="pointer-events-none fixed inset-0 z-0 bg-[#f6faf4]/82 transition-colors duration-150 dark:bg-[#0a1407]/72"
                 />
+              )}
 
-                <main className="mx-auto w-full max-w-6xl flex-1 px-4 pb-8 sm:px-6">
-                  <UtilityBar
+              {!isVideoOnly && (
+                <div className="relative z-10 flex min-h-screen flex-col">
+                  <Header
+                    route={route}
+                    onNavigate={navigate}
                     lang={lang}
-                    onChangeLang={setLang}
+                    onToggleLang={toggleLang}
                     theme={theme}
                     onToggleTheme={toggleTheme}
                   />
 
-                  {route === 'home' && (
-                    <HomeView
+                  <main className="mx-auto w-full max-w-6xl flex-1 px-4 pb-4 sm:px-6">
+                    <UtilityBar
                       lang={lang}
-                      onNavigate={navigate}
-                      onPlayVideo={(vid) => setActiveVideo(vid)}
+                      onChangeLang={setLang}
+                      theme={theme}
+                      onToggleTheme={toggleTheme}
                     />
-                  )}
-                  {route === 'jadwal' && <ScheduleView lang={lang} />}
-                  {route === 'member' && <MembersView lang={lang} />}
-                  {route === 'berita' && <NewsView lang={lang} />}
-                  {route === 'bday' && <BirthdaysView lang={lang} />}
-                  {route === 'video' && (
-                    <VideosView lang={lang} onPlayVideo={(vid) => setActiveVideo(vid)} />
-                  )}
-                  {route === 'live' && (
-                    <LiveView lang={lang} onPlayVideo={(vid) => setActiveVideo(vid)} />
-                  )}
-                </main>
 
-                <Footer lang={lang} onNavigate={navigate} />
-              </div>
+                    {route === 'home' && (
+                      <HomeView
+                        lang={lang}
+                        onNavigate={navigate}
+                        onPlayVideo={(vid) => setActiveVideo(vid)}
+                      />
+                    )}
+                    {route === 'jadwal' && <ScheduleView lang={lang} />}
+                    {route === 'member' && <MembersView lang={lang} />}
+                    {route === 'berita' && <NewsView lang={lang} />}
+                    {route === 'bday' && <BirthdaysView lang={lang} />}
+                    {route === 'oshi' && <OshiSorterView lang={lang} />}
+                    {route === 'video' && (
+                      <VideosView lang={lang} onPlayVideo={(vid) => setActiveVideo(vid)} />
+                    )}
+                    {route === 'live' && (
+                      <LiveView lang={lang} onPlayVideo={(vid) => setActiveVideo(vid)} />
+                    )}
+                  </main>
 
-              <VideoModal
-                video={activeVideo}
-                lang={lang}
-                onClose={() => setActiveVideo(null)}
-              />
+                  <Footer lang={lang} onNavigate={navigate} />
+                </div>
+              )}
+
+              {!isVideoOnly && (
+                <VideoModal
+                  video={activeVideo}
+                  lang={lang}
+                  onClose={() => setActiveVideo(null)}
+                />
+              )}
+
             </>
           )}
 

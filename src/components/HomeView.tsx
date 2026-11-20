@@ -12,6 +12,7 @@ import {
   VideoItem,
   VIDEOS,
 } from '../data/klp48Data';
+import { getLocalizedNewsTitle } from '../data/newsArticleTranslations';
 import { useScheduleEvents } from '../context/useScheduleEvents';
 import {
   Lang,
@@ -117,11 +118,11 @@ export function HomeView({ lang, onNavigate, onPlayVideo }: HomeViewProps) {
     'rounded-2xl border border-[#d5e2cf] bg-white/88 backdrop-blur-md transition-colors dark:border-[#253c1e] dark:bg-[#0e190b]/80';
 
   return (
-    <div className="space-y-10 pt-2">
+    <div className="space-y-8 pt-2">
       {/* Main 2-Column Editorial Grid */}
-      <div className="grid items-start gap-8 lg:grid-cols-12 lg:gap-10">
+      <div className="grid items-start gap-6 lg:grid-cols-12 lg:gap-8">
         {/* LEFT COLUMN: Hero + Stats + Latest News + Discography + Videos */}
-        <div className="space-y-9 lg:col-span-7">
+        <div className="space-y-8 lg:col-span-7">
           {/* Hero Banner */}
           <section>
             <div className="inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.14em] text-[#278500] dark:text-[#6fd43a]">
@@ -256,7 +257,7 @@ export function HomeView({ lang, onNavigate, onPlayVideo }: HomeViewProps) {
                     </span>
                   </div>
                   <h3 className="mt-2 text-sm font-bold leading-snug text-[#131f10] transition-colors group-hover:text-[#278500] sm:text-base dark:text-white dark:group-hover:text-[#66c91a]">
-                    {item.tajuk}
+                    {getLocalizedNewsTitle(item.pautan, item.tajuk, lang)}
                   </h3>
                 </button>
               ))}
@@ -392,7 +393,7 @@ export function HomeView({ lang, onNavigate, onPlayVideo }: HomeViewProps) {
         </div>
 
         {/* RIGHT COLUMN: Next Event Stack + Birthdays */}
-        <div className="min-w-0 space-y-7 lg:col-span-5">
+        <div className="min-w-0 space-y-6 lg:col-span-5">
           {/* Next Event Stack */}
           <section>
             <div className="mb-3.5 flex items-baseline justify-between gap-4">
