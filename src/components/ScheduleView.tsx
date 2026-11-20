@@ -1,8 +1,9 @@
-import { ArrowRight, Check, Clock, MapPin, UsersRound } from 'lucide-react';
+import { ArrowRight, CalendarPlus, Check, Clock, MapPin, UsersRound } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { useScheduleEvents } from '../context/useScheduleEvents';
 import { MEMBERS_DATA, MemberItem, parseEventMemberNames } from '../data/klp48Data';
 import { formatScheduleTime } from '../lib/scheduleTime';
+import { downloadScheduleEventCalendar } from '../lib/scheduleCalendar';
 import { ScheduleCsvImporter } from './ScheduleCsvImporter';
 import { MemberAvatar } from './MemberAvatar';
 import { MemberModal } from './MemberModal';
@@ -463,16 +464,29 @@ export function ScheduleView({ lang }: ScheduleViewProps) {
                           </div>
                         )}
                         {notes && <p className="leading-relaxed">{notes}</p>}
-                        {ev.link && (
-                          <a
-                            href={ev.link}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="inline-flex min-h-11 items-center gap-1.5 font-bold text-[#278500] hover:underline dark:text-[#7ce043]"
+                        <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
+                          {ev.link && (
+                            <a
+                              href={ev.link}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-flex min-h-11 items-center gap-1.5 font-bold text-[#278500] hover:underline dark:text-[#7ce043]"
+                            >
+                              <span>{t.j_link}</span>
+                            </a>
+                          )}
+                          <button
+                            type="button"
+                            aria-label={`${t.j_add_calendar}: ${title}`}
+                            onClick={() =>
+                              downloadScheduleEventCalendar(ev, { title, venue, notes })
+                            }
+                            className="inline-flex min-h-11 items-center gap-1.5 font-bold text-[#278500] hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#278500] dark:text-[#7ce043] dark:focus-visible:outline-[#6fd43a]"
                           >
-                            <span>{t.j_link}</span>
-                          </a>
-                        )}
+                            <CalendarPlus className="h-4 w-4" aria-hidden="true" />
+                            <span>{t.j_add_calendar}</span>
+                          </button>
+                        </div>
                       </div>
                     </div>
                   </div>
