@@ -289,7 +289,7 @@ export function BirthdayCalendar({ lang, onSelectMember }: BirthdayCalendarProps
           return (
             <div
               key={dayNum}
-              className={`relative flex min-h-[68px] flex-col justify-between p-1.5 transition-colors sm:min-h-[88px] sm:p-2 ${cellBorders} ${
+              className={`relative flex min-h-[76px] flex-col justify-between p-1 transition-colors sm:min-h-[112px] sm:p-1.5 ${cellBorders} ${
                 isToday
                   ? 'bg-[#e3f2da]/75 ring-2 ring-inset ring-[#278500] dark:bg-[#193012]/90 dark:ring-[#66c91a]'
                   : hasBirthdays
@@ -317,24 +317,22 @@ export function BirthdayCalendar({ lang, onSelectMember }: BirthdayCalendarProps
               </div>
 
               {hasBirthdays && (
-                <div className="mt-1 space-y-1">
+                <div className="mt-1 flex flex-wrap items-center gap-1">
                   {dayEntries.map((entry) => (
                     <button
                       key={entry.member.nama}
                       type="button"
                       onClick={() => onSelectMember(entry.member)}
+                      aria-label={`${entry.member.nama}, ${entry.day} ${shortMonths[viewMonth]}`}
                       title={`${entry.member.nama} (${entry.day} ${shortMonths[viewMonth]})`}
-                      className="group flex w-full items-center gap-1.5 rounded-lg border border-[#c6dec0] bg-white/95 p-1 text-left transition-colors hover:border-[#278500] hover:bg-[#edf5e9] dark:border-[#2b4423] dark:bg-[#0e190b]/95 dark:hover:border-[#66c91a] dark:hover:bg-[#1a2b15]"
+                      className="group inline-flex h-12 w-8 shrink-0 items-center justify-center overflow-hidden rounded-md border-2 border-[#d2e5cb] bg-white p-0 shadow-sm ring-1 ring-black/5 transition-shadow hover:border-[#278500] hover:shadow-md focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-[#278500] sm:h-14 sm:w-10 dark:border-[#4c7e34] dark:bg-[#0e190b] dark:hover:border-[#66c91a] dark:focus-visible:outline-[#6fd43a]"
                     >
                       <MemberAvatar
                         member={entry.member}
                         indexNumber={entry.originalIndex}
-                        className="h-5 w-5 shrink-0 rounded-md sm:h-6 sm:w-6"
+                        className="h-full w-full rounded-sm"
                         initialsClassName="text-[9px]"
                       />
-                      <span className="hidden min-w-0 flex-1 truncate text-[11px] font-bold text-[#131f10] group-hover:text-[#278500] sm:block dark:text-[#ecf4e8] dark:group-hover:text-[#66c91a]">
-                        {entry.member.nama}
-                      </span>
                     </button>
                   ))}
                 </div>
