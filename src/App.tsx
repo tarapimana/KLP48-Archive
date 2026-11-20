@@ -4,7 +4,6 @@
  */
 
 import { useEffect, useState } from 'react';
-import { Eye, EyeOff } from 'lucide-react';
 import { AdminAccessView } from './components/AdminAccessView';
 import { AdminAuthModal } from './components/AdminAuthModal';
 import { BirthdaysView } from './components/BirthdaysView';
@@ -23,7 +22,7 @@ import { VideosView } from './components/VideosView';
 import { AuthProvider } from './context/AuthContext';
 import { LiveStatusProvider } from './context/LiveStatusContext';
 import { RouteKey, VideoItem } from './data/klp48Data';
-import { Lang, TRANSLATIONS } from './i18n/translations';
+import { Lang } from './i18n/translations';
 
 const VALID_ROUTES: RouteKey[] = [
   'home',
@@ -110,7 +109,6 @@ export default function App() {
 
   const toggleLang = () => setLang((prev) => (prev === 'ms' ? 'en' : 'ms'));
   const toggleTheme = () => setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'));
-  const t = TRANSLATIONS[lang];
 
   const isAdminAccessPage = window.location.pathname.replace(/\/+$/, '') === '/admin';
 
@@ -123,7 +121,11 @@ export default function App() {
           ) : (
             <>
               {/* Whole-page Video Background */}
-              <BackgroundVideo lang={lang} />
+              <BackgroundVideo
+                lang={lang}
+                isVideoOnly={isVideoOnly}
+                onToggleVideoOnly={() => setIsVideoOnly((current) => !current)}
+              />
               {!isVideoOnly && (
                 <div
                   aria-hidden="true"
@@ -182,15 +184,6 @@ export default function App() {
                 />
               )}
 
-              <button
-                type="button"
-                onClick={() => setIsVideoOnly((current) => !current)}
-                aria-label={isVideoOnly ? t.show_content : t.video_only}
-                className="fixed bottom-4 right-4 z-50 inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-white/20 bg-black/85 px-4 text-sm font-semibold text-white shadow-xl backdrop-blur-sm transition-colors hover:bg-black focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
-              >
-                {isVideoOnly ? <Eye className="size-4" aria-hidden="true" /> : <EyeOff className="size-4" aria-hidden="true" />}
-                <span>{isVideoOnly ? t.show_content : t.video_only}</span>
-              </button>
             </>
           )}
 
