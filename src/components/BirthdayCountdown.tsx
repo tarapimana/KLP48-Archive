@@ -125,7 +125,7 @@ export function BirthdayCountdown({
         (safePage - 1) * ITEMS_PER_PAGE,
         safePage * ITEMS_PER_PAGE
       )
-    : allRestEntries.slice(0, compact ? 4 : 5);
+    : allRestEntries.slice(0, compact ? 7 : 5);
 
   const groupedByMonth = useMemo(() => {
     const groups: Array<{ monthLabel: string; entries: UpcomingBirthday[] }> = [];

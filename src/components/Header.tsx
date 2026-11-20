@@ -2,7 +2,7 @@ import { ArrowUpRight, LogOut, Menu, ShieldAlert, ShieldCheck, X } from 'lucide-
 import { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useLiveStatus } from '../context/LiveStatusContext';
-import { RouteKey } from '../data/klp48Data';
+import { OFFICIAL_SITE_URL, RouteKey } from '../data/klp48Data';
 import { Lang, TRANSLATIONS } from '../i18n/translations';
 
 interface HeaderProps {
@@ -84,6 +84,16 @@ export function Header({
         </nav>
 
         <div className="flex shrink-0 items-center gap-2 sm:gap-3">
+          <a
+            href={OFFICIAL_SITE_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={`${t.footer_official} (opens in a new tab)`}
+            className="hidden h-11 shrink-0 items-center gap-1 whitespace-nowrap rounded-md bg-[#278500] px-2.5 text-xs font-bold text-white shadow-[0_4px_12px_rgba(39,133,0,0.24)] transition-colors hover:bg-[#206e00] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#278500] dark:bg-[#6fd43a] dark:text-[#0a1407] dark:hover:bg-[#82df52] dark:focus-visible:outline-[#6fd43a] sm:inline-flex md:h-8"
+          >
+            <span>{t.footer_official}</span>
+            <ArrowUpRight className="h-3 w-3" aria-hidden="true" />
+          </a>
           <a
             href="https://dumapp.com/en/klp48/"
             target="_blank"
