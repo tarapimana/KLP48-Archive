@@ -339,6 +339,11 @@ export function ScheduleView({ lang }: ScheduleViewProps) {
             const notes = lang === 'en' && ev.notesEn ? ev.notesEn : ev.notes;
             const members = ev.members || '';
             const participants = parseEventMemberNames(members)
+              .filter(
+                (name) =>
+                  selectedMemberNames.size === 0 ||
+                  selectedMemberNames.has(name.toLocaleLowerCase('en'))
+              )
               .sort((a, b) => a.localeCompare(b, 'en', { sensitivity: 'base' }))
               .map((name) => ({
                 name,
