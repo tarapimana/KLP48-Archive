@@ -20,9 +20,12 @@ import type {
 } from '../src/types/socialTracking';
 import { Timestamp as AdminTimestamp } from 'firebase-admin/firestore';
 
-type ServerSocialObservation = Omit<SocialObservation, 'capturedAt'> & { capturedAt: AdminTimestamp };
-type ServerSocialSnapshot = Omit<SocialSnapshot, 'capturedAt'> & { capturedAt: AdminTimestamp };
-type ServerSocialCurrent = Omit<SocialCurrent, 'capturedAt'> & { capturedAt: AdminTimestamp };
+type WithAdminTimestamp<T> = T extends { capturedAt: unknown }
+  ? Omit<T, 'capturedAt'> & { capturedAt: AdminTimestamp }
+  : never;
+type ServerSocialObservation = WithAdminTimestamp<SocialObservation>;
+type ServerSocialSnapshot = WithAdminTimestamp<SocialSnapshot>;
+type ServerSocialCurrent = WithAdminTimestamp<SocialCurrent>;
 type ServerSocialTrackingConfig = Omit<SocialTrackingConfig, 'updatedAt'> & { updatedAt: AdminTimestamp };
 type ServerSocialTrackingLog = Omit<SocialTrackingLog, 'startedAt' | 'finishedAt'> & {
   startedAt: AdminTimestamp;
@@ -174,10 +177,17 @@ function isTrackingErrorCode(value: unknown): value is SocialTrackingErrorCode {
   return typeof value === 'string' && TRACKING_ERROR_CODES.has(value);
 }
 
+type OptionalObservationStatistics = {
+  following?: number;
+  totalLikes?: number;
+  videoCount?: number;
+  mediaCount?: number;
+};
+
 function addOptionalStatistic(
   record: Record<string, unknown>,
-  output: Partial<Pick<SocialObservation, 'following' | 'totalLikes' | 'videoCount' | 'mediaCount'>>,
-  field: 'following' | 'totalLikes' | 'videoCount' | 'mediaCount',
+  output: OptionalObservationStatistics,
+  field: keyof OptionalObservationStatistics,
 ): void {
   if (!Object.hasOwn(record, field)) return;
   if (!isNonNegativeInteger(record[field])) return invalidData();
@@ -201,20 +211,38 @@ export function parseSocialObservation(value: unknown): ServerSocialObservation 
     return invalidData();
   }
 
-  const optionalStatistics: Partial<Pick<SocialObservation, 'following' | 'totalLikes' | 'videoCount' | 'mediaCount'>> = {};
+  const isInstagram = record.platform === 'instagram';
+  if (
+    (isInstagram && (Object.hasOwn(record, 'totalLikes') || Object.hasOwn(record, 'videoCount'))) ||
+    (!isInstagram && Object.hasOwn(record, 'mediaCount'))
+  ) {
+    return invalidData();
+  }
+
+  const optionalStatistics: OptionalObservationStatistics = {};
   addOptionalStatistic(record, optionalStatistics, 'following');
+  if (isInstagram) {
+    addOptionalStatistic(record, optionalStatistics, 'mediaCount');
+    return {
+      memberId: record.memberId,
+      platform: 'instagram',
+      followers: record.followers,
+      ...(Object.hasOwn(record, 'following') ? { following: optionalStatistics.following } : {}),
+      ...(Object.hasOwn(record, 'mediaCount') ? { mediaCount: optionalStatistics.mediaCount } : {}),
+      capturedAt: record.capturedAt,
+      collectionStatus: record.collectionStatus,
+    };
+  }
+
   addOptionalStatistic(record, optionalStatistics, 'totalLikes');
   addOptionalStatistic(record, optionalStatistics, 'videoCount');
-  addOptionalStatistic(record, optionalStatistics, 'mediaCount');
-
   return {
     memberId: record.memberId,
-    platform: record.platform,
+    platform: 'tiktok',
     followers: record.followers,
     ...(Object.hasOwn(record, 'following') ? { following: optionalStatistics.following } : {}),
     ...(Object.hasOwn(record, 'totalLikes') ? { totalLikes: optionalStatistics.totalLikes } : {}),
     ...(Object.hasOwn(record, 'videoCount') ? { videoCount: optionalStatistics.videoCount } : {}),
-    ...(Object.hasOwn(record, 'mediaCount') ? { mediaCount: optionalStatistics.mediaCount } : {}),
     capturedAt: record.capturedAt,
     collectionStatus: record.collectionStatus,
   };

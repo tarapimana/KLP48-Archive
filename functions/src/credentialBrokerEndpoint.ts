@@ -8,6 +8,45 @@ import {
 
 const SERVICE_ACCOUNT_EMAIL = /^[^\s@]+@[^\s@]+\.iam\.gserviceaccount\.com$/;
 
+interface BrokerHttpRequest {
+  method: string;
+  body: unknown;
+}
+
+interface BrokerHttpResponse {
+  set(name: string, value: string): unknown;
+  status(code: number): BrokerHttpResponse;
+  json(body: unknown): unknown;
+}
+
+export function createCredentialBrokerHttpHandler(broker: CredentialBrokerClient) {
+  return async (request: BrokerHttpRequest, response: BrokerHttpResponse): Promise<void> => {
+    response.set('Cache-Control', 'no-store');
+    response.set('X-Content-Type-Options', 'nosniff');
+
+    if (request.method !== 'POST') {
+      response.set('Allow', 'POST');
+      response.status(405).json({ error: 'method_not_allowed' });
+      return;
+    }
+
+    let brokerRequest;
+    try {
+      brokerRequest = parseCredentialBrokerRequest(request.body);
+    } catch {
+      response.status(400).json({ error: 'invalid_request' });
+      return;
+    }
+
+    try {
+      const result = await broker.collect(brokerRequest);
+      response.status(200).json(parseCredentialBrokerResult(result, brokerRequest));
+    } catch {
+      response.status(500).json({ error: 'request_failed' });
+    }
+  };
+}
+
 export function createCredentialBrokerEndpoint(
   broker: CredentialBrokerClient,
   runtimeServiceAccount: string,
@@ -26,30 +65,6 @@ export function createCredentialBrokerEndpoint(
       invoker: 'private',
       maxInstances: 10,
     },
-    async (request, response) => {
-      response.set('Cache-Control', 'no-store');
-      response.set('X-Content-Type-Options', 'nosniff');
-
-      if (request.method !== 'POST') {
-        response.set('Allow', 'POST');
-        response.status(405).json({ error: 'method_not_allowed' });
-        return;
-      }
-
-      let brokerRequest;
-      try {
-        brokerRequest = parseCredentialBrokerRequest(request.body);
-      } catch {
-        response.status(400).json({ error: 'invalid_request' });
-        return;
-      }
-
-      try {
-        const result = await broker.collect(brokerRequest);
-        response.status(200).json(parseCredentialBrokerResult(result, brokerRequest));
-      } catch {
-        response.status(500).json({ error: 'request_failed' });
-      }
-    },
+    createCredentialBrokerHttpHandler(broker),
   );
 }

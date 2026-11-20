@@ -28,8 +28,7 @@ const safeObservation = {
   platform: 'instagram',
   followers: 1200,
   following: 140,
-  totalLikes: 3400,
-  videoCount: 18,
+  mediaCount: 24,
   capturedAt,
   collectionStatus: 'success',
 };

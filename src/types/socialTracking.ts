@@ -50,21 +50,28 @@ export interface SocialAccount {
   updatedAt: Timestamp;
 }
 
-export interface SocialObservation {
+interface SocialObservationBase {
   memberId: SocialMemberId;
-  platform: SocialPlatform;
   followers: number;
   following?: number;
-  totalLikes?: number;
-  videoCount?: number;
-  mediaCount?: number;
   capturedAt: Timestamp;
   collectionStatus: SocialCollectionStatus;
 }
 
-export interface SocialSnapshot extends SocialObservation {}
+export interface InstagramSocialObservation extends SocialObservationBase {
+  platform: 'instagram';
+  mediaCount?: number;
+}
 
-export interface SocialCurrent extends SocialObservation {}
+export interface TikTokSocialObservation extends SocialObservationBase {
+  platform: 'tiktok';
+  totalLikes?: number;
+  videoCount?: number;
+}
+
+export type SocialObservation = InstagramSocialObservation | TikTokSocialObservation;
+export type SocialSnapshot = SocialObservation;
+export type SocialCurrent = SocialObservation;
 
 export interface SocialTrackingConfig {
   enabled: boolean;

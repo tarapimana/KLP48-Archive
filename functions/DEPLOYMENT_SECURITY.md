@@ -52,6 +52,14 @@ All Functions retain a public HTTP invoker so the external Meta OAuth callback c
 
 The Functions application source currently emits no application logs. Do not log request URLs or query strings, OAuth codes or state, access/refresh tokens, authorization headers, secret values, raw provider responses, or exceptions that may contain those values. Return sanitized error codes as the handlers currently do. The source-level test guards against adding direct console/logger calls; it does not govern platform-generated logs or third-party instrumentation.
 
+## Credential broker status and enforcement boundary
+
+`createCredentialBrokerEndpoint` is a tested endpoint factory, but it is not exported from `src/index.ts`. The repository still has no production authorization-reader implementation, configured isolated credential-project/database, or concrete Instagram/TikTok observation collectors. Therefore there is no deployable broker endpoint in this revision, and no provider API is called by the broker tests.
+
+Repository-side enforcement includes the endpoint factory's `invoker: 'private'` setting and dedicated-service-account guard, exact request/result validation, provider-account/version checks, version-conditional credential writes, expiring refresh leases, disconnect invalidation, and the transaction-guarded public projection writer. An in-flight provider request is not assumed cancellable; returned results are rechecked and stale observations cannot pass the transactional public-write gate. These are code-level guards and tests only; they do not prove deployed Cloud Run settings or IAM policies.
+
+For a future deployment, Cloud Run/Firebase IAM must grant invocation only to the explicitly selected caller identity and attach a dedicated broker runtime identity. The runtime identity's access to authorization records, the isolated credential database, and public projections must be reviewed and granted at the narrowest resource scope. The platform's private invoker check is the caller identity enforcement; this repository does not independently validate a caller token in the handler. No broker service account, invoker grant, credential project, or IAM binding has been created or verified here.
+
 ## Google Cloud Console work still required
 
 Before deployment or production OAuth use:
@@ -62,5 +70,6 @@ Before deployment or production OAuth use:
 4. Add and verify the Cloud Logging exclusion for the callback request URL on `_Default`, and review custom sinks and exports.
 5. Confirm the final callback URL is aligned across the deployed function, `INSTAGRAM_REDIRECT_URI`, and Meta app settings.
 6. Confirm no production APM/HTTP instrumentation captures outgoing request URLs, authorization headers, request bodies, or provider response payloads.
+7. Before any broker export/deployment, implement and review the concrete provider collectors and authorization reader, configure the separate credential database, create/verify the dedicated broker runtime identity, grant private invocation only to the intended caller, and verify least-privilege database permissions. Do not infer any of these grants from the source-level endpoint factory.
 
 These steps were not performed by the repository change. Production IAM, secrets, data, deployments, and Google Cloud resources were not accessed or modified.

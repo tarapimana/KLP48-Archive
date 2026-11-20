@@ -3,11 +3,12 @@ import type { SocialPlatform } from '../../src/types/socialTracking';
 import { parseCredentialBrokerRequest, type CredentialBrokerClient } from './credentialBrokerContract';
 import type { SocialCredentialStore } from './credentialStore';
 import type { SocialCredentialRecord } from './socialCredentialValidation';
-import { parseSocialObservation } from './socialTrackingValidation';
+import { exactRecord, parseSocialObservation } from './socialTrackingValidation';
 
 export interface CredentialAuthorizationState {
   authorizationStatus: 'authorized' | 'expired' | 'revoked' | 'disconnected' | 'error';
   authorizationVersion: number;
+  providerAccountId: string | null;
 }
 
 export interface CredentialAuthorizationReader {
@@ -25,8 +26,13 @@ export interface ProviderCollectionInput {
   refreshTokenExpiresAt?: Timestamp;
 }
 
+export interface ProviderCollectionResult {
+  providerAccountId: string;
+  observation: unknown;
+}
+
 export interface ProviderObservationCollector {
-  collect(input: ProviderCollectionInput): Promise<unknown>;
+  collect(input: ProviderCollectionInput): Promise<ProviderCollectionResult>;
 }
 
 export interface CredentialBrokerDependencies {
@@ -34,6 +40,30 @@ export interface CredentialBrokerDependencies {
   authorizationReader: CredentialAuthorizationReader;
   providerCollector: ProviderObservationCollector;
   now?: () => number;
+}
+
+function sameCredentialState(
+  expected: SocialCredentialRecord,
+  current: SocialCredentialRecord,
+): boolean {
+  if (
+    expected.memberId !== current.memberId ||
+    expected.platform !== current.platform ||
+    expected.providerAccountId !== current.providerAccountId ||
+    expected.authorizationVersion !== current.authorizationVersion ||
+    expected.accessToken !== current.accessToken ||
+    expected.accessTokenExpiresAt.toMillis() !== current.accessTokenExpiresAt.toMillis() ||
+    expected.updatedAt.toMillis() !== current.updatedAt.toMillis() ||
+    expected.grantedScopes.length !== current.grantedScopes.length ||
+    expected.grantedScopes.some((scope) => !current.grantedScopes.includes(scope))
+  ) return false;
+
+  if (expected.platform === 'instagram' && current.platform === 'instagram') {
+    return expected.accessTokenIssuedAt.toMillis() === current.accessTokenIssuedAt.toMillis();
+  }
+  return expected.platform === 'tiktok' && current.platform === 'tiktok' &&
+    expected.refreshToken === current.refreshToken &&
+    expected.refreshTokenExpiresAt.toMillis() === current.refreshTokenExpiresAt.toMillis();
 }
 
 export function createCredentialBroker(
@@ -59,6 +89,9 @@ export function createCredentialBroker(
       if (authorization.authorizationVersion !== request.authorizationVersion) {
         return { status: 'skipped', reason: 'authorization_changed' };
       }
+      if (typeof authorization.providerAccountId !== 'string' || authorization.providerAccountId.length === 0) {
+        return { status: 'skipped', reason: 'authorization_changed' };
+      }
 
       try {
         credential = await dependencies.credentialStore.get(request.memberId, request.platform);
@@ -66,7 +99,11 @@ export function createCredentialBroker(
         return { status: 'failed', errorCode: 'credential_unavailable' };
       }
 
-      if (!credential || credential.authorizationVersion !== request.authorizationVersion) {
+      if (
+        !credential ||
+        credential.authorizationVersion !== request.authorizationVersion ||
+        credential.providerAccountId !== authorization.providerAccountId
+      ) {
         return { status: 'skipped', reason: 'authorization_changed' };
       }
       if (credential.accessTokenExpiresAt.toMillis() <= now()) {
@@ -95,7 +132,17 @@ export function createCredentialBroker(
 
       let observation;
       try {
-        observation = parseSocialObservation(providerResult);
+        const collection = exactRecord(providerResult, ['providerAccountId', 'observation'], [
+          'providerAccountId',
+          'observation',
+        ]);
+        if (
+          typeof collection.providerAccountId !== 'string' ||
+          collection.providerAccountId !== credential.providerAccountId
+        ) {
+          return { status: 'failed', errorCode: 'invalid_provider_response' };
+        }
+        observation = parseSocialObservation(collection.observation);
         if (observation.memberId !== request.memberId || observation.platform !== request.platform) {
           return { status: 'failed', errorCode: 'invalid_provider_response' };
         }
@@ -104,18 +151,25 @@ export function createCredentialBroker(
       }
 
       let currentAuthorization: CredentialAuthorizationState | null;
+      let currentCredential: SocialCredentialRecord | null;
       try {
         currentAuthorization = await dependencies.authorizationReader.getState(
           request.memberId,
           request.platform,
         );
+        currentCredential = await dependencies.credentialStore.get(request.memberId, request.platform);
       } catch {
         return { status: 'failed', errorCode: 'credential_unavailable' };
       }
       if (!currentAuthorization || currentAuthorization.authorizationStatus !== 'authorized') {
         return { status: 'skipped', reason: 'not_authorized' };
       }
-      if (currentAuthorization.authorizationVersion !== request.authorizationVersion) {
+      if (
+        currentAuthorization.authorizationVersion !== request.authorizationVersion ||
+        currentAuthorization.providerAccountId !== credential.providerAccountId ||
+        !currentCredential ||
+        !sameCredentialState(credential, currentCredential)
+      ) {
         return { status: 'skipped', reason: 'authorization_changed' };
       }
 

@@ -15,9 +15,11 @@ export interface CredentialBrokerRequest {
   authorizationVersion: number;
 }
 
-export type CredentialBrokerObservation = Omit<SocialObservation, 'capturedAt'> & {
-  capturedAtMs: number;
-};
+type CredentialBrokerObservationFields<T> = T extends SocialObservation
+  ? Omit<T, 'capturedAt'> & { capturedAtMs: number }
+  : never;
+
+export type CredentialBrokerObservation = CredentialBrokerObservationFields<SocialObservation>;
 
 export type CredentialBrokerResult =
   | { status: 'collected'; observation: CredentialBrokerObservation }

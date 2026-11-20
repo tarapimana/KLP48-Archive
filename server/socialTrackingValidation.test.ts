@@ -21,11 +21,19 @@ function validObservation() {
     platform: 'instagram',
     followers: 1200,
     following: 140,
-    totalLikes: 3400,
-    videoCount: 18,
     mediaCount: 24,
     capturedAt,
     collectionStatus: 'success',
+  };
+}
+
+function validTikTokObservation() {
+  const { mediaCount: _mediaCount, ...sharedMetrics } = validObservation();
+  return {
+    ...sharedMetrics,
+    platform: 'tiktok',
+    totalLikes: 3400,
+    videoCount: 18,
   };
 }
 
@@ -53,7 +61,7 @@ function validLog(errorCode?: string) {
   };
 }
 
-test('accepts valid public statistics and returns only the documented projection fields', () => {
+test('accepts only Instagram metrics and returns the documented projection fields', () => {
   const result = parseSocialObservation(validObservation());
   assert.deepEqual(Object.keys(result).sort(), [
     'capturedAt',
@@ -63,10 +71,48 @@ test('accepts valid public statistics and returns only the documented projection
     'mediaCount',
     'memberId',
     'platform',
+  ]);
+  assert.equal(result.platform, 'instagram');
+  assert.equal(result.memberId, 'yi_shyan');
+});
+
+test('accepts only TikTok metrics and returns the documented projection fields', () => {
+  const result = parseSocialObservation(validTikTokObservation());
+  assert.deepEqual(Object.keys(result).sort(), [
+    'capturedAt',
+    'collectionStatus',
+    'followers',
+    'following',
+    'memberId',
+    'platform',
     'totalLikes',
     'videoCount',
   ]);
-  assert.equal(result.memberId, 'yi_shyan');
+  assert.equal(result.platform, 'tiktok');
+});
+
+test('rejects metrics belonging to the other platform and preserves zero and missing values', () => {
+  assert.throws(() => parseSocialObservation({ ...validObservation(), totalLikes: 0 }));
+  assert.throws(() => parseSocialObservation({ ...validObservation(), videoCount: 0 }));
+  assert.throws(() => parseSocialObservation({ ...validTikTokObservation(), mediaCount: 0 }));
+
+  const instagramWithZeroes = parseSocialObservation({ ...validObservation(), following: 0, mediaCount: 0 });
+  assert.equal(instagramWithZeroes.following, 0);
+  assert.equal('mediaCount' in instagramWithZeroes ? instagramWithZeroes.mediaCount : undefined, 0);
+  const tiktokWithZeroes = parseSocialObservation({ ...validTikTokObservation(), following: 0, totalLikes: 0, videoCount: 0 });
+  assert.equal(tiktokWithZeroes.following, 0);
+  assert.equal('totalLikes' in tiktokWithZeroes ? tiktokWithZeroes.totalLikes : undefined, 0);
+  assert.equal('videoCount' in tiktokWithZeroes ? tiktokWithZeroes.videoCount : undefined, 0);
+
+  const { following: _instagramFollowing, mediaCount: _instagramMediaCount, ...instagramWithoutOptional } = validObservation();
+  const instagramMissing = parseSocialObservation(instagramWithoutOptional);
+  assert.equal(Object.hasOwn(instagramMissing, 'following'), false);
+  assert.equal(Object.hasOwn(instagramMissing, 'mediaCount'), false);
+  const { following: _tiktokFollowing, totalLikes: _tiktokLikes, videoCount: _tiktokVideos, ...tiktokWithoutOptional } = validTikTokObservation();
+  const tiktokMissing = parseSocialObservation(tiktokWithoutOptional);
+  assert.equal(Object.hasOwn(tiktokMissing, 'following'), false);
+  assert.equal(Object.hasOwn(tiktokMissing, 'totalLikes'), false);
+  assert.equal(Object.hasOwn(tiktokMissing, 'videoCount'), false);
 });
 
 test('rejects unexpected fields and OAuth/provider payload injection', () => {
@@ -114,7 +160,7 @@ test('rejects plain objects, Dates, strings, malformed and out-of-range timestam
 test('rejects negative and non-integer statistics', () => {
   assert.throws(() => parseSocialObservation({ ...validObservation(), followers: -1 }));
   assert.throws(() => parseSocialObservation({ ...validObservation(), following: 1.5 }));
-  assert.throws(() => parseSocialObservation({ ...validObservation(), totalLikes: Number.MAX_SAFE_INTEGER + 1 }));
+  assert.throws(() => parseSocialObservation({ ...validTikTokObservation(), totalLikes: Number.MAX_SAFE_INTEGER + 1 }));
   assert.throws(() => parseSocialObservation({ ...validObservation(), mediaCount: -1 }));
 });
 
