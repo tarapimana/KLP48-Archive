@@ -14,6 +14,7 @@ import { HomeView } from './components/HomeView';
 import { LiveView } from './components/LiveView';
 import { MembersView } from './components/MembersView';
 import { NewsView } from './components/NewsView';
+import { OshiSorterView } from './components/OshiSorterView';
 import { ScheduleView } from './components/ScheduleView';
 import { UtilityBar } from './components/UtilityBar';
 import { VideoModal } from './components/VideoModal';
@@ -31,6 +32,7 @@ const VALID_ROUTES: RouteKey[] = [
   'berita',
   'bday',
   'video',
+  'oshi',
 ];
 
 function getRouteFromHash(): RouteKey {
@@ -153,6 +155,7 @@ export default function App() {
                   {route === 'member' && <MembersView lang={lang} />}
                   {route === 'berita' && <NewsView lang={lang} />}
                   {route === 'bday' && <BirthdaysView lang={lang} />}
+                  {route === 'oshi' && <OshiSorterView lang={lang} />}
                   {route === 'video' && (
                     <VideosView lang={lang} onPlayVideo={(vid) => setActiveVideo(vid)} />
                   )}

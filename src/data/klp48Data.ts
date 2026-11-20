@@ -1,4 +1,4 @@
-export type RouteKey = 'home' | 'live' | 'jadwal' | 'member' | 'berita' | 'bday' | 'video';
+export type RouteKey = 'home' | 'live' | 'jadwal' | 'member' | 'berita' | 'bday' | 'video' | 'oshi';
 
 export interface ReleaseItem {
   title: string;
