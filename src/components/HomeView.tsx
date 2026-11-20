@@ -512,9 +512,7 @@ export function HomeView({ lang, onNavigate, onPlayVideo }: HomeViewProps) {
                                   e.preventDefault();
                                   onNavigate('jadwal');
                                 }}
-                                className={`inline-block min-h-11 align-middle transition-colors ${
-                                  index === 0 ? 'pr-11' : ''
-                                } hover:text-[#278500] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#278500] dark:hover:text-[#6fd43a] dark:focus-visible:outline-[#6fd43a]`}
+                                className="inline-block align-top pr-11 transition-colors hover:text-[#278500] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#278500] dark:hover:text-[#6fd43a] dark:focus-visible:outline-[#6fd43a]"
                               >
                                 {title}
                               </a>
@@ -570,76 +568,64 @@ export function HomeView({ lang, onNavigate, onPlayVideo }: HomeViewProps) {
                               )}
                               {notes && <p className="leading-relaxed">{notes}</p>}
                             </div>
-                            {index !== 0 && ev.link && (
-                              <a
-                                href={ev.link}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="mt-3 inline-flex min-h-11 items-center gap-1.5 rounded-md text-sm font-bold text-[#278500] transition-colors hover:text-[#206e00] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#278500] dark:text-[#6fd43a] dark:hover:text-[#82df52] dark:focus-visible:outline-[#6fd43a]"
-                              >
-                                <span>{t.j_link}</span>
-                              </a>
-                            )}
                           </div>
                         </div>
 
-                        {index === 0 && (
-                          <div
-                            ref={openEventMenuId === ev.id ? eventMenuRef : null}
-                            className="absolute right-3 top-3 z-10"
+                        <div
+                          ref={openEventMenuId === ev.id ? eventMenuRef : null}
+                          className="absolute right-3 top-3 z-10"
+                        >
+                          <button
+                            type="button"
+                            data-event-menu-trigger
+                            aria-label={`${t.j_more_options}: ${title}`}
+                            aria-expanded={openEventMenuId === ev.id}
+                            aria-controls={
+                              openEventMenuId === ev.id
+                                ? `home-event-actions-${ev.id}`
+                                : undefined
+                            }
+                            onClick={() =>
+                              setOpenEventMenuId((currentId) =>
+                                currentId === ev.id ? null : ev.id
+                              )
+                            }
+                            className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-full border border-[#dce6d7] bg-white/80 text-[#278500] transition-colors hover:border-[#278500] hover:bg-[#edf5e9] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#278500] dark:border-[#2b4523] dark:bg-[#142111] dark:text-[#7ce043] dark:hover:border-[#6fd43a] dark:hover:bg-[#1d3314] dark:focus-visible:outline-[#6fd43a]"
                           >
-                            <button
-                              type="button"
-                              data-event-menu-trigger
-                              aria-label={`${t.j_more_options}: ${title}`}
-                              aria-expanded={openEventMenuId === ev.id}
-                              aria-controls={
-                                openEventMenuId === ev.id
-                                  ? `home-event-actions-${ev.id}`
-                                  : undefined
-                              }
-                              onClick={() =>
-                                setOpenEventMenuId((currentId) =>
-                                  currentId === ev.id ? null : ev.id
-                                )
-                              }
-                              className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-full border border-[#dce6d7] bg-white/80 text-[#278500] transition-colors hover:border-[#278500] hover:bg-[#edf5e9] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#278500] dark:border-[#2b4523] dark:bg-[#142111] dark:text-[#7ce043] dark:hover:border-[#6fd43a] dark:hover:bg-[#1d3314] dark:focus-visible:outline-[#6fd43a]"
+                            <MoreVertical className="h-4 w-4" aria-hidden="true" />
+                          </button>
+                          {openEventMenuId === ev.id && (
+                            <div
+                              id={`home-event-actions-${ev.id}`}
+                              role="group"
+                              aria-label={t.j_more_options}
+                              className="absolute right-0 top-full z-30 mt-2 w-48 rounded-xl border border-[#dce6d7] bg-white p-1 shadow-xl dark:border-[#2b4523] dark:bg-[#142111]"
                             >
-                              <MoreVertical className="h-4 w-4" aria-hidden="true" />
-                            </button>
-                            {openEventMenuId === ev.id && (
-                              <div
-                                id={`home-event-actions-${ev.id}`}
-                                role="group"
-                                aria-label={t.j_more_options}
-                                className="absolute right-0 top-full z-30 mt-2 w-48 rounded-xl border border-[#dce6d7] bg-white p-1 shadow-xl dark:border-[#2b4523] dark:bg-[#142111]"
+                              <button
+                                type="button"
+                                data-event-menu-item
+                                onClick={() => {
+                                  downloadScheduleEventCalendar(ev, { title, venue, notes });
+                                  setOpenEventMenuId(null);
+                                }}
+                                className="flex min-h-11 w-full items-center rounded-lg px-3 text-left text-sm font-semibold text-[#278500] transition-colors hover:bg-[#edf5e9] focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-[#278500] dark:text-[#7ce043] dark:hover:bg-[#1d3314] dark:focus-visible:outline-[#6fd43a]"
                               >
-                                <button
-                                  type="button"
-                                  data-event-menu-item
-                                  onClick={() => {
-                                    downloadScheduleEventCalendar(ev, { title, venue, notes });
-                                    setOpenEventMenuId(null);
-                                  }}
-                                  className="flex min-h-11 w-full items-center rounded-lg px-3 text-left text-sm font-semibold text-[#278500] transition-colors hover:bg-[#edf5e9] focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-[#278500] dark:text-[#7ce043] dark:hover:bg-[#1d3314] dark:focus-visible:outline-[#6fd43a]"
+                                {t.j_add_calendar}
+                              </button>
+                              {ev.link && (
+                                <a
+                                  href={ev.link}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  onClick={() => setOpenEventMenuId(null)}
+                                  className="flex min-h-11 items-center rounded-lg px-3 text-sm font-semibold text-[#278500] transition-colors hover:bg-[#edf5e9] focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-[#278500] dark:text-[#7ce043] dark:hover:bg-[#1d3314] dark:focus-visible:outline-[#6fd43a]"
                                 >
-                                  {t.j_add_calendar}
-                                </button>
-                                {ev.link && (
-                                  <a
-                                    href={ev.link}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    onClick={() => setOpenEventMenuId(null)}
-                                    className="flex min-h-11 items-center rounded-lg px-3 text-sm font-semibold text-[#278500] transition-colors hover:bg-[#edf5e9] focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-[#278500] dark:text-[#7ce043] dark:hover:bg-[#1d3314] dark:focus-visible:outline-[#6fd43a]"
-                                  >
-                                    {t.j_link}
-                                  </a>
-                                )}
-                              </div>
-                            )}
-                          </div>
-                        )}
+                                  {t.j_link}
+                                </a>
+                              )}
+                            </div>
+                          )}
+                        </div>
                       </div>
                     </article>
                   );
