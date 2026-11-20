@@ -245,6 +245,17 @@ export function OshiSorterView({ lang }: OshiSorterViewProps) {
     });
   };
 
+  const selectGeneration = (generation: string) => {
+    setGenerationFilter(generation);
+    setSelectedMemberIds(
+      new Set(
+        SORTER_MEMBERS.filter((member) => generation === 'all' || member.gen === generation).map(
+          (member) => member.id,
+        ),
+      ),
+    );
+  };
+
   const setVisibleMembersSelected = (selected: boolean) => {
     const visibleIds = new Set(filteredMembers.map((member) => member.id));
     setSelectedMemberIds((currentSelection) => {
@@ -271,6 +282,12 @@ export function OshiSorterView({ lang }: OshiSorterViewProps) {
       comparisons: 0,
       history: [],
     });
+  };
+
+  const returnToSelection = () => {
+    setSession(null);
+    setSearchTerm('');
+    setGenerationFilter('all');
   };
 
   const chooseMember = (preferCurrent: boolean) => {
@@ -374,6 +391,11 @@ export function OshiSorterView({ lang }: OshiSorterViewProps) {
   const progress = session
     ? Math.round((session.sorted.length / Math.max(sessionMemberCount, 1)) * 100)
     : 0;
+  const rankedGenerations = session
+    ? Array.from(new Set(session.sorted.map((member) => member.gen))).sort(
+        (first, second) => Number(first) - Number(second),
+      )
+    : [];
   const rankingText = session && !session.current
     ? [
         t.oshi_share_intro,
@@ -439,7 +461,7 @@ export function OshiSorterView({ lang }: OshiSorterViewProps) {
                 <button
                   type="button"
                   aria-pressed={generationFilter === 'all'}
-                  onClick={() => setGenerationFilter('all')}
+                  onClick={() => selectGeneration('all')}
                   className={`min-h-9 rounded-lg px-3 text-xs font-bold transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#278500] dark:focus-visible:outline-[#6fd43a] ${
                     generationFilter === 'all'
                       ? 'bg-[#278500] text-white dark:bg-[#6fd43a] dark:text-[#0a1407]'
@@ -456,7 +478,7 @@ export function OshiSorterView({ lang }: OshiSorterViewProps) {
                       key={generationValue}
                       type="button"
                       aria-pressed={isActive}
-                      onClick={() => setGenerationFilter(generationValue)}
+                      onClick={() => selectGeneration(generationValue)}
                       className={`min-h-9 rounded-lg px-3 text-xs font-bold transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#278500] dark:focus-visible:outline-[#6fd43a] ${
                         isActive
                           ? 'bg-[#278500] text-white dark:bg-[#6fd43a] dark:text-[#0a1407]'
@@ -558,7 +580,7 @@ export function OshiSorterView({ lang }: OshiSorterViewProps) {
             </button>
             <button
               type="button"
-              onClick={startSort}
+              onClick={returnToSelection}
               className="inline-flex min-h-9 items-center justify-center rounded-lg border border-[#278500]/50 px-2.5 text-xs font-semibold text-[#278500] transition-colors hover:bg-[#e3f2da] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#278500] dark:border-[#6fd43a]/50 dark:text-[#6fd43a] dark:hover:bg-[#1d3314] dark:focus-visible:outline-[#6fd43a]"
             >
               {t.oshi_restart}
@@ -630,7 +652,7 @@ export function OshiSorterView({ lang }: OshiSorterViewProps) {
               <span className="font-semibold">{t.oshi_member_count.replace('%n', String(session.sorted.length))}</span>
               <span aria-hidden="true" className="text-[#8a9b82]">·</span>
               <span className="text-[#52634c] dark:text-[#a8b99f]">
-                {t.oshi_filter_label}: {SORTER_GENERATIONS.map((generation) => `Gen ${generation}`).join(', ')}
+                {t.oshi_filter_label}: {rankedGenerations.map((generation) => `Gen ${generation}`).join(', ')}
               </span>
             </p>
             <div className="flex flex-wrap items-center gap-2">
@@ -639,7 +661,7 @@ export function OshiSorterView({ lang }: OshiSorterViewProps) {
               </p>
               <button
                 type="button"
-                onClick={startSort}
+                onClick={returnToSelection}
                 className="inline-flex min-h-9 items-center justify-center gap-1.5 rounded-lg bg-[#263b20] px-3 text-xs font-bold text-white shadow-sm transition-colors hover:bg-[#1d2d17] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#278500] dark:bg-[#263720] dark:text-[#e3efdc] dark:hover:bg-[#33472b] dark:focus-visible:outline-[#6fd43a]"
               >
                 <RotateCcw aria-hidden="true" className="h-4 w-4 shrink-0" />

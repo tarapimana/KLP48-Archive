@@ -56,18 +56,12 @@ export function UtilityBar({
           type="button"
           onClick={onToggleTheme}
           aria-label={theme === 'dark' ? t.theme_light : t.theme_dark}
-          className="inline-flex min-h-[34px] shrink-0 items-center gap-1.5 whitespace-nowrap rounded-lg border border-[#dce6d7] bg-white px-3 text-xs font-semibold text-[#131f10] transition-colors hover:border-[#278500] dark:border-[#24371f] dark:bg-[#142111] dark:text-[#ecf4e8] dark:hover:border-[#6fd43a]"
+          className="inline-flex h-[34px] w-[34px] shrink-0 items-center justify-center rounded-lg border border-[#dce6d7] bg-white text-[#131f10] transition-colors hover:border-[#278500] dark:border-[#24371f] dark:bg-[#142111] dark:text-[#ecf4e8] dark:hover:border-[#6fd43a]"
         >
           {theme === 'dark' ? (
-            <>
-              <Sun className="h-3.5 w-3.5 text-[#6fd43a]" aria-hidden="true" />
-              <span>{t.theme_light}</span>
-            </>
+            <Sun className="h-3.5 w-3.5 text-[#6fd43a]" aria-hidden="true" />
           ) : (
-            <>
-              <Moon className="h-3.5 w-3.5 text-[#278500]" aria-hidden="true" />
-              <span>{t.theme_dark}</span>
-            </>
+            <Moon className="h-3.5 w-3.5 text-[#278500]" aria-hidden="true" />
           )}
         </button>
       </div>
