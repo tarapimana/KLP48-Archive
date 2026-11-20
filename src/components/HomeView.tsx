@@ -86,7 +86,7 @@ export function HomeView({ lang, onNavigate, onPlayVideo }: HomeViewProps) {
     <div className="space-y-10 pt-2">
       {/* Main 2-Column Editorial Grid */}
       <div className="grid items-start gap-8 lg:grid-cols-12 lg:gap-10">
-        {/* LEFT COLUMN: Hero + Stats + Latest News + Discography */}
+        {/* LEFT COLUMN: Hero + Stats + Latest News + Discography + Videos */}
         <div className="space-y-9 lg:col-span-7">
           {/* Hero Banner */}
           <section>
@@ -229,6 +229,140 @@ export function HomeView({ lang, onNavigate, onPlayVideo }: HomeViewProps) {
             </div>
           </section>
 
+          {/* Discography */}
+          <section>
+            <div className="mb-3.5">
+              <h2 className="font-display text-lg font-extrabold tracking-tight text-[#131f10] sm:text-xl dark:text-white">
+                {t.n_release}
+              </h2>
+            </div>
+
+            <div className="grid gap-3 sm:grid-cols-2">
+              {RELEASES.map((rel) => {
+                const video = rel.video;
+                const cardContent = (
+                  <>
+                    <div className="flex items-start justify-between gap-3">
+                      {rel.artworkUrl ? (
+                        <img
+                          src={rel.artworkUrl}
+                          alt={`${rel.title} cover art`}
+                          loading="lazy"
+                          decoding="async"
+                          className="h-10 w-10 rounded-xl object-cover"
+                        />
+                      ) : (
+                        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#e3f2da] text-[#278500] dark:bg-[#193012] dark:text-[#6fd43a]">
+                          <Music className="h-4 w-4" aria-hidden="true" />
+                        </div>
+                      )}
+                      {rel.video && (
+                        <span
+                          className="inline-flex size-8 items-center justify-center rounded-full bg-[#e3f2da] text-[#278500] dark:bg-[#193012] dark:text-[#6fd43a]"
+                          aria-hidden="true"
+                        >
+                          <Play className="h-4 w-4" />
+                        </span>
+                      )}
+                    </div>
+                    <div className="mt-4">
+                      <h3 className="font-display text-base font-bold text-[#131f10] dark:text-white">
+                        {rel.title}
+                      </h3>
+                      {(rel.type || rel.date) && (
+                        <div className="font-mono-num mt-0.5 text-xs text-[#52634c] dark:text-[#98ad90]">
+                          {rel.type && rel.date ? `${rel.type} · ${rel.date}` : rel.type || rel.date}
+                        </div>
+                      )}
+                    </div>
+                  </>
+                );
+
+                return video ? (
+                  <button
+                    key={rel.title}
+                    type="button"
+                    onClick={() => onPlayVideo(video)}
+                    aria-label={`${t.v_preview}: ${rel.title}`}
+                    className={`${cardSurface} block w-full cursor-pointer p-4 text-left transition-colors hover:border-[#278500] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#278500] focus-visible:ring-offset-2 sm:p-5 dark:hover:border-[#66c91a] dark:focus-visible:ring-[#66c91a] dark:focus-visible:ring-offset-[#0a1407]`}
+                  >
+                    {cardContent}
+                  </button>
+                ) : (
+                  <div key={rel.title} className={`${cardSurface} p-4 sm:p-5`}>
+                    {cardContent}
+                  </div>
+                );
+              })}
+            </div>
+          </section>
+
+          {/* Videos */}
+          <section className="border-t border-[#d5e2cf] pt-8 dark:border-[#253c1e]">
+            <div className="mb-4 flex items-baseline justify-between gap-4">
+              <h2 className="font-display text-lg font-extrabold tracking-tight text-[#131f10] sm:text-xl dark:text-white">
+                {t.n_video}
+              </h2>
+              <a
+                href="#video"
+                onClick={(e) => {
+                  e.preventDefault();
+                  onNavigate('video');
+                }}
+                className="inline-flex items-center gap-1 whitespace-nowrap text-xs font-bold text-[#131f10] hover:text-[#278500] sm:text-sm dark:text-[#ecf4e8] dark:hover:text-[#66c91a]"
+              >
+                <span>{t.allv}</span>
+                <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
+              </a>
+            </div>
+
+            <div className="grid gap-4 md:grid-cols-2">
+              {featuredVideos.map((vid) => {
+                const isYouTube = vid.platform === 'youtube';
+
+                return (
+                  <div key={vid.url} className={`${cardSurface} overflow-hidden`}>
+                    <button
+                      type="button"
+                      onClick={() => onPlayVideo(vid)}
+                      className="group relative block w-full text-left"
+                      aria-label={`${t.v_preview}: ${vid.title}`}
+                    >
+                      {isYouTube ? (
+                        <YouTubeThumbnail
+                          youtubeId={vid.youtubeId}
+                          title={vid.title}
+                          playLabel={t.v_preview}
+                          badgeSize="lg"
+                        />
+                      ) : (
+                        <TikTokThumbnail thumbnail={vid.thumbnail} title={vid.title} />
+                      )}
+                    </button>
+                    <div className="flex items-start justify-between gap-4 p-4">
+                      <div className="min-w-0">
+                        <div className="text-xs font-semibold text-[#278500] dark:text-[#6fd43a]">
+                          {isYouTube ? 'YouTube' : 'TikTok'}
+                        </div>
+                        <h3 className="mt-1 line-clamp-2 text-sm font-semibold text-[#131f10] dark:text-white">
+                          {vid.title}
+                        </h3>
+                      </div>
+                      <a
+                        href={vid.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex shrink-0 items-center gap-1 whitespace-nowrap text-xs font-semibold text-[#278500] hover:underline dark:text-[#6fd43a]"
+                      >
+                        <span>{isYouTube ? 'YouTube' : t.v_open_tt}</span>
+                        <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
+                      </a>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </section>
         </div>
 
         {/* RIGHT COLUMN: Next Event Stack + Birthdays */}
@@ -456,141 +590,6 @@ export function HomeView({ lang, onNavigate, onPlayVideo }: HomeViewProps) {
           </section>
         </div>
       </div>
-
-      {/* Discography */}
-      <section>
-        <div className="mb-3.5">
-          <h2 className="font-display text-lg font-extrabold tracking-tight text-[#131f10] sm:text-xl dark:text-white">
-            {t.n_release}
-          </h2>
-        </div>
-
-        <div className="grid gap-3 sm:grid-cols-2">
-          {RELEASES.map((rel) => {
-            const video = rel.video;
-            const cardContent = (
-              <>
-                <div className="flex items-start justify-between gap-3">
-                  {rel.artworkUrl ? (
-                    <img
-                      src={rel.artworkUrl}
-                      alt={`${rel.title} cover art`}
-                      loading="lazy"
-                      decoding="async"
-                      className="h-10 w-10 rounded-xl object-cover"
-                    />
-                  ) : (
-                    <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#e3f2da] text-[#278500] dark:bg-[#193012] dark:text-[#6fd43a]">
-                      <Music className="h-4 w-4" aria-hidden="true" />
-                    </div>
-                  )}
-                  {rel.video && (
-                    <span
-                      className="inline-flex size-8 items-center justify-center rounded-full bg-[#e3f2da] text-[#278500] dark:bg-[#193012] dark:text-[#6fd43a]"
-                      aria-hidden="true"
-                    >
-                      <Play className="h-4 w-4" />
-                    </span>
-                  )}
-                </div>
-                <div className="mt-4">
-                  <h3 className="font-display text-base font-bold text-[#131f10] dark:text-white">
-                    {rel.title}
-                  </h3>
-                  {(rel.type || rel.date) && (
-                    <div className="font-mono-num mt-0.5 text-xs text-[#52634c] dark:text-[#98ad90]">
-                      {rel.type && rel.date ? `${rel.type} · ${rel.date}` : rel.type || rel.date}
-                    </div>
-                  )}
-                </div>
-              </>
-            );
-
-            return video ? (
-              <button
-                key={rel.title}
-                type="button"
-                onClick={() => onPlayVideo(video)}
-                aria-label={`${t.v_preview}: ${rel.title}`}
-                className={`${cardSurface} block w-full cursor-pointer p-4 text-left transition-colors hover:border-[#278500] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#278500] focus-visible:ring-offset-2 sm:p-5 dark:hover:border-[#66c91a] dark:focus-visible:ring-[#66c91a] dark:focus-visible:ring-offset-[#0a1407]`}
-              >
-                {cardContent}
-              </button>
-            ) : (
-              <div key={rel.title} className={`${cardSurface} p-4 sm:p-5`}>
-                {cardContent}
-              </div>
-            );
-          })}
-        </div>
-      </section>
-
-      {/* Videos */}
-      <section className="border-t border-[#d5e2cf] pt-8 dark:border-[#253c1e]">
-        <div className="mb-4 flex items-baseline justify-between gap-4">
-          <h2 className="font-display text-lg font-extrabold tracking-tight text-[#131f10] sm:text-xl dark:text-white">
-            {t.n_video}
-          </h2>
-          <a
-            href="#video"
-            onClick={(e) => {
-              e.preventDefault();
-              onNavigate('video');
-            }}
-            className="inline-flex items-center gap-1 whitespace-nowrap text-xs font-bold text-[#131f10] hover:text-[#278500] sm:text-sm dark:text-[#ecf4e8] dark:hover:text-[#66c91a]"
-          >
-            <span>{t.allv}</span>
-            <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
-          </a>
-        </div>
-
-        <div className="grid gap-4 md:grid-cols-2">
-          {featuredVideos.map((vid) => {
-            const isYouTube = vid.platform === 'youtube';
-
-            return (
-              <div key={vid.url} className={`${cardSurface} overflow-hidden`}>
-                <button
-                  type="button"
-                  onClick={() => onPlayVideo(vid)}
-                  className="group relative block w-full text-left"
-                  aria-label={`${t.v_preview}: ${vid.title}`}
-                >
-                  {isYouTube ? (
-                    <YouTubeThumbnail
-                      youtubeId={vid.youtubeId}
-                      title={vid.title}
-                      playLabel={t.v_preview}
-                      badgeSize="lg"
-                    />
-                  ) : (
-                    <TikTokThumbnail thumbnail={vid.thumbnail} title={vid.title} />
-                  )}
-                </button>
-                <div className="flex items-start justify-between gap-4 p-4">
-                  <div className="min-w-0">
-                    <div className="text-xs font-semibold text-[#278500] dark:text-[#6fd43a]">
-                      {isYouTube ? 'YouTube' : 'TikTok'}
-                    </div>
-                    <h3 className="mt-1 line-clamp-2 text-sm font-semibold text-[#131f10] dark:text-white">
-                      {vid.title}
-                    </h3>
-                  </div>
-                  <a
-                    href={vid.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex shrink-0 items-center gap-1 whitespace-nowrap text-xs font-semibold text-[#278500] hover:underline dark:text-[#6fd43a]"
-                  >
-                    <span>{isYouTube ? 'YouTube' : t.v_open_tt}</span>
-                    <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
-                  </a>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      </section>
 
       <MemberModal
         member={selectedMember}
