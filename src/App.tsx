@@ -4,6 +4,7 @@
  */
 
 import { useEffect, useState } from 'react';
+import { Eye, EyeOff } from 'lucide-react';
 import { AdminAccessView } from './components/AdminAccessView';
 import { AdminAuthModal } from './components/AdminAuthModal';
 import { BirthdaysView } from './components/BirthdaysView';
@@ -22,7 +23,7 @@ import { VideosView } from './components/VideosView';
 import { AuthProvider } from './context/AuthContext';
 import { LiveStatusProvider } from './context/LiveStatusContext';
 import { RouteKey, VideoItem } from './data/klp48Data';
-import { Lang } from './i18n/translations';
+import { Lang, TRANSLATIONS } from './i18n/translations';
 
 const VALID_ROUTES: RouteKey[] = [
   'home',
@@ -65,6 +66,7 @@ export default function App() {
   const [route, setRoute] = useState<RouteKey>(getRouteFromHash);
   const [lang, setLang] = useState<Lang>(getInitialLang);
   const [theme, setTheme] = useState<'light' | 'dark'>(getInitialTheme);
+  const [isVideoOnly, setIsVideoOnly] = useState(false);
   const [activeVideo, setActiveVideo] = useState<VideoItem | null>(null);
 
   useEffect(() => {
@@ -108,6 +110,7 @@ export default function App() {
 
   const toggleLang = () => setLang((prev) => (prev === 'ms' ? 'en' : 'ms'));
   const toggleTheme = () => setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'));
+  const t = TRANSLATIONS[lang];
 
   const isAdminAccessPage = window.location.pathname.replace(/\/+$/, '') === '/admin';
 
@@ -121,57 +124,73 @@ export default function App() {
             <>
               {/* Whole-page Video Background */}
               <BackgroundVideo lang={lang} />
-              <div
-                aria-hidden="true"
-                className="pointer-events-none fixed inset-0 z-0 bg-[#f6faf4]/82 transition-colors duration-150 dark:bg-[#0a1407]/72"
-              />
-
-              <div className="relative z-10 flex min-h-screen flex-col">
-                <Header
-                  route={route}
-                  onNavigate={navigate}
-                  lang={lang}
-                  onToggleLang={toggleLang}
-                  theme={theme}
-                  onToggleTheme={toggleTheme}
+              {!isVideoOnly && (
+                <div
+                  aria-hidden="true"
+                  className="pointer-events-none fixed inset-0 z-0 bg-[#f6faf4]/82 transition-colors duration-150 dark:bg-[#0a1407]/72"
                 />
+              )}
 
-                <main className="mx-auto w-full max-w-6xl flex-1 px-4 pb-4 sm:px-6">
-                  <UtilityBar
+              {!isVideoOnly && (
+                <div className="relative z-10 flex min-h-screen flex-col">
+                  <Header
+                    route={route}
+                    onNavigate={navigate}
                     lang={lang}
-                    onChangeLang={setLang}
+                    onToggleLang={toggleLang}
                     theme={theme}
                     onToggleTheme={toggleTheme}
                   />
 
-                  {route === 'home' && (
-                    <HomeView
+                  <main className="mx-auto w-full max-w-6xl flex-1 px-4 pb-4 sm:px-6">
+                    <UtilityBar
                       lang={lang}
-                      onNavigate={navigate}
-                      onPlayVideo={(vid) => setActiveVideo(vid)}
+                      onChangeLang={setLang}
+                      theme={theme}
+                      onToggleTheme={toggleTheme}
                     />
-                  )}
-                  {route === 'jadwal' && <ScheduleView lang={lang} />}
-                  {route === 'member' && <MembersView lang={lang} />}
-                  {route === 'berita' && <NewsView lang={lang} />}
-                  {route === 'bday' && <BirthdaysView lang={lang} />}
-                  {route === 'oshi' && <OshiSorterView lang={lang} />}
-                  {route === 'video' && (
-                    <VideosView lang={lang} onPlayVideo={(vid) => setActiveVideo(vid)} />
-                  )}
-                  {route === 'live' && (
-                    <LiveView lang={lang} onPlayVideo={(vid) => setActiveVideo(vid)} />
-                  )}
-                </main>
 
-                <Footer lang={lang} onNavigate={navigate} />
-              </div>
+                    {route === 'home' && (
+                      <HomeView
+                        lang={lang}
+                        onNavigate={navigate}
+                        onPlayVideo={(vid) => setActiveVideo(vid)}
+                      />
+                    )}
+                    {route === 'jadwal' && <ScheduleView lang={lang} />}
+                    {route === 'member' && <MembersView lang={lang} />}
+                    {route === 'berita' && <NewsView lang={lang} />}
+                    {route === 'bday' && <BirthdaysView lang={lang} />}
+                    {route === 'oshi' && <OshiSorterView lang={lang} />}
+                    {route === 'video' && (
+                      <VideosView lang={lang} onPlayVideo={(vid) => setActiveVideo(vid)} />
+                    )}
+                    {route === 'live' && (
+                      <LiveView lang={lang} onPlayVideo={(vid) => setActiveVideo(vid)} />
+                    )}
+                  </main>
 
-              <VideoModal
-                video={activeVideo}
-                lang={lang}
-                onClose={() => setActiveVideo(null)}
-              />
+                  <Footer lang={lang} onNavigate={navigate} />
+                </div>
+              )}
+
+              {!isVideoOnly && (
+                <VideoModal
+                  video={activeVideo}
+                  lang={lang}
+                  onClose={() => setActiveVideo(null)}
+                />
+              )}
+
+              <button
+                type="button"
+                onClick={() => setIsVideoOnly((current) => !current)}
+                aria-label={isVideoOnly ? t.show_content : t.video_only}
+                className="fixed bottom-4 right-4 z-50 inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-white/20 bg-black/85 px-4 text-sm font-semibold text-white shadow-xl backdrop-blur-sm transition-colors hover:bg-black focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+              >
+                {isVideoOnly ? <Eye className="size-4" aria-hidden="true" /> : <EyeOff className="size-4" aria-hidden="true" />}
+                <span>{isVideoOnly ? t.show_content : t.video_only}</span>
+              </button>
             </>
           )}
 
