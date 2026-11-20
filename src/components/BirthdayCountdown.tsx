@@ -61,7 +61,7 @@ function calcTimeLeft(targetDate: Date): TimeLeft {
   };
 }
 
-const ITEMS_PER_PAGE = 5;
+const ITEMS_PER_PAGE = 7;
 
 export function BirthdayCountdown({
   lang,
